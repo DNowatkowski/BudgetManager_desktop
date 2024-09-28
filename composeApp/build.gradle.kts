@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -25,6 +26,13 @@ kotlin {
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.transitions)
             implementation(libs.androidx.compose.material3)
+            implementation(libs.file.kit.core)
+            implementation(libs.file.kit.compose)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.composeViewModel)
+            implementation(libs.room.runtime)
+            implementation(libs.room.compiler)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
