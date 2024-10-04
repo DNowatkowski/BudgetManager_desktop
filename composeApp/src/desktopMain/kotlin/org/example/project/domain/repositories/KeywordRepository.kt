@@ -1,6 +1,6 @@
 package org.example.project.domain.repositories
 
-import org.example.project.data.entities.KeywordEntity
+import database.KeywordEntity
 
 interface KeywordRepository {
     suspend fun insertKeyword(keywordText: String, categoryId: String)

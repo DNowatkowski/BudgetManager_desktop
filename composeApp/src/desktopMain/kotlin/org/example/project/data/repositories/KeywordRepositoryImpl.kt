@@ -3,27 +3,26 @@ package org.example.project.data.repositories
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.example.project.data.AppDatabase
-import org.example.project.data.daos.KeywordDao
-import org.example.project.data.entities.KeywordEntity
+import database.Database
+import database.KeywordEntity
 import org.example.project.domain.repositories.KeywordRepository
 import java.util.UUID
 
 class KeywordRepositoryImpl(
-    database: AppDatabase,
+    private val database: Database,
 ) : KeywordRepository {
 
-    private val keywordDao: KeywordDao = database.keywordDao()
 
     override suspend fun insertKeyword(keywordText: String, categoryId: String) {
         withContext(Dispatchers.IO) {
             launch {
-                keywordDao.insertKeyword(
+                database.databaseQueries.insertKeyword(
                     KeywordEntity(
                         id = UUID.randomUUID().toString(),
-                        text = keywordText,
-                        categoryId = categoryId
+                        keyword = keywordText,
+                        categoryId = categoryId,
                     )
+
                 )
             }
         }
@@ -32,7 +31,7 @@ class KeywordRepositoryImpl(
     override suspend fun deleteKeyword(keyword: KeywordEntity) {
         withContext(Dispatchers.IO) {
             launch {
-                keywordDao.deleteKeyword(keyword)
+                database.databaseQueries.deleteKeywordById(keyword.id)
             }
         }
     }
