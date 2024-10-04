@@ -1,0 +1,91 @@
+PRAGMA user_version = 1;
+
+CREATE TABLE TransactionEntity (
+    id TEXT PRIMARY KEY,
+    amount REAL NOT NULL,
+    title TEXT NOT NULL,
+    date TEXT NOT NULL,
+    categoryId TEXT,
+    FOREIGN KEY (categoryId) REFERENCES CategoryEntity(id)
+);
+
+insertTransaction:
+INSERT INTO TransactionEntity (id, amount, title, date, categoryId)
+VALUES (:id, :amount, :title, :date, :categoryId);
+
+getAllTransactions:
+SELECT * FROM TransactionEntity;
+
+getTransactionById:
+SELECT * FROM TransactionEntity WHERE id = :id;
+
+deleteTransactionById:
+DELETE FROM TransactionEntity WHERE id = :id;
+
+deleteAllTransactions:
+DELETE FROM TransactionEntity;
+
+insertTransactions:
+INSERT INTO TransactionEntity (id, amount, title, date, categoryId)
+VALUES (:id, :amount, :title, :date, :categoryId);
+
+getTransactionsByCategoryId:
+SELECT * FROM TransactionEntity WHERE categoryId = :categoryId;
+
+-------------------------------------------------------------------------------------
+CREATE TABLE KeywordEntity (
+    id TEXT PRIMARY KEY,
+    keyword TEXT NOT NULL,
+    categoryId TEXT NOT NULL,
+    FOREIGN KEY (categoryId) REFERENCES CategoryEntity(id)
+);
+
+insertKeyword:
+INSERT INTO KeywordEntity
+VALUES ?;
+
+getAllKeywords:
+SELECT * FROM KeywordEntity;
+
+getKeywordById:
+SELECT * FROM KeywordEntity WHERE id = :id;
+
+deleteKeywordById:
+DELETE FROM KeywordEntity WHERE id = :id;
+
+deleteAllKeywords:
+DELETE FROM KeywordEntity;
+
+insertKeywords:
+INSERT INTO KeywordEntity (id, keyword, categoryId)
+VALUES (:id, :keyword, :categoryId);
+
+getKeywordsByCategoryId:
+SELECT * FROM KeywordEntity WHERE categoryId = :categoryId;
+
+-------------------------------------------------------------------------------------
+
+CREATE TABLE CategoryEntity (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+insertCategory:
+INSERT INTO CategoryEntity
+VALUES ?;
+
+getAllCategories:
+SELECT * FROM CategoryEntity;
+
+getCategoryById:
+SELECT * FROM CategoryEntity WHERE id = :id;
+
+deleteCategoryById:
+DELETE FROM CategoryEntity WHERE id = :id;
+
+deleteAllCategories:
+DELETE FROM CategoryEntity;
+
+insertCategories:
+INSERT INTO CategoryEntity (id, name)
+VALUES (:id, :name);

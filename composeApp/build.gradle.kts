@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.room)
+    alias(libs.plugins.sql.delight)
 }
 
 kotlin {
@@ -31,16 +31,25 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.composeViewModel)
-            implementation(libs.room.runtime)
-            implementation(libs.room.compiler)
+            implementation(libs.sqlite.driver)
+            implementation(libs.stately.common)
+            implementation(libs.sqlite.coroutines)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+
         }
     }
 }
 
+sqldelight {
+    databases {
+        create("Database") {
+            packageName.set("database")
+        }
+    }
+}
 
 compose.desktop {
     application {
