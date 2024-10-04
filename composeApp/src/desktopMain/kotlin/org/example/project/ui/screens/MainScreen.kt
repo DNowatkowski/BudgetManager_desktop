@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
+import org.example.project.ui.screens.keywords.KeywordsScreen
 
 
 @Composable fun MainScreen(){
@@ -15,8 +16,8 @@ import cafe.adriel.voyager.navigator.Navigator
             ModalDrawerSheet {
                 NavigationDrawerItem(
                     label = { Text(text = "Import") },
-                    selected = navigator.lastItem is ImportScreen,
-                    onClick = { navigator.replace(ImportScreen()) }
+                    selected = navigator.lastItem is KeywordsScreen,
+                    onClick = { navigator.replace(KeywordsScreen()) }
                 )
                 NavigationDrawerItem(
                     label = { Text(text = "Budget") },
@@ -28,6 +29,7 @@ import cafe.adriel.voyager.navigator.Navigator
                     selected = navigator.lastItem is ReportsScreen,
                     onClick = { navigator.replace(ReportsScreen()) }
                 )
+
             }
             CurrentScreen()
         }
