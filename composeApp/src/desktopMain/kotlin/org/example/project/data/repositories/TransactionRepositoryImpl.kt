@@ -1,15 +1,18 @@
 package org.example.project.data.repositories
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import kotlinx.coroutines.flow.Flow
-import org.example.project.data.AppDatabase
-import org.example.project.data.entities.TransactionEntity
+import database.Database
+import database.TransactionEntity
+import kotlinx.coroutines.Dispatchers
 import org.example.project.domain.repositories.TransactionRepository
 
 class TransactionRepositoryImpl(
-    val database: AppDatabase,
+    private val database: Database,
 ) : TransactionRepository {
     override fun getAllTransactions(): Flow<List<TransactionEntity>> {
-        TODO("Not yet implemented")
+        return database.databaseQueries.getAllTransactions().asFlow().mapToList(Dispatchers.IO)
     }
 
 }

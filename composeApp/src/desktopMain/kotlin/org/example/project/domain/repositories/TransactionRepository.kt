@@ -1,7 +1,7 @@
 package org.example.project.domain.repositories
 
+import database.TransactionEntity
 import kotlinx.coroutines.flow.Flow
-import org.example.project.data.entities.TransactionEntity
 
 interface TransactionRepository {
     fun getAllTransactions(): Flow<List<TransactionEntity>>
