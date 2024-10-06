@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.doyaaaaaken.kotlincsv.client.CsvReader
 import database.KeywordEntity
-import database.TransactionEntity
 import io.github.vinceglb.filekit.core.PlatformFile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
@@ -12,7 +11,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.example.project.domain.models.CategoryWithKeywords
+import org.example.project.domain.models.CategoryGroupData
+import org.example.project.domain.models.KeywordData
 import org.example.project.domain.repositories.CategoryRepository
 import org.example.project.domain.repositories.KeywordRepository
 import org.example.project.domain.repositories.TransactionRepository
@@ -34,16 +34,16 @@ class KeywordsScreenViewModel(
     }
 
     private suspend fun getCategoriesWithKeywords() {
-        categoryRepository.getCategoriesWithKeywords().collectLatest {
+        categoryRepository.getAllCategoriesWithData().collectLatest {
             _uiState.update { currentState ->
-                currentState.copy(categoriesWithKeywords = it)
+                currentState.copy(categoryGroups = it)
             }
         }
     }
 
-    fun addCategory(name: String) {
+    fun addCategory(name: String, groupId:String) {
         viewModelScope.launch {
-            categoryRepository.insertCategory(name = name)
+            categoryRepository.insertCategory(name = name, groupId = groupId)
         }
     }
 
@@ -53,9 +53,9 @@ class KeywordsScreenViewModel(
         }
     }
 
-    fun removeKeyword(keyword: KeywordEntity) {
+    fun removeKeyword(keyword: KeywordData) {
         viewModelScope.launch {
-            keywordRepository.deleteKeyword(keyword)
+            keywordRepository.deleteKeyword(keyword.id)
         }
     }
 
@@ -75,7 +75,6 @@ class KeywordsScreenViewModel(
         val isError: Throwable? = null,
         val isLoading: Boolean = false,
 
-        val categoriesWithKeywords: List<CategoryWithKeywords> = emptyList(),
-        val transactions: List<TransactionEntity> = emptyList(),
+        val categoryGroups: List<CategoryGroupData> = emptyList(),
     )
 }
