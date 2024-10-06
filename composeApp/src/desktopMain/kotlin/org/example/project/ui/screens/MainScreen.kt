@@ -11,7 +11,7 @@ import org.example.project.ui.screens.keywords.KeywordsScreen
 
 
 @Composable fun MainScreen(){
-    Navigator(BudgetScreen()) { navigator ->
+    Navigator(KeywordsScreen()) { navigator ->
         Row {
             ModalDrawerSheet {
                 NavigationDrawerItem(
