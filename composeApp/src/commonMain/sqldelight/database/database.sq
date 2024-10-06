@@ -64,10 +64,25 @@ getKeywordsByCategoryId:
 SELECT * FROM KeywordEntity WHERE categoryId = :categoryId;
 
 -------------------------------------------------------------------------------------
+CREATE TABLE CategoryGroupEntity (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL
+);
+
+insertCategoryGroup:
+INSERT INTO CategoryGroupEntity
+VALUES ?;
+
+getAllCategoryGroups:
+SELECT * FROM CategoryGroupEntity;
+
+-------------------------------------------------------------------------------------
 
 CREATE TABLE CategoryEntity (
     id TEXT PRIMARY KEY,
-    name TEXT NOT NULL
+    name TEXT NOT NULL,
+    categoryGroupId TEXT NOT NULL,
+    FOREIGN KEY (categoryGroupId) REFERENCES CategoryGroupEntity(id)
 );
 
 insertCategory:
@@ -87,5 +102,5 @@ deleteAllCategories:
 DELETE FROM CategoryEntity;
 
 insertCategories:
-INSERT INTO CategoryEntity (id, name)
-VALUES (:id, :name);
+INSERT INTO CategoryEntity (id, name, categoryGroupId)
+VALUES (:id, :name, :categoryGroupId);
