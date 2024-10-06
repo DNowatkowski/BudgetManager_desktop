@@ -4,5 +4,5 @@ import database.KeywordEntity
 
 interface KeywordRepository {
     suspend fun insertKeyword(keywordText: String, categoryId: String)
-    suspend fun deleteKeyword(keyword: KeywordEntity)
+    suspend fun deleteKeyword(keywordId: String)
 }

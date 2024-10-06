@@ -1,5 +1,6 @@
 package org.example.project.data.repositories
 
+import androidx.compose.runtime.key
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,10 +29,10 @@ class KeywordRepositoryImpl(
         }
     }
 
-    override suspend fun deleteKeyword(keyword: KeywordEntity) {
+    override suspend fun deleteKeyword(keywordId: String) {
         withContext(Dispatchers.IO) {
             launch {
-                database.databaseQueries.deleteKeywordById(keyword.id)
+                database.databaseQueries.deleteKeywordById(keywordId)
             }
         }
     }
