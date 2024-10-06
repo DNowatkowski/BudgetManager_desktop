@@ -6,6 +6,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import database.Database
 import database.KeywordEntity
+import org.example.project.domain.models.KeywordData
 import org.example.project.domain.repositories.KeywordRepository
 import java.util.UUID
 
@@ -24,6 +25,17 @@ class KeywordRepositoryImpl(
                         categoryId = categoryId,
                     )
 
+                )
+            }
+        }
+    }
+
+    override suspend fun updateKeyword(keyword: KeywordData) {
+        withContext(Dispatchers.IO) {
+            launch {
+                database.databaseQueries.updateKeyword(
+                    id = keyword.id,
+                    keyword = keyword.keyword,
                 )
             }
         }

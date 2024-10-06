@@ -46,7 +46,8 @@ class KeywordsScreen : Screen {
                     onAddCategory = { text -> vm.addCategory(text, group.id) },
                     onAddKeyword = { text, categoryId -> vm.addKeyword(text, categoryId) },
                     onRemoveKeyword = { id -> vm.removeKeyword(id) },
-                    onAddGroup = {}
+                    onAddGroup = {},
+                    onKeywordUpdated = { keyword -> vm.updateKeyword(keyword) }
                 )
             }
         }

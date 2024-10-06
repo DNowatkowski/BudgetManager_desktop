@@ -3,7 +3,6 @@ package org.example.project.ui.screens.keywords
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.doyaaaaaken.kotlincsv.client.CsvReader
-import database.KeywordEntity
 import io.github.vinceglb.filekit.core.PlatformFile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
@@ -41,7 +40,7 @@ class KeywordsScreenViewModel(
         }
     }
 
-    fun addCategory(name: String, groupId:String) {
+    fun addCategory(name: String, groupId: String) {
         viewModelScope.launch {
             categoryRepository.insertCategory(name = name, groupId = groupId)
         }
@@ -62,12 +61,18 @@ class KeywordsScreenViewModel(
     fun importFile(file: PlatformFile?) {
         if (file != null) {
             viewModelScope.launch {
-                reader.openAsync(file.file){
-                    readAllAsSequence().asFlow().collect{ row->
+                reader.openAsync(file.file) {
+                    readAllAsSequence().asFlow().collect { row ->
                         println(row.toString())
                     }
                 }
             }
+        }
+    }
+
+    fun updateKeyword(keyword: KeywordData) {
+        viewModelScope.launch {
+            keywordRepository.updateKeyword(keyword)
         }
     }
 
