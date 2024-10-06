@@ -1,1 +1,16 @@
+INSERT INTO CategoryGroupEntity (id, name) VALUES ('1', 'Expenses');
+INSERT INTO CategoryGroupEntity (id, name) VALUES ('2', 'Income');
+
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('1', 'Food', '1');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('2', 'Transport', '1');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('3', 'Entertainment', '1');
+
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('4', 'Salary', '2');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('5', 'Bonus', '2');
+
+INSERT INTO KeywordEntity (id, keyword, categoryId) VALUES ('1', 'Groceries', '1');
+INSERT INTO KeywordEntity (id, keyword, categoryId) VALUES ('2', 'Eating out', '1');
+INSERT INTO KeywordEntity (id, keyword, categoryId) VALUES ('3', 'Public transport', '2');
+INSERT INTO KeywordEntity (id, keyword, categoryId) VALUES ('4', 'Taxi', '2');
+INSERT INTO KeywordEntity (id, keyword, categoryId) VALUES ('5', 'Movies', '3');
 
