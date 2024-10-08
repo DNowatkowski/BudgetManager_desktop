@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.example.project.domain.models.CategoryGroupData
 import org.example.project.domain.models.KeywordData
+import org.example.project.domain.models.toTransactionData
 import org.example.project.domain.repositories.CategoryRepository
 import org.example.project.domain.repositories.KeywordRepository
 import org.example.project.domain.repositories.TransactionRepository
@@ -63,7 +64,7 @@ class KeywordsScreenViewModel(
             viewModelScope.launch {
                 reader.openAsync(file.file) {
                     readAllAsSequence().asFlow().collect { row ->
-                        println(row.toString())
+                        transactionRepository.insertTransaction(row.toTransactionData())
                     }
                 }
             }

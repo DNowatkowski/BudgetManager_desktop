@@ -7,4 +7,5 @@ data class TransactionData(
     val date: LocalDateTime,
     val amount: Double,
     val title: String,
+    val recipient: String?,
 )

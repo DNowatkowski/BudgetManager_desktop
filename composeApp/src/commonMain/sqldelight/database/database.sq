@@ -4,14 +4,15 @@ CREATE TABLE TransactionEntity (
     id TEXT PRIMARY KEY,
     amount REAL NOT NULL,
     title TEXT NOT NULL,
+    recipient TEXT,
     date TEXT NOT NULL,
     categoryId TEXT,
     FOREIGN KEY (categoryId) REFERENCES CategoryEntity(id)
 );
 
 insertTransaction:
-INSERT INTO TransactionEntity (id, amount, title, date, categoryId)
-VALUES (:id, :amount, :title, :date, :categoryId);
+INSERT INTO TransactionEntity
+VALUES ?;
 
 getAllTransactions:
 SELECT * FROM TransactionEntity;
