@@ -79,6 +79,14 @@ VALUES ?;
 getAllCategoryGroups:
 SELECT * FROM CategoryGroupEntity;
 
+updateCategoryGroup:
+UPDATE CategoryGroupEntity SET name = :name WHERE id = :id;
+
+deleteCategoryGroupWithDependencies:
+DELETE FROM TransactionEntity WHERE categoryId IN (SELECT id FROM CategoryEntity WHERE categoryGroupId = :id);
+DELETE FROM KeywordEntity WHERE categoryId IN (SELECT id FROM CategoryEntity WHERE categoryGroupId = :id);
+DELETE FROM CategoryEntity WHERE categoryGroupId = :id;
+DELETE FROM CategoryGroupEntity WHERE id = :id;
 -------------------------------------------------------------------------------------
 
 CREATE TABLE CategoryEntity (

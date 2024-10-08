@@ -74,4 +74,27 @@ class CategoryRepositoryImpl(
             )
         }
     }
+
+    override suspend fun insertCategoryGroup(name: String) {
+        withContext(Dispatchers.IO) {
+            database.databaseQueries.insertCategoryGroup(
+                CategoryGroupEntity(
+                    UUID.randomUUID().toString(),
+                    name
+                )
+            )
+        }
+    }
+
+    override suspend fun updateCategoryGroup(id: String, name: String) {
+        withContext(Dispatchers.IO) {
+            database.databaseQueries.updateCategoryGroup(id = id, name = name)
+        }
+    }
+
+    override suspend fun deleteCategoryGroup(id: String) {
+        withContext(Dispatchers.IO) {
+            database.databaseQueries.deleteCategoryGroupWithDependencies(id)
+        }
+    }
 }
