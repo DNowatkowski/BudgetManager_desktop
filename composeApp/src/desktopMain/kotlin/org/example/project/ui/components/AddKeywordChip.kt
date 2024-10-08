@@ -16,9 +16,11 @@ fun AddKeywordChip(
 ) {
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
-        EditKeywordDialog(
+        InputDialog(
+            title = "Add Keyword",
             onConfirmed = onAddKeyword,
             onDismiss = { showDialog = false },
+            label = "Keyword",
         )
     }
     InputChip(

@@ -1,6 +1,5 @@
 package org.example.project.data.repositories
 
-import androidx.compose.runtime.key
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -33,7 +32,7 @@ class KeywordRepositoryImpl(
     override suspend fun updateKeyword(keyword: KeywordData) {
         withContext(Dispatchers.IO) {
             launch {
-                database.databaseQueries.updateKeyword(
+                database.databaseQueries.updateKeywordText(
                     id = keyword.id,
                     keyword = keyword.keyword,
                 )
@@ -45,6 +44,19 @@ class KeywordRepositoryImpl(
         withContext(Dispatchers.IO) {
             launch {
                 database.databaseQueries.deleteKeywordById(keywordId)
+            }
+        }
+    }
+
+    override suspend fun moveKeyword(keywordId: String, newCategoryId: String) {
+        withContext(Dispatchers.IO) {
+            launch {
+                val keyword = database.databaseQueries.getKeywordById(keywordId).executeAsOne()
+                if (keyword.categoryId != newCategoryId)
+                    database.databaseQueries.updateKeywordCategory(
+                        id = keywordId,
+                        categoryId = newCategoryId
+                    )
             }
         }
     }

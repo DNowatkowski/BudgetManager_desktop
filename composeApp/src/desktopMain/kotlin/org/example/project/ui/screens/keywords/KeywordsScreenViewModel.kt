@@ -76,6 +76,30 @@ class KeywordsScreenViewModel(
         }
     }
 
+    fun addGroup(text: String) {
+        viewModelScope.launch {
+            categoryRepository.insertCategoryGroup(text)
+        }
+    }
+
+    fun updateGroup(text: String, groupId: String) {
+        viewModelScope.launch {
+            categoryRepository.updateCategoryGroup(id = groupId, name = text)
+        }
+    }
+
+    fun removeGroup(groupId: String) {
+        viewModelScope.launch {
+            categoryRepository.deleteCategoryGroup(groupId)
+        }
+    }
+
+    fun moveKeyword(keywordId: String, newCategoryId: String) {
+        viewModelScope.launch {
+            keywordRepository.moveKeyword(keywordId, newCategoryId)
+        }
+    }
+
     data class ImportState(
         val isError: Throwable? = null,
         val isLoading: Boolean = false,

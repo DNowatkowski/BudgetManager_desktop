@@ -44,8 +44,11 @@ insertKeyword:
 INSERT INTO KeywordEntity
 VALUES ?;
 
-updateKeyword:
+updateKeywordText:
 UPDATE KeywordEntity SET keyword = :keyword WHERE id = :id;
+
+updateKeywordCategory:
+UPDATE KeywordEntity SET categoryId = :categoryId WHERE id = :id;
 
 getAllKeywords:
 SELECT * FROM KeywordEntity;

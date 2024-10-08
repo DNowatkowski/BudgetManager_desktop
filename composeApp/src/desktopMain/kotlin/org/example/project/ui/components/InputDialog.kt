@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -26,29 +27,35 @@ import androidx.compose.ui.window.Dialog
 
 
 @Composable
-fun EditKeywordDialog(
-    keywordText: String = "",
+fun InputDialog(
+    title: String,
+    initialText: String = "",
+    label: String,
     onConfirmed: (String) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var text by remember { mutableStateOf(keywordText) }
+    var text by remember { mutableStateOf(initialText) }
     Dialog(
         onDismissRequest = onDismiss,
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
                 .clip(MaterialTheme.shapes.large)
                 .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f))
-                .padding(16.dp)
+                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
                 .width(400.dp)
         ) {
-            Text("Add keyword", style = MaterialTheme.typography.headlineSmall)
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelLarge
+            )
+            HorizontalDivider(modifier = Modifier.fillMaxWidth())
             OutlinedTextField(
                 value = text,
                 onValueChange = { text = it },
-                label = { Text("Keyword") },
+                label = { Text(label) },
                 maxLines = 1,
                 modifier = Modifier.fillMaxWidth(),
             )
