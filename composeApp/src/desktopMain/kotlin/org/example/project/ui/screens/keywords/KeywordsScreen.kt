@@ -7,13 +7,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -41,7 +38,7 @@ class KeywordsScreen : Screen {
     override fun Content() {
         val vm = koinViewModel<KeywordsScreenViewModel>()
         val uiState by vm.uiState.collectAsStateWithLifecycle()
-
+        val listState = rememberLazyListState(0)
         val launcher = rememberFilePickerLauncher(mode = PickerMode.Single) { file ->
             vm.importFile(file)
         }
@@ -76,8 +73,9 @@ class KeywordsScreen : Screen {
 
             HorizontalDivider(modifier = Modifier.fillMaxWidth())
             LazyColumn(
+                state = listState,
                 contentPadding = PaddingValues(top = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 items(uiState.categoryGroups.size) { index ->
                     val group = uiState.categoryGroups[index]
@@ -91,16 +89,16 @@ class KeywordsScreen : Screen {
                         onRemoveGroup = { vm.removeGroup(group.id) },
                         onKeywordUpdated = { keyword -> vm.updateKeyword(keyword) },
                         onKeywordDropped = { keywordId, newCategoryId ->
-                                vm.moveKeyword(
-                                    keywordId = keywordId,
-                                    newCategoryId = newCategoryId
-                                )
-                        }
+                            vm.moveKeyword(
+                                keywordId = keywordId,
+                                newCategoryId = newCategoryId
+                            )
+                        },
+                        modifier = Modifier.animateItem()
                     )
                 }
             }
         }
-
     }
 }
 

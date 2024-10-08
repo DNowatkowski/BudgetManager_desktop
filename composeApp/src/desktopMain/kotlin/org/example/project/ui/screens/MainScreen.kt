@@ -1,12 +1,17 @@
 package org.example.project.ui.screens
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideOrientation
+import cafe.adriel.voyager.transitions.SlideTransition
 import org.example.project.ui.screens.keywords.KeywordsScreen
 
 
@@ -31,7 +36,9 @@ import org.example.project.ui.screens.keywords.KeywordsScreen
                 )
 
             }
-            CurrentScreen()
+            Column(modifier = Modifier.fillMaxSize()) {
+                SlideTransition(navigator = navigator, orientation = SlideOrientation.Vertical)
+            }
         }
     }
 }

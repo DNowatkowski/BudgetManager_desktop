@@ -40,6 +40,7 @@ fun KeywordChip(
     keyword: KeywordData,
     onRemoveKeyword: (KeywordData) -> Unit,
     onKeywordUpdated: (KeywordData) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val textMeasurer = rememberTextMeasurer()
     var expanded by remember { mutableStateOf(false) }
@@ -52,7 +53,7 @@ fun KeywordChip(
             onDismiss = { showDialog = false },
             label = "Keyword",
         )
-    Box {
+    Box() {
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
@@ -76,7 +77,7 @@ fun KeywordChip(
             selected = false,
             label = { Text(keyword.keyword) },
             onClick = { expanded = true },
-            modifier = Modifier.dragAndDropSource(
+            modifier = modifier.dragAndDropSource(
                 // Creates a visual representation of the data being dragged
                 // (white rectangle with the exportedText string centered on it).
                 drawDragDecoration = {

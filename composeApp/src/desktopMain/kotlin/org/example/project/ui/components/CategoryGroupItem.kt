@@ -43,6 +43,7 @@ fun CategoryGroupItem(
     onRemoveKeyword: (KeywordData) -> Unit,
     onRemoveGroup: () -> Unit,
     onKeywordDropped: (keywordId: String, newCategoryId: String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     var showAddCategoryDialog by remember { mutableStateOf(false) }
     var showEditGroupDialog by remember { mutableStateOf(false) }
@@ -66,7 +67,7 @@ fun CategoryGroupItem(
             label = "Group",
         )
     }
-    Card {
+    Card(modifier = modifier) {
         Column(Modifier.padding(vertical = 8.dp)) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -111,7 +112,7 @@ fun CategoryGroupItem(
                 }
             }
 
-            HorizontalDivider()
+            HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
             categories.forEach { category ->
                 CategoryItem(
                     title = category.name,

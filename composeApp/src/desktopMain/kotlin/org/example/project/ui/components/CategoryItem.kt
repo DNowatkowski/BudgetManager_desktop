@@ -1,5 +1,15 @@
 package org.example.project.ui.components
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.with
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
@@ -10,10 +20,13 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,7 +46,7 @@ import java.awt.datatransfer.DataFlavor
 
 @OptIn(
     ExperimentalLayoutApi::class, ExperimentalFoundationApi::class,
-    ExperimentalComposeUiApi::class, ExperimentalTextApi::class
+    ExperimentalComposeUiApi::class, ExperimentalTextApi::class, ExperimentalAnimationApi::class
 )
 @Composable
 fun CategoryItem(
@@ -44,6 +57,7 @@ fun CategoryItem(
     onRemoveKeyword: (KeywordData) -> Unit,
     onKeywordDropped: (String) -> Unit,
 ) {
+    val listState = rememberLazyListState()
     var showTargetBorder by remember { mutableStateOf(false) }
     val dragAndDropTarget = remember {
         object : DragAndDropTarget {
@@ -94,19 +108,24 @@ fun CategoryItem(
             )
     ) {
         Text("$title:", modifier = Modifier.padding(start = 8.dp))
-        FlowRow(
+        LazyRow(
+            state = listState,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            keywords.forEach {
+            items(count = keywords.size, key = { keywords[it].id }) { index ->
+                val keyword = keywords[index]
                 KeywordChip(
-                    keyword = it,
+                    keyword = keyword,
                     onRemoveKeyword = onRemoveKeyword,
                     onKeywordUpdated = onKeywordUpdated,
+                    modifier = Modifier.animateItem()
                 )
             }
-            AddKeywordChip(
-                onAddKeyword = onAddKeyword,
-            )
+            item {
+                AddKeywordChip(
+                    onAddKeyword = onAddKeyword,
+                )
+            }
         }
     }
 }
