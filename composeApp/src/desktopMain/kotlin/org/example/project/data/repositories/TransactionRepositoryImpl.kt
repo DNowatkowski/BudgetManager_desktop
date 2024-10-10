@@ -4,27 +4,46 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import kotlinx.coroutines.flow.Flow
 import database.Database
-import database.TransactionEntity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.example.project.domain.models.TransactionData
+import org.example.project.domain.models.toDomainModel
 import org.example.project.domain.models.toEntity
-import org.example.project.domain.models.toTransactionData
 import org.example.project.domain.repositories.TransactionRepository
+import java.time.LocalDate
 
 class TransactionRepositoryImpl(
     private val database: Database,
 ) : TransactionRepository {
-    override fun getAllTransactions(): Flow<List<TransactionEntity>> {
+    override fun getAllTransactions(): Flow<List<TransactionData>> {
         return database.databaseQueries.getAllTransactions().asFlow().mapToList(Dispatchers.IO)
+            .map { transactions ->
+                transactions.map { it.toDomainModel() }
+            }
     }
 
-    override suspend fun insertTransaction(transaction: TransactionData) {
+    override fun getTransactionsForMonth(date: LocalDate): Flow<List<TransactionData>> {
+        return database.databaseQueries.getTransactionsForMonth(date.toYearMonth()).asFlow()
+            .mapToList(Dispatchers.IO)
+            .map { transactions ->
+                transactions.map { it.toDomainModel() }
+            }
+    }
+
+    override suspend fun insertTransactions(transactions: List<TransactionData>) {
         withContext(Dispatchers.IO) {
-            resolveCategory(transaction)?.let {
-                transaction.toEntity(categoryId = it)
-            }?.let {
-                database.databaseQueries.insertTransaction(it)
+            transactions.forEach { transaction ->
+                launch {
+                    database.databaseQueries.insertTransaction(
+                        transaction.toEntity(
+                            resolveCategory(
+                                transaction
+                            )
+                        )
+                    )
+                }
             }
         }
     }
@@ -32,10 +51,17 @@ class TransactionRepositoryImpl(
     private fun resolveCategory(transaction: TransactionData): String? {
         val keywords = database.databaseQueries.getAllKeywords().executeAsList()
         return keywords.find { keyword ->
-            transaction.title.contains(keyword.keyword, ignoreCase = true) ||
-                    transaction.recipient?.contains(keyword.keyword, ignoreCase = true) == true
+            transaction.description.contains(keyword.keyword, ignoreCase = true) ||
+                    transaction.payee?.contains(keyword.keyword, ignoreCase = true) == true
         }?.categoryId
 
+    }
+
+    private fun LocalDate.toYearMonth(): String {
+        if (monthValue < 10) {
+            return "${year}-0${monthValue}"
+        }
+        return "${year}-${monthValue}"
     }
 }
 

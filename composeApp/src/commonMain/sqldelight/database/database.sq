@@ -3,8 +3,8 @@ PRAGMA user_version = 1;
 CREATE TABLE TransactionEntity (
     id TEXT PRIMARY KEY,
     amount REAL NOT NULL,
-    title TEXT NOT NULL,
-    recipient TEXT,
+    description TEXT NOT NULL,
+    payee TEXT,
     date TEXT NOT NULL,
     categoryId TEXT,
     FOREIGN KEY (categoryId) REFERENCES CategoryEntity(id)
@@ -17,6 +17,10 @@ VALUES ?;
 getAllTransactions:
 SELECT * FROM TransactionEntity;
 
+getTransactionsForMonth:
+SELECT * FROM TransactionEntity
+WHERE strftime('%Y-%m', date) = :yearMonth;
+
 getTransactionById:
 SELECT * FROM TransactionEntity WHERE id = :id;
 
@@ -27,8 +31,8 @@ deleteAllTransactions:
 DELETE FROM TransactionEntity;
 
 insertTransactions:
-INSERT INTO TransactionEntity (id, amount, title, date, categoryId)
-VALUES (:id, :amount, :title, :date, :categoryId);
+INSERT INTO TransactionEntity (id, amount, description, date, categoryId)
+VALUES (:id, :amount, :description, :date, :categoryId);
 
 getTransactionsByCategoryId:
 SELECT * FROM TransactionEntity WHERE categoryId = :categoryId;
@@ -68,7 +72,7 @@ INSERT INTO KeywordEntity (id, keyword, categoryId)
 VALUES (:id, :keyword, :categoryId);
 
 getKeywordsByCategoryId:
-SELECT * FROM KeywordEntity WHERE categoryId = :categoryId;
+SELECT * FROM KeywordEntity WHERE categoryId = :categoryId OR :categoryId IS NULL;
 
 -------------------------------------------------------------------------------------
 CREATE TABLE CategoryGroupEntity (
@@ -79,6 +83,9 @@ CREATE TABLE CategoryGroupEntity (
 insertCategoryGroup:
 INSERT INTO CategoryGroupEntity
 VALUES ?;
+
+getCategoryGroupById:
+SELECT * FROM CategoryGroupEntity WHERE id = :id OR :id IS NULL;
 
 getAllCategoryGroups:
 SELECT * FROM CategoryGroupEntity;
@@ -108,7 +115,7 @@ getAllCategories:
 SELECT * FROM CategoryEntity;
 
 getCategoryById:
-SELECT * FROM CategoryEntity WHERE id = :id;
+SELECT * FROM CategoryEntity WHERE id = :id OR :id IS NULL;
 
 deleteCategoryById:
 DELETE FROM CategoryEntity WHERE id = :id;

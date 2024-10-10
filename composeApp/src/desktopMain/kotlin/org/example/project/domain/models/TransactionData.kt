@@ -1,11 +1,12 @@
 package org.example.project.domain.models
 
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 data class TransactionData(
     val id: String,
-    val date: LocalDateTime,
+    val date: LocalDate,
     val amount: Double,
-    val title: String,
-    val recipient: String?,
+    val description: String,
+    val payee: String?,
+    val categoryId: String?,
 )

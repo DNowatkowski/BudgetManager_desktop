@@ -40,7 +40,7 @@ class KeywordsScreen : Screen {
         val uiState by vm.uiState.collectAsStateWithLifecycle()
         val listState = rememberLazyListState(0)
         val launcher = rememberFilePickerLauncher(mode = PickerMode.Single) { file ->
-            vm.importFile(file)
+            vm.importFile(file?.file?.inputStream())
         }
         var showDialog by remember { mutableStateOf(false) }
 

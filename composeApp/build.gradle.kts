@@ -34,6 +34,7 @@ kotlin {
             implementation(libs.sqlite.driver)
             implementation(libs.stately.common)
             implementation(libs.sqlite.coroutines)
+            implementation(libs.jackson.dataformat.csv)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

@@ -3,8 +3,10 @@ package org.example.project.domain.models
 import database.CategoryEntity
 import database.KeywordEntity
 import database.TransactionEntity
-import java.time.LocalDateTime
+import org.example.project.data.repositories.TransactionDto
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.util.UUID
 
 fun CategoryEntity.toDomainModel(
@@ -26,37 +28,49 @@ fun KeywordEntity.toDomainModel(): KeywordData {
     )
 }
 
-fun TransactionEntity.toDomainModel(): TransactionData {
+fun TransactionEntity.toDomainModel(
+): TransactionData {
     return TransactionData(
         id = id,
         amount = amount,
-        date = date.toLocalDateTime(),
-        title = title,
-        recipient = recipient,
+        date = date.toLocalDate(),
+        description = description,
+        payee = payee,
+        categoryId = categoryId,
     )
 }
 
-fun String.toLocalDateTime(): LocalDateTime {
+fun String.toLocalDate(): LocalDate {
     // Define the date format pattern
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-
-    // Parse the text date to LocalDateTime
-    return LocalDateTime.parse(this, formatter)
+    return try {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        LocalDate.parse(this, formatter)
+    } catch (e: DateTimeParseException) {
+        val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+        LocalDate.parse(this, formatter)
+    }
 }
 
-fun List<String>.toTransactionData() = TransactionData(
-    id = UUID.randomUUID().toString(),
-    date = this[1].toLocalDateTime(),
-    title = this[2],
-    recipient = this[3],
-    amount = this[5].toDouble(),
-)
-
-fun TransactionData.toEntity(categoryId:String) = TransactionEntity(
+fun TransactionData.toEntity(categoryId: String?) = TransactionEntity(
     id = id,
     date = date.toString(),
-    title = title,
-    recipient = recipient,
+    description = description,
+    payee = payee,
     amount = amount,
     categoryId = categoryId,
 )
+
+fun TransactionDto.toDomainModel() = TransactionData(
+    id = UUID.randomUUID().toString(),
+    date = date.toLocalDate(),
+    description = description,
+    payee = payee,
+    amount =
+    try {
+        amount.replace(",", ".").toDouble()
+    } catch (e: NumberFormatException) {
+        0.0
+    },
+    categoryId = null
+)
+
