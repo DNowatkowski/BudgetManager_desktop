@@ -1,7 +1,6 @@
 package org.example.project.data.repositories
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import java.math.BigDecimal
 
 data class TransactionDto(
     @field:JsonProperty("PostingDate") val postingDate: String,
