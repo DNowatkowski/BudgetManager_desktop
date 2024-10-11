@@ -5,7 +5,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import database.Database
 import database.KeywordEntity
-import org.example.project.domain.models.KeywordData
+import org.example.project.domain.models.keyword.KeywordData
 import org.example.project.domain.repositories.KeywordRepository
 import java.util.UUID
 

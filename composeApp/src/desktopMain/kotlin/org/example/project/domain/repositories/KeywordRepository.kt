@@ -1,6 +1,6 @@
 package org.example.project.domain.repositories
 
-import org.example.project.domain.models.KeywordData
+import org.example.project.domain.models.keyword.KeywordData
 
 interface KeywordRepository {
     suspend fun insertKeyword(keywordText: String, categoryId: String)

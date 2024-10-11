@@ -29,8 +29,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.example.project.domain.models.CategoryData
-import org.example.project.domain.models.KeywordData
+import org.example.project.domain.models.category.CategoryData
+import org.example.project.domain.models.keyword.KeywordData
 
 @Composable
 fun CategoryGroupItem(
@@ -116,7 +116,7 @@ fun CategoryGroupItem(
             categories.forEach { category ->
                 CategoryItem(
                     title = category.name,
-                    keywords = category.keywords,
+                    keywords = emptyList(),
                     onAddKeyword = { keyword -> onAddKeyword(keyword, category.id) },
                     onKeywordUpdated = onKeywordUpdated,
                     onRemoveKeyword = onRemoveKeyword,

@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.example.project.domain.models.TransactionData
+import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.domain.repositories.TransactionRepository
 import java.time.LocalDate
 

@@ -27,8 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
-import org.example.project.domain.models.CategoryData
-import org.example.project.domain.models.CategoryGroupData
+import org.example.project.domain.models.category.CategoryData
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import java.time.LocalDate
@@ -144,7 +143,7 @@ fun TransactionRow(
     group: String,
     categoryId: String?,
     amount: Double,
-    groups: List<CategoryGroupData> = emptyList(),
+    groups: List<String> = emptyList(),
     categories: List<CategoryData> = emptyList()
 ) {
     Row(

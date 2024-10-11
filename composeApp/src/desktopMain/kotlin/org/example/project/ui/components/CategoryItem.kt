@@ -27,7 +27,7 @@ import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.awtTransferable
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
-import org.example.project.domain.models.KeywordData
+import org.example.project.domain.models.keyword.KeywordData
 import java.awt.datatransfer.DataFlavor
 
 @OptIn(

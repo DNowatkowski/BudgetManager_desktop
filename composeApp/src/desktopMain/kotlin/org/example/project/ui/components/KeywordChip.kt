@@ -31,7 +31,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
-import org.example.project.domain.models.KeywordData
+import org.example.project.domain.models.keyword.KeywordData
 import java.awt.datatransfer.StringSelection
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)

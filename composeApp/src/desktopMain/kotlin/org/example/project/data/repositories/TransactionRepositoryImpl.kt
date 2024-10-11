@@ -8,15 +8,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.example.project.domain.models.TransactionData
 import org.example.project.domain.models.toDomainModel
 import org.example.project.domain.models.toEntity
+import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.domain.repositories.TransactionRepository
 import java.time.LocalDate
 
 class TransactionRepositoryImpl(
     private val database: Database,
 ) : TransactionRepository {
+
     override fun getAllTransactions(): Flow<List<TransactionData>> {
         return database.databaseQueries.getAllTransactions().asFlow().mapToList(Dispatchers.IO)
             .map { transactions ->

@@ -1,7 +1,7 @@
 package org.example.project.domain.repositories
 
 import kotlinx.coroutines.flow.Flow
-import org.example.project.domain.models.TransactionData
+import org.example.project.domain.models.transaction.TransactionData
 import java.time.LocalDate
 
 interface TransactionRepository {

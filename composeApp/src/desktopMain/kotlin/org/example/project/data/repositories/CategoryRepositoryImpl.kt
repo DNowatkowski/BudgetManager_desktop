@@ -3,15 +3,15 @@ package org.example.project.data.repositories
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import database.CategoryEntity
-import database.CategoryGroupEntity
 import database.Database
-import database.KeywordEntity
-import database.TransactionEntity
+import database.GroupEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
-import org.example.project.domain.models.CategoryGroupData
+import org.example.project.domain.models.category.CategoryWithKeywords
+import org.example.project.domain.models.group.GroupWithCategoriesAndKeywordsData
+import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.toDomainModel
 import org.example.project.domain.repositories.CategoryRepository
 import java.util.UUID
@@ -20,48 +20,45 @@ class CategoryRepositoryImpl(
     private val database: Database,
 ) : CategoryRepository {
 
-    override fun getAllCategoriesWithData(): Flow<List<CategoryGroupData>> =
-        combine(
-            getAllCategoryGroups(),
-            getAllCategories(),
-            getAllKeywords(),
-            getAllTransactions()
-        ) { groups, categories, keywords, transactions ->
-            mapToCategoryGroupData(groups, categories, keywords, transactions)
-        }
-
-    private fun getAllCategoryGroups() =
-        database.databaseQueries.getAllCategoryGroups().asFlow().mapToList(Dispatchers.IO)
-
-    private fun getAllCategories() =
-        database.databaseQueries.getAllCategories().asFlow().mapToList(Dispatchers.IO)
-
-    private fun getAllKeywords() =
-        database.databaseQueries.getAllKeywords().asFlow().mapToList(Dispatchers.IO)
-
-    private fun getAllTransactions() =
-        database.databaseQueries.getAllTransactions().asFlow().mapToList(Dispatchers.IO)
-
-    private fun mapToCategoryGroupData(
-        groups: List<CategoryGroupEntity>,
-        categories: List<CategoryEntity>,
-        keywords: List<KeywordEntity>,
-        transactions: List<TransactionEntity>
-    ): List<CategoryGroupData> {
-        return groups.map { categoryGroup ->
-            val groupCategories = categories.filter { it.categoryGroupId == categoryGroup.id }
-            CategoryGroupData(
-                id = categoryGroup.id,
-                name = categoryGroup.name,
-                categories = groupCategories.map { category ->
-                    val categoryKeywords = keywords.filter { it.categoryId == category.id }
-                    val categoryTransactions = transactions.filter { it.categoryId == category.id }
-                    category.toDomainModel(categoryKeywords, categoryTransactions)
-                }
-            )
+    override fun getGroupsWithCategoriesAndKeywords(): Flow<List<GroupWithCategoriesAndKeywordsData>> {
+        return combine(
+            database.databaseQueries.getAllCategoryGroups().asFlow().mapToList(Dispatchers.IO),
+            database.databaseQueries.getAllCategories().asFlow().mapToList(Dispatchers.IO),
+            database.databaseQueries.getAllKeywords().asFlow().mapToList(Dispatchers.IO),
+        ) { groups, categories, keywords ->
+            groups.map { group ->
+                GroupWithCategoriesAndKeywordsData(
+                    id = group.id,
+                    name = group.name,
+                    categories = categories.filter { it.categoryGroupId == group.id }
+                        .map { category ->
+                            CategoryWithKeywords(
+                                id = category.id,
+                                name = category.name,
+                                keywords = keywords.filter { it.categoryId == category.id }
+                                    .map { it.toDomainModel() }
+                            )
+                        }
+                )
+            }
         }
     }
 
+    override fun getGroupsWithCategories(): Flow<List<GroupWithCategoryData>> {
+        return combine(
+            database.databaseQueries.getAllCategoryGroups().asFlow().mapToList(Dispatchers.IO),
+            database.databaseQueries.getAllCategories().asFlow().mapToList(Dispatchers.IO),
+        ) { groups, categories ->
+            groups.map { group ->
+                GroupWithCategoryData(
+                    id = group.id,
+                    name = group.name,
+                    categories = categories.filter { it.categoryGroupId == group.id }
+                        .map { it.toDomainModel() }
+                )
+            }
+        }
+    }
 
     override suspend fun insertCategory(name: String, groupId: String) {
         withContext(Dispatchers.IO) {
@@ -78,7 +75,7 @@ class CategoryRepositoryImpl(
     override suspend fun insertCategoryGroup(name: String) {
         withContext(Dispatchers.IO) {
             database.databaseQueries.insertCategoryGroup(
-                CategoryGroupEntity(
+                GroupEntity(
                     UUID.randomUUID().toString(),
                     name
                 )

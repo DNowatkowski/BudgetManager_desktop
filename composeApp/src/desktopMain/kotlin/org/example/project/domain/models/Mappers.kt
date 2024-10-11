@@ -4,20 +4,20 @@ import database.CategoryEntity
 import database.KeywordEntity
 import database.TransactionEntity
 import org.example.project.data.repositories.TransactionDto
+import org.example.project.domain.models.category.CategoryData
+import org.example.project.domain.models.keyword.KeywordData
+import org.example.project.domain.models.transaction.TransactionData
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.UUID
 
 fun CategoryEntity.toDomainModel(
-    keywords: List<KeywordEntity>,
-    transactions: List<TransactionEntity>,
 ): CategoryData {
     return CategoryData(
         id = id,
         name = name,
-        keywords = keywords.map { it.toDomainModel() },
-        transactions = transactions.map { it.toDomainModel() },
+        categoryGroupId = categoryGroupId,
     )
 }
 
@@ -25,6 +25,7 @@ fun KeywordEntity.toDomainModel(): KeywordData {
     return KeywordData(
         id = id,
         keyword = keyword,
+        categoryId = categoryId,
     )
 }
 

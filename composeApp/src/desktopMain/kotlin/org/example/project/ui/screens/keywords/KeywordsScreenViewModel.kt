@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.example.project.data.repositories.TransactionDto
-import org.example.project.domain.models.CategoryGroupData
-import org.example.project.domain.models.KeywordData
+import org.example.project.domain.models.group.GroupWithCategoriesAndKeywordsData
+import org.example.project.domain.models.keyword.KeywordData
 import org.example.project.domain.models.toDomainModel
 import org.example.project.domain.repositories.CategoryRepository
 import org.example.project.domain.repositories.KeywordRepository
@@ -36,7 +36,7 @@ class KeywordsScreenViewModel(
     }
 
     private suspend fun getCategoriesWithKeywords() {
-        categoryRepository.getAllCategoriesWithData().collectLatest {
+        categoryRepository.getGroupsWithCategoriesAndKeywords().collectLatest {
             _uiState.update { currentState ->
                 currentState.copy(categoryGroups = it)
             }
@@ -107,6 +107,6 @@ class KeywordsScreenViewModel(
         val isError: Throwable? = null,
         val isLoading: Boolean = false,
 
-        val categoryGroups: List<CategoryGroupData> = emptyList(),
+        val categoryGroups: List<GroupWithCategoriesAndKeywordsData> = emptyList(),
     )
 }

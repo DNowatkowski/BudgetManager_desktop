@@ -81,7 +81,7 @@ class KeywordsScreen : Screen {
                     val group = uiState.categoryGroups[index]
                     CategoryGroupItem(
                         title = group.name,
-                        categories = group.categories,
+                        categories = emptyList(),
                         onAddCategory = { text -> vm.addCategory(text, group.id) },
                         onAddKeyword = { text, categoryId -> vm.addKeyword(text, categoryId) },
                         onRemoveKeyword = { id -> vm.removeKeyword(id) },
