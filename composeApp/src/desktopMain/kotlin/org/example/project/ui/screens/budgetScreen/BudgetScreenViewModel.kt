@@ -60,7 +60,18 @@ class BudgetScreenViewModel(
         }
     }
 
+    fun toggleAllTransactionsSelection(value : Boolean) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                transactions = currentState.transactions.map {
+                    it.copy(isSelected = value)
+                }
+            )
+        }
+    }
+
     data class BudgetState(
+        val searchText: String = "",
         val activeMonth: LocalDate = LocalDate.of(2024, 9, 1),
         val groups: List<GroupWithCategoryData> = emptyList(),
         val transactions: List<TransactionData> = emptyList(),

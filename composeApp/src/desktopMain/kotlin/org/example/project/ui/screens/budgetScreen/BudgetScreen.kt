@@ -1,5 +1,6 @@
 package org.example.project.ui.screens.budgetScreen
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
 import org.example.project.domain.models.category.CategoryData
+import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.transaction.TransactionData
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -69,13 +71,15 @@ class BudgetScreen : Screen {
             }
             HorizontalDivider()
             HeaderRow(
+                allSelectedChecked = uiState.transactions.any { it.isSelected },
                 onCheckboxColumnPositioned = { checkboxColumnWidth = it },
                 onDateColumnPositioned = { dateColumnWidth = it },
                 onPayeeColumnPositioned = { payeeColumnWidth = it },
                 onDescriptionColumnPositioned = { descriptionColumnWidth = it },
                 onGroupColumnPositioned = { groupColumnWidth = it },
                 onCategoryColumnPositioned = { categoryColumnWidth = it },
-                onAmountColumnPositioned = { amountColumnWidth = it }
+                onAmountColumnPositioned = { amountColumnWidth = it },
+                onAllSelectedChange = { vm.toggleAllTransactionsSelection(it) }
             )
             HorizontalDivider()
             LazyColumn {
@@ -83,7 +87,7 @@ class BudgetScreen : Screen {
                     val transaction = uiState.transactions[index]
                     TransactionRow(
                         transaction = transaction,
-                      //  groups = emptyList(),
+                        groups = uiState.groups,
                         checkBoxRowWidth = checkboxColumnWidth,
                         dateRowWidth = dateColumnWidth,
                         payeeRowWidth = payeeColumnWidth,
@@ -103,26 +107,28 @@ class BudgetScreen : Screen {
 
 @Composable
 fun HeaderRow(
+    allSelectedChecked: Boolean,
     onCheckboxColumnPositioned: (Int) -> Unit,
     onDateColumnPositioned: (Int) -> Unit,
     onPayeeColumnPositioned: (Int) -> Unit,
     onDescriptionColumnPositioned: (Int) -> Unit,
     onGroupColumnPositioned: (Int) -> Unit,
     onCategoryColumnPositioned: (Int) -> Unit,
-    onAmountColumnPositioned: (Int) -> Unit
+    onAmountColumnPositioned: (Int) -> Unit,
+    onAllSelectedChange: (Boolean) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().height(40.dp),
         verticalAlignment = Alignment.CenterVertically,
-
-        ) {
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         Checkbox(
-            checked = false,
-            onCheckedChange = { },
+            checked = allSelectedChecked,
+            onCheckedChange = { onAllSelectedChange(it) },
             modifier = Modifier.weight(0.05f)
                 .onGloballyPositioned { onCheckboxColumnPositioned(it.size.width) }
         )
-        VerticalDivider(modifier = Modifier.padding(horizontal = 8.dp))
+        VerticalDivider()
         Text(
             "Date",
             maxLines = 1,
@@ -131,7 +137,7 @@ fun HeaderRow(
             modifier = Modifier.weight(0.08f)
                 .onGloballyPositioned { onDateColumnPositioned(it.size.width) }
         )
-        VerticalDivider(modifier = Modifier.padding(horizontal = 8.dp))
+        VerticalDivider()
         Text(
             "Payee",
             maxLines = 1,
@@ -140,7 +146,7 @@ fun HeaderRow(
             modifier = Modifier.weight(0.2f)
                 .onGloballyPositioned { onPayeeColumnPositioned(it.size.width) }
         )
-        VerticalDivider(modifier = Modifier.padding(horizontal = 8.dp))
+        VerticalDivider()
         Text(
             "Description",
             style = MaterialTheme.typography.titleSmall,
@@ -149,7 +155,7 @@ fun HeaderRow(
             modifier = Modifier.weight(0.2f)
                 .onGloballyPositioned { onDescriptionColumnPositioned(it.size.width) }
         )
-        VerticalDivider(modifier = Modifier.padding(horizontal = 8.dp))
+        VerticalDivider()
         Text(
             "Group",
             style = MaterialTheme.typography.titleSmall,
@@ -158,7 +164,7 @@ fun HeaderRow(
             modifier = Modifier.weight(0.1f)
                 .onGloballyPositioned { onGroupColumnPositioned(it.size.width) }
         )
-        VerticalDivider(modifier = Modifier.padding(horizontal = 8.dp))
+        VerticalDivider()
         Text(
             "Category",
             style = MaterialTheme.typography.titleSmall,
@@ -167,7 +173,7 @@ fun HeaderRow(
             modifier = Modifier.weight(0.1f)
                 .onGloballyPositioned { onCategoryColumnPositioned(it.size.width) }
         )
-        VerticalDivider(modifier = Modifier.padding(horizontal = 8.dp))
+        VerticalDivider()
         Text(
             "Amount",
             style = MaterialTheme.typography.titleSmall,
@@ -182,7 +188,7 @@ fun HeaderRow(
 @Composable
 fun TransactionRow(
     transaction: TransactionData,
-    //groups: List<GroupData> = emptyList(),
+    groups: List<GroupWithCategoryData> = emptyList(),
     checkBoxRowWidth: Int,
     dateRowWidth: Int,
     payeeRowWidth: Int,
@@ -196,7 +202,8 @@ fun TransactionRow(
 
     Row(
         modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Checkbox(
             checked = transaction.isSelected,
@@ -208,21 +215,21 @@ fun TransactionRow(
             style = MaterialTheme.typography.bodySmall,
             maxLines = 3,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.width(dateRowWidth.dp).padding(horizontal = 8.dp)
+            modifier = Modifier.width(dateRowWidth.dp)
         )
         Text(
             transaction.payee.orEmpty(),
             style = MaterialTheme.typography.bodySmall,
             maxLines = 3,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(0.2f).padding(horizontal = 8.dp)
+            modifier = Modifier.width(payeeRowWidth.dp)
         )
         Text(
             transaction.description,
             style = MaterialTheme.typography.bodySmall,
             maxLines = 3,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(0.2f).padding(horizontal = 8.dp)
+            modifier = Modifier.width(descriptionRowWidth.dp)
         )
         Column(modifier = Modifier.width(groupRowWidth.dp)) {
             InputChip(
@@ -248,7 +255,7 @@ fun TransactionRow(
             ),
             maxLines = 3,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.width(amountRowWidth.dp).padding(horizontal = 8.dp)
+            modifier = Modifier.width(amountRowWidth.dp)
         )
     }
 }
