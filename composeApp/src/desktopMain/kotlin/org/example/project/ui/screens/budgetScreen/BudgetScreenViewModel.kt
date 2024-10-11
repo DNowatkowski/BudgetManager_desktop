@@ -70,6 +70,13 @@ class BudgetScreenViewModel(
         }
     }
 
+    fun deleteSelectedTransactions() {
+        viewModelScope.launch {
+            val selectedTransactions = _uiState.value.transactions.filter { it.isSelected }
+            transactionRepository.deleteTransactions(selectedTransactions.map { it.id })
+        }
+    }
+
     data class BudgetState(
         val searchText: String = "",
         val activeMonth: LocalDate = LocalDate.of(2024, 9, 1),

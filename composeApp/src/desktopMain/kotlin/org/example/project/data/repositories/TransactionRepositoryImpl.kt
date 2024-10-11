@@ -49,6 +49,16 @@ class TransactionRepositoryImpl(
         }
     }
 
+    override suspend fun deleteTransactions(transactionIds: List<String>) {
+        withContext(Dispatchers.IO) {
+            transactionIds.forEach { transactionId ->
+                launch {
+                    database.databaseQueries.deleteTransactionById(transactionId)
+                }
+            }
+        }
+    }
+
     private fun resolveCategory(transaction: TransactionData): String? {
         val keywords = database.databaseQueries.getAllKeywords().executeAsList()
         return keywords.find { keyword ->

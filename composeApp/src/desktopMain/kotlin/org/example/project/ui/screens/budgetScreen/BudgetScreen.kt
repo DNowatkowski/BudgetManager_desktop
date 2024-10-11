@@ -1,23 +1,37 @@
 package org.example.project.ui.screens.budgetScreen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
@@ -29,19 +43,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
 import org.example.project.domain.models.category.CategoryData
 import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.transaction.TransactionData
+import org.example.project.ui.components.BudgetManagerDialog
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
 class BudgetScreen : Screen {
-    @OptIn(KoinExperimentalAPI::class)
+    @OptIn(KoinExperimentalAPI::class, ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         var showNewTransactionRow by remember { mutableStateOf(false) }
@@ -57,6 +77,27 @@ class BudgetScreen : Screen {
         var categoryColumnWidth by remember { mutableIntStateOf(0) }
         var amountColumnWidth by remember { mutableIntStateOf(0) }
 
+        val listState = rememberLazyListState()
+        var showAlertDialog by remember { mutableStateOf(false) }
+
+        if (showAlertDialog)
+            BudgetManagerDialog(
+                title = "Delete transaction",
+                onDismiss = { showAlertDialog = false },
+                onConfirmed = { vm.deleteSelectedTransactions() },
+                confirmButtonText = "Delete",
+                dismissButtonText = "Cancel",
+                content = {
+                    Icon(
+                        Icons.Filled.Warning,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.size(40.dp)
+                    )
+                    Text("Are you sure you want to delete selected transactions?")
+                }
+            )
+
         Column(modifier = Modifier.padding(vertical = 16.dp).fillMaxSize()) {
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
@@ -67,6 +108,12 @@ class BudgetScreen : Screen {
                 }) {
                     Icon(Icons.Filled.AddCircle, null)
                     Text(" Add transaction")
+                }
+                TextButton(onClick = {
+                    showAlertDialog = true
+                }) {
+                    Icon(Icons.Filled.Delete, null)
+                    Text("Delete transaction")
                 }
             }
             HorizontalDivider()
@@ -82,7 +129,9 @@ class BudgetScreen : Screen {
                 onAllSelectedChange = { vm.toggleAllTransactionsSelection(it) }
             )
             HorizontalDivider()
-            LazyColumn {
+            LazyColumn(
+                state = listState,
+            ) {
                 items(uiState.transactions.size) { index ->
                     val transaction = uiState.transactions[index]
                     TransactionRow(
@@ -97,7 +146,8 @@ class BudgetScreen : Screen {
                         amountRowWidth = amountColumnWidth,
                         onCheckedChange = { id ->
                             vm.toggleTransactionSelection(id)
-                        }
+                        },
+                        modifier = Modifier.animateItem()
                     )
                 }
             }
@@ -188,7 +238,7 @@ fun HeaderRow(
 @Composable
 fun TransactionRow(
     transaction: TransactionData,
-    groups: List<GroupWithCategoryData> = emptyList(),
+    groups: List<GroupWithCategoryData>,
     checkBoxRowWidth: Int,
     dateRowWidth: Int,
     payeeRowWidth: Int,
@@ -196,12 +246,13 @@ fun TransactionRow(
     groupRowWidth: Int,
     categoryRowWidth: Int,
     amountRowWidth: Int,
-    onCheckedChange: (String) -> Unit
+    onCheckedChange: (String) -> Unit,
+    modifier : Modifier = Modifier
 ) {
     var dropdownMenuExpanded by remember { mutableStateOf(false) }
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -259,6 +310,7 @@ fun TransactionRow(
         )
     }
 }
+
 
 @Composable
 fun CategoryInputChip(
