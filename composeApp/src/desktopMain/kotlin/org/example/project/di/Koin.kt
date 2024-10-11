@@ -46,5 +46,5 @@ val appModule = module {
     }
     single<CategoryRepository> { CategoryRepositoryImpl(get()) }
     viewModel { KeywordsScreenViewModel(get(), get(), get(), get(), get()) }
-    viewModel { BudgetScreenViewModel(get()) }
+    viewModel { BudgetScreenViewModel(get(), get()) }
 }

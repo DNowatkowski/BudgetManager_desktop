@@ -67,8 +67,6 @@ class KeywordsScreenViewModel(
                 .with(schema.withSkipFirstDataRow(true))
                 .readValues<TransactionDto>(stream)
                 .readAll()
-            println(list)
-
             transactionRepository.insertTransactions(list.map { it.toDomainModel() })
         }
     }
