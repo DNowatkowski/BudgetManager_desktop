@@ -20,7 +20,7 @@ import java.io.InputStream
 
 class KeywordsScreenViewModel(
     private val categoryRepository: CategoryRepository,
-    val transactionRepository: TransactionRepository,
+    private val transactionRepository: TransactionRepository,
     private val keywordRepository: KeywordRepository,
     private val csvMapper: CsvMapper,
     private val schema: CsvSchema,

@@ -15,8 +15,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Checkbox
@@ -35,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -137,7 +141,11 @@ class BudgetScreen : Screen {
                 onGroupColumnPositioned = { groupColumnWidth = it },
                 onCategoryColumnPositioned = { categoryColumnWidth = it },
                 onAmountColumnPositioned = { amountColumnWidth = it },
-                onAllSelectedChange = { vm.toggleAllTransactionsSelection(it) }
+                onAllSelectedChange = { vm.toggleAllTransactionsSelection(it) },
+                sortOption = uiState.sortOption,
+                sortOrder = uiState.sortOrder,
+                onSortOptionChanged = { vm.updateSortOption(it) },
+                onSortOrderChanged = { vm.toggleSortOrder() }
             )
             HorizontalDivider()
             LazyColumn(
@@ -175,6 +183,8 @@ class BudgetScreen : Screen {
 @Composable
 fun HeaderRow(
     allSelectedChecked: Boolean,
+    sortOption: BudgetScreenViewModel.TransactionSortOption,
+    sortOrder: BudgetScreenViewModel.SortOrder,
     onCheckboxColumnPositioned: (Int) -> Unit,
     onDateColumnPositioned: (Int) -> Unit,
     onPayeeColumnPositioned: (Int) -> Unit,
@@ -182,7 +192,9 @@ fun HeaderRow(
     onGroupColumnPositioned: (Int) -> Unit,
     onCategoryColumnPositioned: (Int) -> Unit,
     onAmountColumnPositioned: (Int) -> Unit,
-    onAllSelectedChange: (Boolean) -> Unit
+    onAllSelectedChange: (Boolean) -> Unit,
+    onSortOptionChanged: (BudgetScreenViewModel.TransactionSortOption) -> Unit,
+    onSortOrderChanged: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().height(40.dp),
@@ -196,14 +208,35 @@ fun HeaderRow(
                 .onGloballyPositioned { onCheckboxColumnPositioned(it.size.width) }
         )
         VerticalDivider()
-        Text(
-            "Date",
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.weight(0.08f)
+        Row(
+            modifier = Modifier.weight(0.06f)
                 .onGloballyPositioned { onDateColumnPositioned(it.size.width) }
-        )
+        ) {
+            Text(
+                "Date",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleSmall,
+                )
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                imageVector = if (sortOrder == BudgetScreenViewModel.SortOrder.DESCENDING)
+                    Icons.Filled.KeyboardArrowUp
+                else
+                    Icons.Filled.KeyboardArrowDown,
+                contentDescription = null,
+                modifier = Modifier
+                    .clickable {
+                        if (sortOption != BudgetScreenViewModel.TransactionSortOption.DATE) {
+                            onSortOptionChanged(BudgetScreenViewModel.TransactionSortOption.DATE)
+                        } else {
+                            onSortOrderChanged()
+                        }
+                    }
+                    .alpha(if (sortOption == BudgetScreenViewModel.TransactionSortOption.DATE) 1f else 0.5f)
+            )
+        }
+
         VerticalDivider()
         Text(
             "Payee",
@@ -241,14 +274,36 @@ fun HeaderRow(
                 .onGloballyPositioned { onCategoryColumnPositioned(it.size.width) }
         )
         VerticalDivider()
-        Text(
-            "Amount",
-            style = MaterialTheme.typography.titleSmall,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
+        Row(
             modifier = Modifier.weight(0.08f)
                 .onGloballyPositioned { onAmountColumnPositioned(it.size.width) }
-        )
+        ) {
+            Text(
+                "Amount",
+                style = MaterialTheme.typography.titleSmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+
+                )
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                imageVector = if (sortOrder == BudgetScreenViewModel.SortOrder.DESCENDING)
+                    Icons.Filled.KeyboardArrowUp
+                else
+                    Icons.Filled.KeyboardArrowDown,
+                contentDescription = null,
+                modifier = Modifier
+                    .clickable {
+                        if (sortOption != BudgetScreenViewModel.TransactionSortOption.AMOUNT) {
+                            onSortOptionChanged(BudgetScreenViewModel.TransactionSortOption.AMOUNT)
+                        } else {
+                            onSortOrderChanged()
+                        }
+                    }
+                    .alpha(if (sortOption == BudgetScreenViewModel.TransactionSortOption.AMOUNT) 1f else 0.5f)
+            )
+        }
+
     }
 }
 

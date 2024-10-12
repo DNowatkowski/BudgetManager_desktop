@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.example.project.domain.models.category.CategoryData
 import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.domain.repositories.CategoryRepository
@@ -36,7 +37,14 @@ class BudgetScreenViewModel(
         transactionRepository.getTransactionsForMonth(_uiState.value.activeMonth).collectLatest {
             _transactions = it
             _uiState.update { currentState ->
-                currentState.copy(transactions = it.filterTransactions(currentState.searchText))
+                currentState.copy(
+                    transactions = it
+                        .filterTransactions(currentState.searchText)
+                        .sortTransactions(
+                            currentState.sortOption,
+                            currentState.sortOrder
+                        )
+                )
             }
         }
     }
@@ -96,7 +104,12 @@ class BudgetScreenViewModel(
         _uiState.update { currentState ->
             currentState.copy(
                 searchText = searchText,
-                transactions = _transactions.filterTransactions(searchText)
+                transactions = _transactions
+                    .filterTransactions(searchText)
+                    .sortTransactions(
+                        currentState.sortOption,
+                        currentState.sortOrder
+                    )
             )
         }
     }
@@ -114,11 +127,78 @@ class BudgetScreenViewModel(
         }
     }
 
+    private fun List<TransactionData>.sortTransactions(
+        sortOption: TransactionSortOption,
+        sortOrder: SortOrder
+    ): List<TransactionData> {
+        return when (sortOption) {
+            TransactionSortOption.DATE -> {
+                if (sortOrder == SortOrder.ASCENDING) {
+                    this.sortedBy { it.date }
+                } else {
+                    this.sortedByDescending { it.date }
+                }
+            }
+
+            TransactionSortOption.AMOUNT -> {
+                if (sortOrder == SortOrder.ASCENDING) {
+                    this.sortedBy { it.amount }
+                } else {
+                    this.sortedByDescending { it.amount }
+                }
+            }
+        }
+    }
+
+    fun updateSortOption(sortOption: TransactionSortOption) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                sortOption = sortOption,
+                transactions = _transactions.filterTransactions(
+                    currentState.searchText
+                ).sortTransactions(
+                    sortOption,
+                    currentState.sortOrder
+                ),
+            )
+        }
+    }
+
+    fun toggleSortOrder() {
+        _uiState.update { currentState ->
+            val newSortOrder = if (currentState.sortOrder == SortOrder.ASCENDING) {
+                SortOrder.DESCENDING
+            } else {
+                SortOrder.ASCENDING
+            }
+            currentState.copy(
+                sortOrder = newSortOrder,
+                transactions = _transactions.filterTransactions(
+                    currentState.searchText
+                ).sortTransactions(
+                    currentState.sortOption,
+                    newSortOrder
+                ),
+            )
+        }
+    }
+
     data class BudgetState(
         val searchText: String = "",
         val activeMonth: LocalDate = LocalDate.of(2024, 9, 1),
         val groups: List<GroupWithCategoryData> = emptyList(),
         val transactions: List<TransactionData> = emptyList(),
+        val sortOption: TransactionSortOption = TransactionSortOption.DATE,
+        val sortOrder: SortOrder = SortOrder.DESCENDING,
     )
 
+    enum class SortOrder {
+        ASCENDING,
+        DESCENDING,
+    }
+
+    enum class TransactionSortOption {
+        DATE,
+        AMOUNT,
+    }
 }

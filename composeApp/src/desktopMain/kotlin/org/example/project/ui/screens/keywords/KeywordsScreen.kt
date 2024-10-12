@@ -26,6 +26,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
 import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.core.PickerMode
+import io.github.vinceglb.filekit.core.PickerType
 import org.example.project.ui.components.CategoryGroupItem
 import org.example.project.ui.components.InputDialog
 import org.koin.compose.viewmodel.koinViewModel
@@ -39,7 +40,10 @@ class KeywordsScreen : Screen {
         val vm = koinViewModel<KeywordsScreenViewModel>()
         val uiState by vm.uiState.collectAsStateWithLifecycle()
         val listState = rememberLazyListState(0)
-        val launcher = rememberFilePickerLauncher(mode = PickerMode.Single) { file ->
+        val launcher = rememberFilePickerLauncher(
+            mode = PickerMode.Single,
+            type = PickerType.File(extensions = listOf("csv", "xlsx"))
+        ) { file ->
             vm.importFile(file?.file?.inputStream())
         }
         var showDialog by remember { mutableStateOf(false) }
