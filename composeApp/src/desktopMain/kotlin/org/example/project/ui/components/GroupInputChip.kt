@@ -59,7 +59,7 @@ fun GroupInputChip(
         onClick = { dropdownMenuExpanded = !dropdownMenuExpanded },
         label = {
             Text(
-                selectedGroup?.name?: "Undefined",
+                selectedGroup?.name ?: "Undefined",
                 style = MaterialTheme.typography.bodySmall,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

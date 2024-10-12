@@ -7,6 +7,6 @@ import cafe.adriel.voyager.core.screen.Screen
 class ReportsScreen : Screen {
     @Composable
     override fun Content() {
-       Text("Reports Screen")
+        Text("Reports Screen")
     }
 }

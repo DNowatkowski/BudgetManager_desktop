@@ -21,23 +21,23 @@ import org.example.project.ui.screens.keywords.KeywordsScreen
 fun MainScreen() {
     Navigator(KeywordsScreen()) { navigator ->
         Row(modifier = Modifier.fillMaxSize()) {
-                ModalDrawerSheet(modifier = Modifier.width(240.dp)) {
-                    NavigationDrawerItem(
-                        label = { Text(text = "Import") },
-                        selected = navigator.lastItem is KeywordsScreen,
-                        onClick = { navigator.replace(KeywordsScreen()) }
-                    )
-                    NavigationDrawerItem(
-                        label = { Text(text = "Budget") },
-                        selected = navigator.lastItem is BudgetScreen,
-                        onClick = { navigator.replace(BudgetScreen()) }
-                    )
-                    NavigationDrawerItem(
-                        label = { Text(text = "Reports") },
-                        selected = navigator.lastItem is ReportsScreen,
-                        onClick = { navigator.replace(ReportsScreen()) }
-                    )
-                }
+            ModalDrawerSheet(modifier = Modifier.width(240.dp)) {
+                NavigationDrawerItem(
+                    label = { Text(text = "Import") },
+                    selected = navigator.lastItem is KeywordsScreen,
+                    onClick = { navigator.replace(KeywordsScreen()) }
+                )
+                NavigationDrawerItem(
+                    label = { Text(text = "Budget") },
+                    selected = navigator.lastItem is BudgetScreen,
+                    onClick = { navigator.replace(BudgetScreen()) }
+                )
+                NavigationDrawerItem(
+                    label = { Text(text = "Reports") },
+                    selected = navigator.lastItem is ReportsScreen,
+                    onClick = { navigator.replace(ReportsScreen()) }
+                )
+            }
             Column(modifier = Modifier.fillMaxSize()) {
                 SlideTransition(navigator = navigator, orientation = SlideOrientation.Vertical)
             }

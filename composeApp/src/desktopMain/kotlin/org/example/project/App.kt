@@ -1,7 +1,7 @@
 package org.example.project
 
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import org.example.project.ui.screens.MainScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

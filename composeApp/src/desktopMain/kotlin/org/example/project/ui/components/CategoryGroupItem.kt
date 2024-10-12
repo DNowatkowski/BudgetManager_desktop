@@ -121,7 +121,8 @@ fun CategoryGroupItem(
                     onKeywordUpdated = onKeywordUpdated,
                     onRemoveKeyword = onRemoveKeyword,
                     onKeywordDropped = { keywordId ->
-                        onKeywordDropped(keywordId, category.id) }
+                        onKeywordDropped(keywordId, category.id)
+                    }
                 )
             }
         }

@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.example.project.data.repositories.TransactionDto
-import org.example.project.domain.models.category.CategoryData
 import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.toDomainModel
 import org.example.project.domain.models.transaction.TransactionData
