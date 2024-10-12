@@ -20,11 +20,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import jdk.jfr.Enabled
 import org.example.project.domain.models.category.CategoryData
 
 @Composable
 fun CategoryInputChip(
     categoriesForGroup: List<CategoryData>,
+    enabled: Boolean = true,
     selectedCategory: CategoryData?,
     onCategorySelected: (String) -> Unit
 ) {
@@ -57,6 +59,7 @@ fun CategoryInputChip(
     }
     InputChip(
         selected = dropdownMenuExpanded,
+        enabled = enabled,
         onClick = { dropdownMenuExpanded = !dropdownMenuExpanded },
         label = {
             Text(
