@@ -59,6 +59,24 @@ class TransactionRepositoryImpl(
         }
     }
 
+    override suspend fun updateGroupForTransaction(transactionId: String, newGroupId: String) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateCategoryForTransaction(
+        transactionId: String,
+        newCategoryId: String?
+    ) {
+        withContext(Dispatchers.IO) {
+            launch {
+                database.databaseQueries.updateTransactionCategoryId(
+                    id = transactionId,
+                    categoryId = newCategoryId
+                )
+            }
+        }
+    }
+
     private fun resolveCategory(transaction: TransactionData): String? {
         val keywords = database.databaseQueries.getAllKeywords().executeAsList()
         return keywords.find { keyword ->

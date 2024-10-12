@@ -1,12 +1,8 @@
 package org.example.project.ui.screens.budgetScreen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,23 +11,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
@@ -43,25 +30,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
-import org.example.project.domain.models.category.CategoryData
 import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.ui.components.BudgetManagerDialog
+import org.example.project.ui.components.CategoryInputChip
+import org.example.project.ui.components.GroupInputChip
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
 class BudgetScreen : Screen {
-    @OptIn(KoinExperimentalAPI::class, ExperimentalMaterial3Api::class)
+    @OptIn(KoinExperimentalAPI::class)
     @Composable
     override fun Content() {
         var showNewTransactionRow by remember { mutableStateOf(false) }
@@ -146,6 +129,12 @@ class BudgetScreen : Screen {
                         amountRowWidth = amountColumnWidth,
                         onCheckedChange = { id ->
                             vm.toggleTransactionSelection(id)
+                        },
+                        onCategoryReset = { transactionId, newGroupId ->
+                            vm.resetCategoryForTransaction(transactionId, newGroupId)
+                        },
+                        onCategorySelected = { transactionId, newCategoryId ->
+                            vm.updateCategoryForTransaction(transactionId, newCategoryId)
                         },
                         modifier = Modifier.animateItem()
                     )
@@ -247,9 +236,22 @@ fun TransactionRow(
     categoryRowWidth: Int,
     amountRowWidth: Int,
     onCheckedChange: (String) -> Unit,
-    modifier : Modifier = Modifier
+    onCategoryReset: (String, String) -> Unit,
+    onCategorySelected: (String, String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    var dropdownMenuExpanded by remember { mutableStateOf(false) }
+    val selectedCategory by remember(transaction.categoryId, groups) {
+        mutableStateOf(
+            groups.find { group -> group.categories.any { it.id == transaction.categoryId } }?.categories?.find { it.id == transaction.categoryId }
+        )
+    }
+    var selectedGroup by remember(selectedCategory?.categoryGroupId) {
+        mutableStateOf(
+            selectedCategory?.let { category ->
+                groups.find { it.id == category.categoryGroupId }
+            }
+        )
+    }
 
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -283,19 +285,20 @@ fun TransactionRow(
             modifier = Modifier.width(descriptionRowWidth.dp)
         )
         Column(modifier = Modifier.width(groupRowWidth.dp)) {
-            InputChip(
-                selected = dropdownMenuExpanded,
-                onClick = { dropdownMenuExpanded = !dropdownMenuExpanded },
-                label = {
-
-                },
+            GroupInputChip(
+                groups = groups,
+                selectedGroup = selectedGroup,
+                onGroupSelected = {
+                    onCategoryReset(transaction.id, it)
+                    selectedGroup = groups.find { group -> group.id == it }
+                }
             )
         }
         Column(modifier = Modifier.width(categoryRowWidth.dp)) {
             CategoryInputChip(
-                categoriesForGroup = emptyList(),
-                activeCategory = null,
-                onCategorySelected = { }
+                categoriesForGroup = selectedGroup?.categories.orEmpty(),
+                selectedCategory = selectedCategory,
+                onCategorySelected = { onCategorySelected(transaction.id, it) }
             )
         }
 
@@ -311,47 +314,3 @@ fun TransactionRow(
     }
 }
 
-
-@Composable
-fun CategoryInputChip(
-    categoriesForGroup: List<CategoryData>,
-    activeCategory: CategoryData?,
-    onCategorySelected: (String) -> Unit
-) {
-    var dropdownMenuExpanded by remember { mutableStateOf(false) }
-
-    Box {
-        DropdownMenu(
-            expanded = dropdownMenuExpanded,
-            onDismissRequest = { dropdownMenuExpanded = false }
-        ) {
-            categoriesForGroup.forEach { category ->
-                TextButton(
-                    onClick = {
-                        onCategorySelected(category.id)
-                        dropdownMenuExpanded = false
-                    }
-                ) {
-                    Text(
-                        category.name,
-                        style = MaterialTheme.typography.bodySmall,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            }
-        }
-    }
-    InputChip(
-        selected = dropdownMenuExpanded,
-        onClick = { dropdownMenuExpanded = !dropdownMenuExpanded },
-        label = {
-            Text(
-                activeCategory?.name.orEmpty(),
-                style = MaterialTheme.typography.bodySmall,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-    )
-}

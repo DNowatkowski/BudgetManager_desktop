@@ -60,7 +60,7 @@ class BudgetScreenViewModel(
         }
     }
 
-    fun toggleAllTransactionsSelection(value : Boolean) {
+    fun toggleAllTransactionsSelection(value: Boolean) {
         _uiState.update { currentState ->
             currentState.copy(
                 transactions = currentState.transactions.map {
@@ -74,6 +74,18 @@ class BudgetScreenViewModel(
         viewModelScope.launch {
             val selectedTransactions = _uiState.value.transactions.filter { it.isSelected }
             transactionRepository.deleteTransactions(selectedTransactions.map { it.id })
+        }
+    }
+
+    fun resetCategoryForTransaction(transactionId: String, newGroupId: String) {
+        viewModelScope.launch {
+            transactionRepository.updateCategoryForTransaction(transactionId, null)
+        }
+    }
+
+    fun updateCategoryForTransaction(transactionId: String, newCategoryId: String) {
+        viewModelScope.launch {
+            transactionRepository.updateCategoryForTransaction(transactionId, newCategoryId)
         }
     }
 

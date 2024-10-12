@@ -9,4 +9,6 @@ interface TransactionRepository {
     fun getTransactionsForMonth(date: LocalDate): Flow<List<TransactionData>>
     suspend fun insertTransactions(transactions: List<TransactionData>)
     suspend fun deleteTransactions(transactionIds: List<String>)
+    suspend fun updateGroupForTransaction(transactionId:String, newGroupId: String)
+    suspend fun updateCategoryForTransaction(transactionId:String,newCategoryId: String?)
 }

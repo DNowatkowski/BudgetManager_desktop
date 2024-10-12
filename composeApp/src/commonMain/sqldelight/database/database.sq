@@ -21,6 +21,9 @@ getTransactionsForMonth:
 SELECT * FROM TransactionEntity
 WHERE strftime('%Y-%m', date) = :yearMonth;
 
+updateTransactionCategoryId:
+UPDATE TransactionEntity SET categoryId = :categoryId WHERE id = :id;
+
 getTransactionById:
 SELECT * FROM TransactionEntity WHERE id = :id;
 
@@ -110,6 +113,9 @@ CREATE TABLE CategoryEntity (
 insertCategory:
 INSERT INTO CategoryEntity
 VALUES ?;
+
+updateCategory:
+UPDATE CategoryEntity SET name = :name, categoryGroupId = :categoryGroupId WHERE id = :id;
 
 getAllCategories:
 SELECT * FROM CategoryEntity;

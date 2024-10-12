@@ -58,6 +58,7 @@ fun BudgetManagerDialog(
                     enabled = confirmEnabled,
                     onClick = {
                         onConfirmed()
+                        onDismiss()
                     }) {
                     Text(confirmButtonText)
                 }

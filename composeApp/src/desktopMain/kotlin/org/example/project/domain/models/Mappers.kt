@@ -70,7 +70,7 @@ fun TransactionDto.toDomainModel() = TransactionData(
     try {
         amount.replace(",", ".").toDouble()
     } catch (e: NumberFormatException) {
-        0.0
+        0.00
     },
     categoryId = null
 )
