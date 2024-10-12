@@ -21,6 +21,8 @@ class BudgetScreenViewModel(
     private val _uiState = MutableStateFlow(BudgetState())
     val uiState = _uiState.asStateFlow()
 
+    private var _transactions: List<TransactionData> = emptyList()
+
     init {
         viewModelScope.launch {
             getTransactions()
@@ -32,8 +34,9 @@ class BudgetScreenViewModel(
 
     private suspend fun getTransactions() {
         transactionRepository.getTransactionsForMonth(_uiState.value.activeMonth).collectLatest {
+            _transactions = it
             _uiState.update { currentState ->
-                currentState.copy(transactions = it)
+                currentState.copy(transactions = it.filterTransactions(currentState.searchText))
             }
         }
     }
@@ -86,6 +89,28 @@ class BudgetScreenViewModel(
     fun updateCategoryForTransaction(transactionId: String, newCategoryId: String) {
         viewModelScope.launch {
             transactionRepository.updateCategoryForTransaction(transactionId, newCategoryId)
+        }
+    }
+
+    fun updateSearchText(searchText: String) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                searchText = searchText,
+                transactions = _transactions.filterTransactions(searchText)
+            )
+        }
+    }
+
+    private fun List<TransactionData>.filterTransactions(searchText: String): List<TransactionData> {
+        return if (searchText.isEmpty()) {
+            this.sortedByDescending { it.date }
+        } else {
+            this.filter { transaction ->
+                transaction.description.contains(
+                    searchText,
+                    ignoreCase = true
+                ) || transaction.payee?.contains(searchText, ignoreCase = true) == true
+            }.sortedByDescending { it.date }
         }
     }
 

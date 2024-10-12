@@ -1,8 +1,10 @@
 package org.example.project.ui.screens.budgetScreen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,12 +15,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
@@ -83,7 +88,7 @@ class BudgetScreen : Screen {
 
         Column(modifier = Modifier.padding(vertical = 16.dp).fillMaxSize()) {
             Row(
-                modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp).fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextButton(onClick = {
@@ -98,6 +103,29 @@ class BudgetScreen : Screen {
                     Icon(Icons.Filled.Delete, null)
                     Text("Delete transaction")
                 }
+                Spacer(modifier = Modifier.weight(1f))
+                OutlinedTextField(
+                    value = uiState.searchText,
+                    shape = MaterialTheme.shapes.large,
+                    onValueChange = { vm.updateSearchText(it) },
+                    textStyle = MaterialTheme.typography.bodyMedium,
+                    maxLines = 1,
+                    leadingIcon = { Icon(Icons.Filled.Search, null) },
+                    trailingIcon = {
+                        if (uiState.searchText.isNotEmpty()) {
+                            Icon(Icons.Filled.Clear, null,
+                                modifier = Modifier.clickable { vm.updateSearchText("") }
+                            )
+                        }
+                    },
+                    placeholder = {
+                        Text(
+                            "Search",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    },
+                    modifier = Modifier.width(250.dp).height(50.dp)
+                )
             }
             HorizontalDivider()
             HeaderRow(
