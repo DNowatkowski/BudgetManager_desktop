@@ -44,6 +44,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
+import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
+import io.github.vinceglb.filekit.core.PickerMode
+import io.github.vinceglb.filekit.core.PickerType
 import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.ui.components.BudgetManagerDialog
@@ -72,6 +75,13 @@ class BudgetScreen : Screen {
         val listState = rememberLazyListState()
         var showAlertDialog by remember { mutableStateOf(false) }
 
+        val launcher = rememberFilePickerLauncher(
+            mode = PickerMode.Single,
+            type = PickerType.File(extensions = listOf("csv", "xlsx"))
+        ) { file ->
+            vm.importFile(file?.file?.inputStream())
+        }
+
         if (showAlertDialog)
             BudgetManagerDialog(
                 title = "Delete transaction",
@@ -90,11 +100,17 @@ class BudgetScreen : Screen {
                 }
             )
 
-        Column(modifier = Modifier.padding(vertical = 16.dp).fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp).fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                TextButton(onClick = {
+                    launcher.launch()
+                }) {
+                    Icon(Icons.Filled.ArrowDropDown, null)
+                    Text(" Import file")
+                }
                 TextButton(onClick = {
                     showNewTransactionRow = true
                 }) {
@@ -199,12 +215,13 @@ fun HeaderRow(
     Row(
         modifier = Modifier.fillMaxWidth().height(40.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Checkbox(
             checked = allSelectedChecked,
             onCheckedChange = { onAllSelectedChange(it) },
             modifier = Modifier.weight(0.05f)
+                .padding(start = 8.dp)
                 .onGloballyPositioned { onCheckboxColumnPositioned(it.size.width) }
         )
         VerticalDivider()
@@ -217,7 +234,7 @@ fun HeaderRow(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleSmall,
-                )
+            )
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 imageVector = if (sortOrder == BudgetScreenViewModel.SortOrder.DESCENDING)
@@ -277,6 +294,7 @@ fun HeaderRow(
         Row(
             modifier = Modifier.weight(0.08f)
                 .onGloballyPositioned { onAmountColumnPositioned(it.size.width) }
+                .padding(end = 8.dp)
         ) {
             Text(
                 "Amount",
@@ -301,9 +319,9 @@ fun HeaderRow(
                         }
                     }
                     .alpha(if (sortOption == BudgetScreenViewModel.TransactionSortOption.AMOUNT) 1f else 0.5f)
+
             )
         }
-
     }
 }
 

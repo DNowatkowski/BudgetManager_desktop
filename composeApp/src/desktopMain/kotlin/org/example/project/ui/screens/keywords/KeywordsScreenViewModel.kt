@@ -9,21 +9,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.example.project.data.repositories.TransactionDto
 import org.example.project.domain.models.group.GroupWithCategoriesAndKeywordsData
 import org.example.project.domain.models.keyword.KeywordData
-import org.example.project.domain.models.toDomainModel
 import org.example.project.domain.repositories.CategoryRepository
 import org.example.project.domain.repositories.KeywordRepository
-import org.example.project.domain.repositories.TransactionRepository
-import java.io.InputStream
 
 class KeywordsScreenViewModel(
     private val categoryRepository: CategoryRepository,
-    private val transactionRepository: TransactionRepository,
     private val keywordRepository: KeywordRepository,
-    private val csvMapper: CsvMapper,
-    private val schema: CsvSchema,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ImportState())
@@ -58,16 +51,6 @@ class KeywordsScreenViewModel(
     fun removeKeyword(keyword: KeywordData) {
         viewModelScope.launch {
             keywordRepository.deleteKeyword(keyword.id)
-        }
-    }
-
-    fun importFile(stream: InputStream?) {
-        viewModelScope.launch {
-            val list = csvMapper.readerFor(TransactionDto::class.java)
-                .with(schema.withSkipFirstDataRow(true))
-                .readValues<TransactionDto>(stream)
-                .readAll()
-            transactionRepository.insertTransactions(list.map { it.toDomainModel() })
         }
     }
 

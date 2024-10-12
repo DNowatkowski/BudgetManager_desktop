@@ -40,12 +40,7 @@ class KeywordsScreen : Screen {
         val vm = koinViewModel<KeywordsScreenViewModel>()
         val uiState by vm.uiState.collectAsStateWithLifecycle()
         val listState = rememberLazyListState(0)
-        val launcher = rememberFilePickerLauncher(
-            mode = PickerMode.Single,
-            type = PickerType.File(extensions = listOf("csv", "xlsx"))
-        ) { file ->
-            vm.importFile(file?.file?.inputStream())
-        }
+
         var showDialog by remember { mutableStateOf(false) }
 
         if (showDialog) {
@@ -59,12 +54,6 @@ class KeywordsScreen : Screen {
 
         Column(modifier = Modifier.padding(16.dp)) {
             Row {
-                TextButton(onClick = {
-                    launcher.launch()
-                }) {
-                    Icon(Icons.Filled.ArrowDropDown, null)
-                    Text(" Import file")
-                }
                 TextButton(
                     onClick = {
                         showDialog = true

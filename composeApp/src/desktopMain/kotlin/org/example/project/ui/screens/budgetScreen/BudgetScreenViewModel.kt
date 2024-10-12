@@ -2,21 +2,28 @@ package org.example.project.ui.screens.budgetScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.fasterxml.jackson.dataformat.csv.CsvMapper
+import com.fasterxml.jackson.dataformat.csv.CsvSchema
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.example.project.data.repositories.TransactionDto
 import org.example.project.domain.models.category.CategoryData
 import org.example.project.domain.models.group.GroupWithCategoryData
+import org.example.project.domain.models.toDomainModel
 import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.domain.repositories.CategoryRepository
 import org.example.project.domain.repositories.TransactionRepository
+import java.io.InputStream
 import java.time.LocalDate
 
 class BudgetScreenViewModel(
     private val transactionRepository: TransactionRepository,
     private val categoryRepository: CategoryRepository,
+    private val csvMapper: CsvMapper,
+    private val schema: CsvSchema,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BudgetState())
@@ -78,6 +85,17 @@ class BudgetScreenViewModel(
                     it.copy(isSelected = value)
                 }
             )
+        }
+    }
+
+
+    fun importFile(stream: InputStream?) {
+        viewModelScope.launch {
+            val list = csvMapper.readerFor(TransactionDto::class.java)
+                .with(schema.withSkipFirstDataRow(true))
+                .readValues<TransactionDto>(stream)
+                .readAll()
+            transactionRepository.insertTransactions(list.map { it.toDomainModel() })
         }
     }
 
