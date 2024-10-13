@@ -33,7 +33,7 @@ fun TransactionRow(
     categoryRowWidth: Int,
     amountRowWidth: Int,
     onCheckedChange: (String) -> Unit,
-    onCategoryReset: (String, String) -> Unit,
+    onCategoryReset: (String) -> Unit,
     onCategorySelected: (String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -87,9 +87,9 @@ fun TransactionRow(
             GroupInputChip(
                 groups = groups,
                 selectedGroup = selectedGroup,
-                onGroupSelected = {
-                    onCategoryReset(transaction.id, it)
-                    selectedGroup = groups.find { group -> group.id == it }
+                onGroupSelected = { group ->
+                    onCategoryReset(transaction.id)
+                    selectedGroup = group
                 }
             )
         }
@@ -98,7 +98,7 @@ fun TransactionRow(
                 enabled = selectedGroup != null,
                 categoriesForGroup = selectedGroup?.categories.orEmpty(),
                 selectedCategory = selectedCategory,
-                onCategorySelected = { onCategorySelected(transaction.id, it) }
+                onCategorySelected = { category -> onCategorySelected(transaction.id, category.id) }
             )
         }
 
