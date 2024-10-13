@@ -25,7 +25,7 @@ import org.example.project.domain.models.group.GroupWithCategoryData
 fun GroupInputChip(
     groups: List<GroupWithCategoryData>,
     selectedGroup: GroupWithCategoryData?,
-    onGroupSelected: (String) -> Unit
+    onGroupSelected: (GroupWithCategoryData) -> Unit
 ) {
     var dropdownMenuExpanded by remember { mutableStateOf(false) }
 
@@ -37,7 +37,7 @@ fun GroupInputChip(
             groups.forEach { group ->
                 TextButton(
                     onClick = {
-                        onGroupSelected(group.id)
+                        onGroupSelected(group)
                         dropdownMenuExpanded = false
                     }
                 ) {

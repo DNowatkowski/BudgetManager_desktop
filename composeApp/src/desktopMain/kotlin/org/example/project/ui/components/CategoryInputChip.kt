@@ -26,7 +26,7 @@ fun CategoryInputChip(
     categoriesForGroup: List<CategoryData>,
     enabled: Boolean = true,
     selectedCategory: CategoryData?,
-    onCategorySelected: (String) -> Unit
+    onCategorySelected: (CategoryData) -> Unit
 ) {
     var dropdownMenuExpanded by remember { mutableStateOf(false) }
 
@@ -38,7 +38,7 @@ fun CategoryInputChip(
             categoriesForGroup.forEach { category ->
                 TextButton(
                     onClick = {
-                        onCategorySelected(category.id)
+                        onCategorySelected(category)
                         dropdownMenuExpanded = false
                     }
                 ) {

@@ -105,7 +105,7 @@ class BudgetScreenViewModel(
         }
     }
 
-    fun resetCategoryForTransaction(transactionId: String, newGroupId: String) {
+    fun resetCategoryForTransaction(transactionId: String) {
         viewModelScope.launch {
             transactionRepository.updateCategoryForTransaction(transactionId, null)
         }
@@ -131,6 +131,12 @@ class BudgetScreenViewModel(
         }
     }
 
+    fun insertTransaction(transaction: TransactionData) {
+        viewModelScope.launch {
+           // transactionRepository.insertTransaction(transaction)
+        }
+    }
+
     private fun List<TransactionData>.filterTransactions(searchText: String): List<TransactionData> {
         return if (searchText.isEmpty()) {
             this.sortedByDescending { it.date }
@@ -143,6 +149,7 @@ class BudgetScreenViewModel(
             }.sortedByDescending { it.date }
         }
     }
+
 
     private fun List<TransactionData>.sortTransactions(
         sortOption: TransactionSortOption,
