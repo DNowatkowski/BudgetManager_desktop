@@ -52,6 +52,15 @@ fun String.toLocalDate(): LocalDate {
     }
 }
 
+fun TransactionData.toEntity() = TransactionEntity(
+    id = id,
+    date = date.toString(),
+    description = description,
+    payee = payee,
+    amount = amount,
+    categoryId = categoryId,
+)
+
 fun TransactionData.toEntity(categoryId: String?) = TransactionEntity(
     id = id,
     date = date.toString(),

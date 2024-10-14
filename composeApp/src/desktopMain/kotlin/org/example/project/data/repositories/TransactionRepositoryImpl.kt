@@ -49,6 +49,16 @@ class TransactionRepositoryImpl(
         }
     }
 
+    override suspend fun insertTransaction(transaction: TransactionData) {
+        withContext(Dispatchers.IO) {
+            launch {
+                database.databaseQueries.insertTransaction(
+                    transaction.toEntity()
+                )
+            }
+        }
+    }
+
     override suspend fun deleteTransactions(transactionIds: List<String>) {
         withContext(Dispatchers.IO) {
             transactionIds.forEach { transactionId ->

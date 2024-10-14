@@ -1,12 +1,10 @@
 package org.example.project.ui.components
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,14 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draganddrop.DragAndDropEvent
 import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.awtTransferable
-import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.unit.dp
 import org.example.project.domain.models.keyword.KeywordData
 import java.awt.datatransfer.DataFlavor
 
 @OptIn(
-    ExperimentalLayoutApi::class, ExperimentalFoundationApi::class,
-    ExperimentalComposeUiApi::class, ExperimentalTextApi::class, ExperimentalAnimationApi::class
+    ExperimentalFoundationApi::class,
+    ExperimentalComposeUiApi::class,
 )
 @Composable
 fun CategoryItem(

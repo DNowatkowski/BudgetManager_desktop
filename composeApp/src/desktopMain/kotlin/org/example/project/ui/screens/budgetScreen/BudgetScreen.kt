@@ -158,7 +158,8 @@ class BudgetScreen : Screen {
                                 showNewTransactionRow = false
                             },
                             onAdded = { transaction ->
-
+                                vm.addTransaction(transaction)
+                                showNewTransactionRow = false
                             },
                             modifier = Modifier.animateItem()
                         )

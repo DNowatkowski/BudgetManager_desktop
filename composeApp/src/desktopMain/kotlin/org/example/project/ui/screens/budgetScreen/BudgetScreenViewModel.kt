@@ -87,7 +87,11 @@ class BudgetScreenViewModel(
         }
     }
 
-
+    fun addTransaction(transaction: TransactionData) {
+        viewModelScope.launch {
+            transactionRepository.insertTransaction(transaction)
+        }
+    }
     fun importFile(stream: InputStream?) {
         viewModelScope.launch {
             val list = csvMapper.readerFor(TransactionDto::class.java)

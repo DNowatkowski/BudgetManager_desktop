@@ -3,6 +3,7 @@ package org.example.project.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,10 +12,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,11 +31,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import kotlinx.datetime.toJavaLocalDate
+import network.chaintech.kmp_date_time_picker.ui.datepicker.DefaultWheelDatePicker
+import network.chaintech.kmp_date_time_picker.ui.datepicker.WheelDatePickerComponent
+import network.chaintech.kmp_date_time_picker.ui.datepicker.WheelDatePickerComponent.WheelDatePicker
+import network.chaintech.kmp_date_time_picker.ui.datepicker.WheelDatePickerDialog
+import network.chaintech.kmp_date_time_picker.ui.datepicker.WheelDatePickerView
+import network.chaintech.kmp_date_time_picker.ui.datetimepicker.WheelDateTimePickerView
 import org.example.project.constants.TransactionColumn
 import org.example.project.domain.models.category.CategoryData
 import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.transaction.TransactionData
 import java.time.LocalDate
+import java.util.UUID
 
 @Composable
 fun AddTransactionRow(
@@ -61,6 +76,7 @@ fun AddTransactionRow(
         mutableStateOf("0.00")
     }
 
+
     Column(
         modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)
             .padding(vertical = 8.dp)
@@ -74,6 +90,29 @@ fun AddTransactionRow(
                 weight = TransactionColumn.CHECKBOX.weight,
                 horizontalArrangement = Arrangement.Center
             ) {
+                Box {
+                    DropdownMenu(
+                        shape = MaterialTheme.shapes.large,
+                        expanded = showDatePicker,
+                        onDismissRequest = {
+                            showDatePicker = false
+                        }
+                    ) {
+                        Box(modifier = Modifier.padding(horizontal = 16.dp)) {
+                            WheelDatePicker(
+                                title = "Select date:",
+                                rowCount = 5,
+                                doneLabelStyle = MaterialTheme.typography.titleSmall.copy(color = MaterialTheme.colorScheme.primary),
+                                onDoneClick = {
+                                    date = it.toJavaLocalDate()
+                                    showDatePicker = false
+                                },
+                                height = 200.dp,
+                                dateTextStyle = MaterialTheme.typography.labelMedium,
+                            )
+                        }
+                    }
+                }
                 Checkbox(
                     checked = true,
                     onCheckedChange = null,
@@ -86,7 +125,7 @@ fun AddTransactionRow(
                 InputChip(
                     selected = showDatePicker,
                     label = { Text(date.toString(), style = MaterialTheme.typography.bodySmall) },
-                    onClick = { showDatePicker = !showDatePicker },
+                    onClick = { showDatePicker = true },
                 )
             }
             TableCell(
@@ -188,7 +227,16 @@ fun AddTransactionRow(
             }
             Button(
                 onClick = {
-
+                    onAdded(
+                        TransactionData(
+                            id = UUID.randomUUID().toString(),
+                            date = date,
+                            payee = payee,
+                            description = description,
+                            amount = amount.toDouble(),
+                            categoryId = selectedCategory?.id,
+                        )
+                    )
                 },
                 modifier = Modifier.padding(horizontal = 8.dp)
             ) {

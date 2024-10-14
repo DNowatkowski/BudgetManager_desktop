@@ -35,6 +35,7 @@ kotlin {
             implementation(libs.stately.common)
             implementation(libs.sqlite.coroutines)
             implementation(libs.jackson.dataformat.csv)
+            implementation(libs.date.picker)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
