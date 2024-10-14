@@ -19,9 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import org.example.project.constants.TransactionColumn
 import org.example.project.ui.screens.budgetScreen.BudgetScreenViewModel
 
 @Composable
@@ -29,13 +29,6 @@ fun HeaderRow(
     allSelectedChecked: Boolean,
     sortOption: BudgetScreenViewModel.TransactionSortOption,
     sortOrder: BudgetScreenViewModel.SortOrder,
-    onCheckboxColumnPositioned: (Int) -> Unit,
-    onDateColumnPositioned: (Int) -> Unit,
-    onPayeeColumnPositioned: (Int) -> Unit,
-    onDescriptionColumnPositioned: (Int) -> Unit,
-    onGroupColumnPositioned: (Int) -> Unit,
-    onCategoryColumnPositioned: (Int) -> Unit,
-    onAmountColumnPositioned: (Int) -> Unit,
     onAllSelectedChange: (Boolean) -> Unit,
     onSortOptionChanged: (BudgetScreenViewModel.TransactionSortOption) -> Unit,
     onSortOrderChanged: () -> Unit
@@ -45,17 +38,19 @@ fun HeaderRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Checkbox(
-            checked = allSelectedChecked,
-            onCheckedChange = { onAllSelectedChange(it) },
-            modifier = Modifier.weight(0.05f)
-                .padding(start = 8.dp)
-                .onGloballyPositioned { onCheckboxColumnPositioned(it.size.width) }
-        )
+        TableCell(
+            weight = TransactionColumn.CHECKBOX.weight,
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(start = 8.dp)
+        ) {
+            Checkbox(
+                checked = allSelectedChecked,
+                onCheckedChange = { onAllSelectedChange(it) },
+            )
+        }
         VerticalDivider()
-        Row(
-            modifier = Modifier.weight(0.06f)
-                .onGloballyPositioned { onDateColumnPositioned(it.size.width) }
+        TableCell(
+            weight = TransactionColumn.DATE.weight
         ) {
             Text(
                 "Date",
@@ -81,55 +76,60 @@ fun HeaderRow(
                     .alpha(if (sortOption == BudgetScreenViewModel.TransactionSortOption.DATE) 1f else 0.5f)
             )
         }
-
         VerticalDivider()
-        Text(
-            "Payee",
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            style = MaterialTheme.typography.titleSmall,
-            modifier = Modifier.weight(0.2f)
-                .onGloballyPositioned { onPayeeColumnPositioned(it.size.width) }
-        )
+        TableCell(
+            weight = TransactionColumn.PAYEE.weight
+        ) {
+            Text(
+                "Payee",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleSmall,
+            )
+        }
         VerticalDivider()
-        Text(
-            "Description",
-            style = MaterialTheme.typography.titleSmall,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(0.2f)
-                .onGloballyPositioned { onDescriptionColumnPositioned(it.size.width) }
-        )
+        TableCell(
+            weight = TransactionColumn.DESCRIPTION.weight
+        ) {
+            Text(
+                "Description",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleSmall,
+            )
+        }
         VerticalDivider()
-        Text(
-            "Group",
-            style = MaterialTheme.typography.titleSmall,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(0.08f)
-                .onGloballyPositioned { onGroupColumnPositioned(it.size.width) }
-        )
+        TableCell(
+            weight = TransactionColumn.GROUP.weight
+        ) {
+            Text(
+                "Group",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleSmall,
+            )
+        }
         VerticalDivider()
-        Text(
-            "Category",
-            style = MaterialTheme.typography.titleSmall,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(0.08f)
-                .onGloballyPositioned { onCategoryColumnPositioned(it.size.width) }
-        )
+        TableCell(
+            weight = TransactionColumn.CATEGORY.weight
+        ) {
+            Text(
+                "Category",
+                style = MaterialTheme.typography.titleSmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
         VerticalDivider()
-        Row(
-            modifier = Modifier.weight(0.08f)
-                .onGloballyPositioned { onAmountColumnPositioned(it.size.width) }
-                .padding(end = 8.dp)
+        TableCell(
+            weight = TransactionColumn.AMOUNT.weight,
+            modifier = Modifier.padding(end = 8.dp)
         ) {
             Text(
                 "Amount",
                 style = MaterialTheme.typography.titleSmall,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-
                 )
             Spacer(modifier = Modifier.weight(1f))
             Icon(

@@ -1,11 +1,9 @@
 package org.example.project.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import org.example.project.constants.TransactionColumn
 import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.transaction.TransactionData
 
@@ -25,13 +24,6 @@ import org.example.project.domain.models.transaction.TransactionData
 fun TransactionRow(
     transaction: TransactionData,
     groups: List<GroupWithCategoryData>,
-    checkBoxRowWidth: Int,
-    dateRowWidth: Int,
-    payeeRowWidth: Int,
-    descriptionRowWidth: Int,
-    groupRowWidth: Int,
-    categoryRowWidth: Int,
-    amountRowWidth: Int,
     onCheckedChange: (String) -> Unit,
     onCategoryReset: (String) -> Unit,
     onCategorySelected: (String, String) -> Unit,
@@ -55,35 +47,51 @@ fun TransactionRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Checkbox(
-            checked = transaction.isSelected,
-            onCheckedChange = { onCheckedChange(transaction.id) },
-            modifier = Modifier
-                .padding(start = 8.dp)
-                .width(checkBoxRowWidth.dp)
-        )
-        Text(
-            transaction.date.toString(),
-            style = MaterialTheme.typography.bodySmall,
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.width(dateRowWidth.dp)
-        )
-        Text(
-            transaction.payee.orEmpty(),
-            style = MaterialTheme.typography.bodySmall,
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.width(payeeRowWidth.dp)
-        )
-        Text(
-            transaction.description,
-            style = MaterialTheme.typography.bodySmall,
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.width(descriptionRowWidth.dp)
-        )
-        Column(modifier = Modifier.width(groupRowWidth.dp)) {
+        TableCell(
+            weight = TransactionColumn.CHECKBOX.weight,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Checkbox(
+                checked = transaction.isSelected,
+                onCheckedChange = { onCheckedChange(transaction.id) },
+                modifier = Modifier.padding(start = 8.dp)
+            )
+        }
+        TableCell(
+            weight = TransactionColumn.DATE.weight
+        ) {
+            Text(
+                transaction.date.toString(),
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+
+        TableCell(
+            weight = TransactionColumn.PAYEE.weight
+        ) {
+            Text(
+                transaction.payee.orEmpty(),
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+        TableCell(
+            weight = TransactionColumn.DESCRIPTION.weight
+        ) {
+            Text(
+                transaction.description,
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis,
+
+                )
+        }
+        TableCell(
+            weight = TransactionColumn.GROUP.weight
+        ) {
             GroupInputChip(
                 groups = groups,
                 selectedGroup = selectedGroup,
@@ -93,7 +101,9 @@ fun TransactionRow(
                 }
             )
         }
-        Column(modifier = Modifier.width(categoryRowWidth.dp)) {
+        TableCell(
+            weight = TransactionColumn.CATEGORY.weight
+        ) {
             CategoryInputChip(
                 enabled = selectedGroup != null,
                 categoriesForGroup = selectedGroup?.categories.orEmpty(),
@@ -101,15 +111,18 @@ fun TransactionRow(
                 onCategorySelected = { category -> onCategorySelected(transaction.id, category.id) }
             )
         }
+        TableCell(
+            weight = TransactionColumn.AMOUNT.weight
+        ) {
+            Text(
+                text = if (transaction.amount < 0) "${transaction.amount} zł" else "+${transaction.amount} zł",
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = if (transaction.amount < 0) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+                ),
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis,
 
-        Text(
-            text = if (transaction.amount < 0) "${transaction.amount} zł" else "+${transaction.amount} zł",
-            style = MaterialTheme.typography.bodySmall.copy(
-                color = if (transaction.amount < 0) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
-            ),
-            maxLines = 3,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.width(amountRowWidth.dp)
-        )
+                )
+        }
     }
 }

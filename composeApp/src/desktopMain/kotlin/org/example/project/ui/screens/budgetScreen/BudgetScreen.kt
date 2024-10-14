@@ -1,6 +1,8 @@
 package org.example.project.ui.screens.budgetScreen
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -19,31 +22,41 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
 import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.core.PickerMode
 import io.github.vinceglb.filekit.core.PickerType
+import org.example.project.domain.models.category.CategoryData
+import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.ui.components.BudgetManagerDialog
+import org.example.project.ui.components.CategoryInputChip
+import org.example.project.ui.components.GroupInputChip
 import org.example.project.ui.components.HeaderRow
 import org.example.project.ui.components.TransactionRow
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
+import java.time.LocalDate
 
 class BudgetScreen : Screen {
     @OptIn(KoinExperimentalAPI::class)
@@ -53,14 +66,6 @@ class BudgetScreen : Screen {
 
         val vm = koinViewModel<BudgetScreenViewModel>()
         val uiState by vm.uiState.collectAsStateWithLifecycle()
-
-        var checkboxColumnWidth by remember { mutableIntStateOf(0) }
-        var dateColumnWidth by remember { mutableIntStateOf(0) }
-        var payeeColumnWidth by remember { mutableIntStateOf(0) }
-        var descriptionColumnWidth by remember { mutableIntStateOf(0) }
-        var groupColumnWidth by remember { mutableIntStateOf(0) }
-        var categoryColumnWidth by remember { mutableIntStateOf(0) }
-        var amountColumnWidth by remember { mutableIntStateOf(0) }
 
         val listState = rememberLazyListState()
         var showAlertDialog by remember { mutableStateOf(false) }
@@ -140,13 +145,6 @@ class BudgetScreen : Screen {
             HorizontalDivider()
             HeaderRow(
                 allSelectedChecked = uiState.transactions.any { it.isSelected },
-                onCheckboxColumnPositioned = { checkboxColumnWidth = it },
-                onDateColumnPositioned = { dateColumnWidth = it },
-                onPayeeColumnPositioned = { payeeColumnWidth = it },
-                onDescriptionColumnPositioned = { descriptionColumnWidth = it },
-                onGroupColumnPositioned = { groupColumnWidth = it },
-                onCategoryColumnPositioned = { categoryColumnWidth = it },
-                onAmountColumnPositioned = { amountColumnWidth = it },
                 onAllSelectedChange = { vm.toggleAllTransactionsSelection(it) },
                 sortOption = uiState.sortOption,
                 sortOrder = uiState.sortOrder,
@@ -162,18 +160,11 @@ class BudgetScreen : Screen {
                     TransactionRow(
                         transaction = transaction,
                         groups = uiState.groups,
-                        checkBoxRowWidth = checkboxColumnWidth,
-                        dateRowWidth = dateColumnWidth,
-                        payeeRowWidth = payeeColumnWidth,
-                        descriptionRowWidth = descriptionColumnWidth,
-                        groupRowWidth = groupColumnWidth,
-                        categoryRowWidth = categoryColumnWidth,
-                        amountRowWidth = amountColumnWidth,
                         onCheckedChange = { id ->
                             vm.toggleTransactionSelection(id)
                         },
-                        onCategoryReset = { transactionId, newGroupId ->
-                            vm.resetCategoryForTransaction(transactionId, newGroupId)
+                        onCategoryReset = { transactionId ->
+                            vm.resetCategoryForTransaction(transactionId)
                         },
                         onCategorySelected = { transactionId, newCategoryId ->
                             vm.updateCategoryForTransaction(transactionId, newCategoryId)
@@ -186,5 +177,116 @@ class BudgetScreen : Screen {
     }
 }
 
+@Composable
+fun AddTransactionRow(
 
+    groups: List<GroupWithCategoryData>,
+    checkBoxRowWidth: Int,
+    dateRowWidth: Int,
+    payeeRowWidth: Int,
+    descriptionRowWidth: Int,
+    groupRowWidth: Int,
+    categoryRowWidth: Int,
+    amountRowWidth: Int,
+    modifier: Modifier = Modifier
+) {
+    var selectedCategory: CategoryData? by remember {
+        mutableStateOf(null)
+    }
+    var selectedGroup: GroupWithCategoryData? by remember {
+        mutableStateOf(
+            null
+        )
+    }
+
+    var showDatePicker by remember { mutableStateOf(false) }
+    var date: LocalDate by remember {
+        mutableStateOf(LocalDate.now())
+    }
+    var payee: String by remember {
+        mutableStateOf("")
+    }
+    var description: String by remember {
+        mutableStateOf("")
+    }
+    var amount: String by remember {
+        mutableStateOf("0.00")
+    }
+
+    Column {
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Checkbox(
+                checked = true,
+                onCheckedChange = null,
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .width(checkBoxRowWidth.dp)
+            )
+            InputChip(
+                selected = showDatePicker,
+                label = { Text(date.toString()) },
+                onClick = { showDatePicker = !showDatePicker },
+                modifier = Modifier.width(dateRowWidth.dp)
+            )
+
+            BasicTextField(
+                value = payee,
+                onValueChange = { payee = it },
+                textStyle = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.width(payeeRowWidth.dp).padding(8.dp)
+                    .border(1.dp, Color.Gray, shape = MaterialTheme.shapes.medium)
+            )
+            BasicTextField(
+                value = description,
+                onValueChange = { description = it },
+                textStyle = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.width(descriptionRowWidth.dp)
+                    .border(1.dp, Color.Gray, shape = MaterialTheme.shapes.medium)
+            )
+            Column(modifier = Modifier.width(groupRowWidth.dp)) {
+                GroupInputChip(
+                    groups = groups,
+                    selectedGroup = selectedGroup,
+                    onGroupSelected = { group ->
+                        selectedCategory = null
+                        selectedGroup = group
+                    }
+                )
+            }
+            Column(modifier = Modifier.width(categoryRowWidth.dp)) {
+                CategoryInputChip(
+                    enabled = selectedGroup != null,
+                    categoriesForGroup = selectedGroup?.categories.orEmpty(),
+                    selectedCategory = selectedCategory,
+                    onCategorySelected = { category -> selectedCategory = category }
+                )
+            }
+
+            BasicTextField(
+                value = amount,
+                onValueChange = { amount = it },
+                textStyle = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.width(amountRowWidth.dp).padding(8.dp)
+                    .border(1.dp, Color.Gray, shape = MaterialTheme.shapes.medium)
+            )
+        }
+        Row(modifier = Modifier.fillMaxSize()) {
+            OutlinedButton(
+                onClick = {
+
+                }
+            ){}
+            Button(
+                onClick = {
+
+                }
+            ){}
+        }
+    }
+
+}
 

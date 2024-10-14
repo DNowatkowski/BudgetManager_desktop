@@ -133,7 +133,7 @@ class BudgetScreenViewModel(
 
     fun insertTransaction(transaction: TransactionData) {
         viewModelScope.launch {
-           // transactionRepository.insertTransaction(transaction)
+            // transactionRepository.insertTransaction(transaction)
         }
     }
 
@@ -146,6 +146,7 @@ class BudgetScreenViewModel(
                     searchText,
                     ignoreCase = true
                 ) || transaction.payee?.contains(searchText, ignoreCase = true) == true
+                        || transaction.amount.toString().contains(searchText, ignoreCase = true)
             }.sortedByDescending { it.date }
         }
     }
