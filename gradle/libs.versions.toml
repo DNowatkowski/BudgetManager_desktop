@@ -24,6 +24,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = 'material3' }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+androidx-compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended" }
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 kotlin-csv-jvm = { module = "com.jsoizo:kotlin-csv-jvm", name = "kotlin-csv-jvm", version.ref = "csv-jvm" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }

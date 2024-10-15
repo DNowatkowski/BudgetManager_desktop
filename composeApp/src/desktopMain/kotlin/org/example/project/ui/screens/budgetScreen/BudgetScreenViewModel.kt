@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fasterxml.jackson.dataformat.csv.CsvMapper
 import com.fasterxml.jackson.dataformat.csv.CsvSchema
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -15,6 +16,7 @@ import org.example.project.domain.models.toDomainModel
 import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.domain.repositories.CategoryRepository
 import org.example.project.domain.repositories.TransactionRepository
+import org.koin.core.qualifier._q
 import java.io.InputStream
 import java.time.LocalDate
 
@@ -29,18 +31,19 @@ class BudgetScreenViewModel(
     val uiState = _uiState.asStateFlow()
 
     private var _transactions: List<TransactionData> = emptyList()
+    private var _queryJob: Job? = null
 
     init {
-        viewModelScope.launch {
-            getTransactions()
+        _queryJob = viewModelScope.launch {
+            getTransactions(_uiState.value.activeMonth)
         }
         viewModelScope.launch {
             getGroupsWithCategories()
         }
     }
 
-    private suspend fun getTransactions() {
-        transactionRepository.getTransactionsForMonth(_uiState.value.activeMonth).collectLatest {
+    private suspend fun getTransactions(month: LocalDate) {
+        transactionRepository.getTransactionsForMonth(month).collectLatest {
             _transactions = it
             _uiState.update { currentState ->
                 currentState.copy(
@@ -92,6 +95,31 @@ class BudgetScreenViewModel(
             transactionRepository.insertTransaction(transaction)
         }
     }
+
+    fun previousMonth() {
+        _queryJob?.cancel()
+        _queryJob = viewModelScope.launch {
+            getTransactions(_uiState.value.activeMonth.minusMonths(1))
+        }
+        _uiState.update { currentState ->
+            currentState.copy(
+                activeMonth = currentState.activeMonth.minusMonths(1)
+            )
+        }
+    }
+
+    fun nextMonth() {
+        _queryJob?.cancel()
+        _queryJob = viewModelScope.launch {
+            getTransactions(_uiState.value.activeMonth.plusMonths(1))
+        }
+        _uiState.update { currentState ->
+            currentState.copy(
+                activeMonth = currentState.activeMonth.plusMonths(1)
+            )
+        }
+    }
+
     fun importFile(stream: InputStream?) {
         viewModelScope.launch {
             val list = csvMapper.readerFor(TransactionDto::class.java)
@@ -137,7 +165,7 @@ class BudgetScreenViewModel(
 
     fun insertTransaction(transaction: TransactionData) {
         viewModelScope.launch {
-            // transactionRepository.insertTransaction(transaction)
+            transactionRepository.insertTransaction(transaction)
         }
     }
 
@@ -214,7 +242,7 @@ class BudgetScreenViewModel(
 
     data class BudgetState(
         val searchText: String = "",
-        val activeMonth: LocalDate = LocalDate.of(2024, 9, 1),
+        val activeMonth: LocalDate = LocalDate.now(),
         val groups: List<GroupWithCategoryData> = emptyList(),
         val transactions: List<TransactionData> = emptyList(),
         val sortOption: TransactionSortOption = TransactionSortOption.DATE,
