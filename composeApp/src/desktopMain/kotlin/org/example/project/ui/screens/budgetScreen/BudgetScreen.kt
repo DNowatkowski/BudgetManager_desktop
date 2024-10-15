@@ -1,15 +1,7 @@
 package org.example.project.ui.screens.budgetScreen
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandIn
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkHorizontally
-import androidx.compose.animation.shrinkOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,24 +11,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.ArrowCircleLeft
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ImportExport
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material.icons.outlined.ArrowCircleLeft
-import androidx.compose.material.icons.outlined.ArrowCircleRight
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -58,6 +43,7 @@ import io.github.vinceglb.filekit.core.PickerType
 import kotlinx.coroutines.delay
 import org.example.project.ui.components.AddTransactionRow
 import org.example.project.ui.components.BudgetManagerDialog
+import org.example.project.ui.components.DateSwitcher
 import org.example.project.ui.components.HeaderRow
 import org.example.project.ui.components.TransactionRow
 import org.koin.compose.viewmodel.koinViewModel
@@ -210,60 +196,3 @@ class BudgetScreen : Screen {
     }
 }
 
-@Composable
-fun DateSwitcher(
-    activeMonth: LocalDate,
-    onNextMonth: () -> Unit,
-    onPreviousMonth: () -> Unit
-) {
-    var visible by remember { mutableStateOf(true) }
-    var monthText by remember { mutableStateOf(activeMonth.month.toString()) }
-    var slideDirection by remember { mutableStateOf(1) } // 1 for next, -1 for previous
-    LaunchedEffect(activeMonth) {
-        visible = false
-        delay(100)
-        monthText = activeMonth.month.toString()
-        visible = true
-    }
-
-
-    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-        IconButton(onClick = {
-            slideDirection = -1
-            onPreviousMonth()
-        }) {
-            Icon(
-                Icons.Outlined.ArrowCircleLeft,
-                null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(35.dp)
-            )
-        }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.widthIn(130.dp)
-        ) {
-            AnimatedVisibility(
-                visible = visible,
-                enter = slideInHorizontally(initialOffsetX = { slideDirection * it }) + fadeIn(),
-                exit = slideOutHorizontally(targetOffsetX = { -slideDirection * it }) + fadeOut()
-            ) {
-                val monthCapitalized = monthText.lowercase()
-                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-                Text(monthCapitalized, style = MaterialTheme.typography.headlineSmall)
-            }
-            Text(activeMonth.year.toString(), style = MaterialTheme.typography.labelMedium)
-        }
-        IconButton(onClick = {
-            slideDirection = 1
-            onNextMonth()
-        }) {
-            Icon(
-                Icons.Outlined.ArrowCircleRight,
-                null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(35.dp)
-            )
-        }
-    }
-}
