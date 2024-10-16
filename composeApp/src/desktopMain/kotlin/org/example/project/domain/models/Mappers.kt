@@ -75,12 +75,14 @@ fun TransactionDto.toDomainModel() = TransactionData(
     date = date.toLocalDate(),
     description = description,
     payee = payee,
-    amount =
-    try {
-        amount.replace(",", ".").toDouble()
-    } catch (e: NumberFormatException) {
-        0.00
-    },
+    amount = amount.stringToDouble(),
     categoryId = null
 )
 
+fun String.stringToDouble(): Double {
+    return try {
+        this.replace(",", ".").toDouble()
+    } catch (e: NumberFormatException) {
+        0.00
+    }
+}

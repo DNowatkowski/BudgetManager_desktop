@@ -40,10 +40,12 @@ import cafe.adriel.voyager.core.screen.Screen
 import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.core.PickerMode
 import io.github.vinceglb.filekit.core.PickerType
+import io.github.vinceglb.filekit.core.PlatformFile
 import org.example.project.ui.components.AddTransactionRow
 import org.example.project.ui.components.BudgetManagerDialog
 import org.example.project.ui.components.DateSwitcher
 import org.example.project.ui.components.HeaderRow
+import org.example.project.ui.components.ImportDialog
 import org.example.project.ui.components.TransactionRow
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -59,6 +61,8 @@ class BudgetScreen : Screen {
 
         val listState = rememberLazyListState()
         var showAlertDialog by remember { mutableStateOf(false) }
+        var showImportDialog by remember { mutableStateOf(false) }
+        var platformFile: PlatformFile? by remember { mutableStateOf(null) }
 
         LaunchedEffect(showNewTransactionRow) {
             if (showNewTransactionRow) {
@@ -70,7 +74,17 @@ class BudgetScreen : Screen {
             mode = PickerMode.Single,
             type = PickerType.File(extensions = listOf("csv", "xlsx"))
         ) { file ->
-            vm.importFile(file?.file?.inputStream())
+            platformFile = file
+            showImportDialog = true
+        }
+
+        if (showImportDialog) {
+            ImportDialog(
+                onDismiss = { showImportDialog = false },
+                onConfirmed = { options ->
+                    vm.importFile(platformFile?.file?.inputStream(), options)
+                }
+            )
         }
 
         if (showAlertDialog)
@@ -91,7 +105,10 @@ class BudgetScreen : Screen {
                 }
             )
 
-        Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             DateSwitcher(
                 activeMonth = uiState.activeMonth,
                 onNextMonth = { vm.nextMonth() },

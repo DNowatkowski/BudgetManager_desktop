@@ -12,11 +12,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.example.project.data.repositories.TransactionDto
 import org.example.project.domain.models.group.GroupWithCategoryData
+import org.example.project.domain.models.stringToDouble
 import org.example.project.domain.models.toDomainModel
+import org.example.project.domain.models.toLocalDate
 import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.domain.repositories.CategoryRepository
 import org.example.project.domain.repositories.TransactionRepository
-import org.koin.core.qualifier._q
+import org.example.project.ui.components.ImportOptions
 import java.io.InputStream
 import java.time.LocalDate
 
@@ -120,13 +122,38 @@ class BudgetScreenViewModel(
         }
     }
 
-    fun importFile(stream: InputStream?) {
+    fun importFile(stream: InputStream?, importOptions: ImportOptions) {
         viewModelScope.launch {
             val list = csvMapper.readerFor(TransactionDto::class.java)
                 .with(schema.withSkipFirstDataRow(true))
                 .readValues<TransactionDto>(stream)
                 .readAll()
+                .applyFilters(importOptions)
+                .applyValueDivision(importOptions)
+
             transactionRepository.insertTransactions(list.map { it.toDomainModel() })
+        }
+    }
+
+    private fun List<TransactionDto>.applyFilters(importOptions: ImportOptions): List<TransactionDto> {
+        return if (importOptions.dateTo != null && importOptions.dateFrom != null) {
+            this.filter {
+                val localDate = it.date.toLocalDate()
+                localDate.isAfter(importOptions.dateFrom) && localDate.isBefore(importOptions.dateTo)
+            }
+        } else {
+            this
+        }
+    }
+
+    private fun List<TransactionDto>.applyValueDivision(importOptions: ImportOptions): List<TransactionDto> {
+        return if (importOptions.valuesDividedBy != 1) {
+            this.map {
+                val dividedAmount = it.amount.stringToDouble() / importOptions.valuesDividedBy
+                it.copy(amount = String.format("%.2f", dividedAmount))
+            }
+        } else {
+            this
         }
     }
 

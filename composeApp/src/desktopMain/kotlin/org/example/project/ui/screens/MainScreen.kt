@@ -39,7 +39,7 @@ fun MainScreen() {
                 )
             }
             Column(modifier = Modifier.fillMaxSize()) {
-                SlideTransition(navigator = navigator, orientation = SlideOrientation.Vertical)
+                navigator.lastItem.Content()
             }
         }
     }
