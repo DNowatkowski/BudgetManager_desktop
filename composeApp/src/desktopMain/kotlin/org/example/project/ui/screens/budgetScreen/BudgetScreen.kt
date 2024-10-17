@@ -75,7 +75,8 @@ class BudgetScreen : Screen {
             type = PickerType.File(extensions = listOf("csv", "xlsx"))
         ) { file ->
             platformFile = file
-            showImportDialog = true
+            if (file != null)
+                showImportDialog = true
         }
 
         if (showImportDialog) {

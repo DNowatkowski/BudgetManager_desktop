@@ -190,12 +190,6 @@ class BudgetScreenViewModel(
         }
     }
 
-    fun insertTransaction(transaction: TransactionData) {
-        viewModelScope.launch {
-            transactionRepository.insertTransaction(transaction)
-        }
-    }
-
     private fun List<TransactionData>.filterTransactions(searchText: String): List<TransactionData> {
         return if (searchText.isEmpty()) {
             this.sortedByDescending { it.date }

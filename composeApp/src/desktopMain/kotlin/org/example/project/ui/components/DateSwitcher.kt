@@ -39,11 +39,18 @@ fun DateSwitcher(
     var visible by remember { mutableStateOf(true) }
     var monthText by remember { mutableStateOf(activeMonth.month.toString()) }
     var slideDirection by remember { mutableStateOf(1) } // 1 for next, -1 for previous
+    var isFirstDisplay by remember { mutableStateOf(true) }
+
     LaunchedEffect(activeMonth) {
-        visible = false
-        delay(100)
-        monthText = activeMonth.month.toString()
-        visible = true
+        if (!isFirstDisplay) {
+            visible = false
+            delay(100)
+            monthText = activeMonth.month.toString()
+            visible = true
+        } else {
+            monthText = activeMonth.month.toString()
+            isFirstDisplay = false
+        }
     }
 
 

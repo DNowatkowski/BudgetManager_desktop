@@ -11,8 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.transitions.SlideOrientation
-import cafe.adriel.voyager.transitions.SlideTransition
 import org.example.project.ui.screens.budgetScreen.BudgetScreen
 import org.example.project.ui.screens.keywords.KeywordsScreen
 
