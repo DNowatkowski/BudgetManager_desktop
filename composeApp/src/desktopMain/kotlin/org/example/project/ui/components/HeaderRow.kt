@@ -130,7 +130,7 @@ fun HeaderRow(
                 style = MaterialTheme.typography.titleSmall,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                )
+            )
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 imageVector = if (sortOrder == BudgetScreenViewModel.SortOrder.DESCENDING)

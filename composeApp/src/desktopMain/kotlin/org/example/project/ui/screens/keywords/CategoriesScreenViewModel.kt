@@ -97,6 +97,26 @@ class CategoriesScreenViewModel(
             .sumOf { it.amount }.absoluteValue
     }
 
+    fun getGroupSpending(groupId: String): Double {
+        return _uiState.value.categoryGroupsWithKeywords
+            .flatMap { it.categories }
+            .filter { it.category.categoryGroupId == groupId }
+            .sumOf { getCategorySpending(it.category.id) }
+    }
+
+    fun getGroupTarget(groupId: String): Double {
+        return _uiState.value.categoryGroupsWithKeywords
+            .flatMap { it.categories }
+            .filter { it.category.categoryGroupId == groupId }
+            .sumOf { it.category.monthlyTarget }
+    }
+
+    fun setMonthlyTarget(categoryId: String, target: Double) {
+        viewModelScope.launch {
+            categoryRepository.updateMonthlyTarget(categoryId, target)
+        }
+    }
+
     fun toggleCategorySelection(id: String) {
         _uiState.update { currentState ->
             currentState.copy(

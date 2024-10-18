@@ -187,6 +187,7 @@ fun AddTransactionRow(
             ) {
                 BasicTextField(
                     value = amount,
+                    singleLine = true,
                     onValueChange = { amount = it },
                     textStyle = MaterialTheme.typography.bodySmall,
                     modifier = Modifier

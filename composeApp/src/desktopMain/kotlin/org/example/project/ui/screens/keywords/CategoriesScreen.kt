@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -24,6 +25,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -32,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,8 +49,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.example.project.constants.CategoryColumn
+import org.example.project.domain.models.category.CategoryWithKeywords
+import org.example.project.domain.models.group.GroupWithCategoriesAndKeywordsData
 import org.example.project.ui.components.CategoryGroupItem
 import org.example.project.ui.components.InputDialog
 import org.example.project.ui.components.TableCell
@@ -65,45 +71,19 @@ class CategoriesScreen : Screen {
         val coroutineScope = rememberCoroutineScope()
         val pagerState = rememberPagerState(pageCount = { 2 })
 
-        var showDialog by remember { mutableStateOf(false) }
+        val showDialog = remember { mutableStateOf(false) }
 
-        if (showDialog) {
+        if (showDialog.value) {
             InputDialog(
                 title = "Add group",
                 onConfirmed = { text -> vm.addGroup(text) },
-                onDismiss = { showDialog = false },
+                onDismiss = { showDialog.value = false },
                 label = "Group name"
             )
         }
 
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row {
-                TextButton(
-                    onClick = {
-                        showDialog = true
-                    }
-                ) {
-                    Icon(Icons.Filled.AddCircle, null)
-                    Text(" Add group")
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                SingleChoiceSegmentedButtonRow {
-                    SegmentedButton(
-                        selected = pagerState.currentPage == 0,
-                        onClick = { coroutineScope.launch { pagerState.animateScrollToPage(0) } },
-                        shape = SegmentedButtonDefaults.itemShape(0, pagerState.pageCount)
-                    ) {
-                        Text("Targets")
-                    }
-                    SegmentedButton(
-                        selected = pagerState.currentPage == 1,
-                        onClick = { coroutineScope.launch { pagerState.animateScrollToPage(1) } },
-                        shape = SegmentedButtonDefaults.itemShape(1, pagerState.pageCount)
-                    ) {
-                        Text("Keywords")
-                    }
-                }
-            }
+        Column {
+            HeaderRow(pagerState, coroutineScope, showDialog)
             HorizontalDivider(modifier = Modifier.fillMaxWidth())
 
             HorizontalPager(
@@ -112,17 +92,43 @@ class CategoriesScreen : Screen {
                 modifier = Modifier.fillMaxSize()
             ) { page ->
                 when (page) {
-                    0 -> {
-                        Targets(vm, uiState)
-                    }
-
-                    1 -> {
-                        Keywords(vm, uiState)
-                    }
+                    0 -> Targets(vm, uiState)
+                    1 -> Keywords(vm, uiState)
                 }
-
             }
+        }
+    }
+}
 
+@Composable
+private fun HeaderRow(
+    pagerState: PagerState,
+    coroutineScope: CoroutineScope,
+    showDialog: MutableState<Boolean>
+) {
+    Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        TextButton(
+            onClick = { showDialog.value = true }
+        ) {
+            Icon(Icons.Filled.AddCircle, null)
+            Text(" Add group")
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        SingleChoiceSegmentedButtonRow {
+            SegmentedButton(
+                selected = pagerState.currentPage == 0,
+                onClick = { coroutineScope.launch { pagerState.animateScrollToPage(0) } },
+                shape = SegmentedButtonDefaults.itemShape(0, pagerState.pageCount)
+            ) {
+                Text("Targets")
+            }
+            SegmentedButton(
+                selected = pagerState.currentPage == 1,
+                onClick = { coroutineScope.launch { pagerState.animateScrollToPage(1) } },
+                shape = SegmentedButtonDefaults.itemShape(1, pagerState.pageCount)
+            ) {
+                Text("Keywords")
+            }
         }
     }
 }
@@ -132,7 +138,6 @@ private fun Keywords(
     vm: CategoriesScreenViewModel,
     uiState: CategoriesScreenViewModel.CategoriesState
 ) {
-
     val gridState = rememberLazyStaggeredGridState(0)
 
     LazyVerticalStaggeredGrid(
@@ -171,102 +176,147 @@ private fun Targets(
     uiState: CategoriesScreenViewModel.CategoriesState,
 ) {
     Column {
-        Row(
-            modifier = Modifier.fillMaxWidth().height(40.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            TableCell(
-                weight = CategoryColumn.CATEGORY.weight
-            ) {
-                Text(
-                    "Category",
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.titleSmall,
-                )
-            }
-            VerticalDivider()
-            TableCell(
-                weight = CategoryColumn.ACTUAL_SPENDING.weight
-            ) {
-                Text(
-                    "Actual spending",
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.titleSmall,
-                )
-            }
-            VerticalDivider()
-            TableCell(
-                weight = CategoryColumn.MONTHLY_TARGET.weight
-            ) {
-                Text(
-                    "Monthly target",
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.titleSmall,
-                )
-            }
-        }
+        TargetHeaderRow()
         HorizontalDivider()
         uiState.categoryGroupsWithKeywords.forEach { group ->
+            GroupRow(vm, group)
+            group.categories.forEach { category ->
+                CategoryRow(vm, category)
+            }
+        }
+    }
+}
+
+@Composable
+private fun TargetHeaderRow() {
+    Row(
+        modifier = Modifier.fillMaxWidth().height(40.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        TableCell(weight = CategoryColumn.CATEGORY.weight) {
+            Text(
+                "Category",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleSmall,
+                modifier = Modifier.padding(start = 8.dp)
+            )
+        }
+        VerticalDivider()
+        TableCell(weight = CategoryColumn.ACTUAL_SPENDING.weight) {
+            Text(
+                "Actual spending",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleSmall,
+            )
+        }
+        VerticalDivider()
+        TableCell(weight = CategoryColumn.MONTHLY_TARGET.weight) {
+            Text(
+                "Monthly target",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleSmall,
+            )
+        }
+    }
+}
+
+@Composable
+private fun GroupRow(vm: CategoriesScreenViewModel, group: GroupWithCategoriesAndKeywordsData) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.background(MaterialTheme.colorScheme.surfaceDim)
+    ) {
+        TableCell(weight = CategoryColumn.CATEGORY.weight) {
             ListItem(
                 headlineContent = { Text(group.name) },
+                colors = ListItemDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.surfaceDim,
+                    headlineColor = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             )
-            group.categories.forEach { category ->
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    var showDialog by remember { mutableStateOf(false) }
-                    TableCell(
-                        weight = CategoryColumn.CATEGORY.weight
-                    ) {
-                        ListItem(
-                            headlineContent = { Text(category.category.name) },
-                            leadingContent = {
-                                Checkbox(
-                                    checked = category.category.isSelected,
-                                    onCheckedChange = { vm.toggleCategorySelection(category.category.id) }
-                                )
-                            },
-                            supportingContent = {
-                                val target =
-                                    category.category.monthlyTarget.takeIf { it != 0.toDouble() }
-                                        ?: 1.0f
-                                CustomLinearProgressIndicator(
-                                    progress = vm.getCategorySpending(category.category.id)
-                                        .toFloat() / target.toFloat()
-                                )
-                            }
+        }
+        TableCell(weight = CategoryColumn.ACTUAL_SPENDING.weight) {
+            val formattedSpending = String.format("%.2f zł", vm.getGroupSpending(group.id))
+            InputChip(
+                label = { Text(formattedSpending) },
+                onClick = {},
+                enabled = false,
+                selected = false,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+        TableCell(weight = CategoryColumn.MONTHLY_TARGET.weight) {
+            val formattedSpending = String.format("%.2f zł", vm.getGroupTarget(group.id))
+            InputChip(
+                label = { Text(formattedSpending) },
+                onClick = {},
+                enabled = false,
+                selected = false,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+    }
+}
 
-                        )
-                    }
-                    TableCell(
-                        weight = CategoryColumn.ACTUAL_SPENDING.weight
-                    ) {
-                        InputChip(
-                            label = {
-                                Text(
-                                    vm.getCategorySpending(category.category.id).toString() + " zł"
-                                )
-                            },
-                            onClick = { showDialog = true },
-                            enabled = false,
-                            selected = false,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
-                    TableCell(
-                        weight = CategoryColumn.MONTHLY_TARGET.weight
-                    ) {
-                        InputChip(
-                            label = { Text(category.category.monthlyTarget.toString() + " zł") },
-                            onClick = { showDialog = true },
-                            selected = showDialog,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
+@Composable
+private fun CategoryRow(vm: CategoriesScreenViewModel, category: CategoryWithKeywords) {
+    var showDialog by remember { mutableStateOf(false) }
+    if (showDialog) {
+        InputDialog(
+            title = "Set monthly target",
+            onConfirmed = { text ->
+                vm.setMonthlyTarget(category.category.id, text.toDouble())
+                showDialog = false
+            },
+            numbersOnly = true,
+            onDismiss = { showDialog = false },
+            label = "Monthly target",
+            initialText = category.category.monthlyTarget.toString()
+        )
+    }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+    ) {
+        TableCell(weight = CategoryColumn.CATEGORY.weight) {
+            ListItem(
+                headlineContent = { Text(category.category.name) },
+                leadingContent = {
+                    Checkbox(
+                        checked = category.category.isSelected,
+                        onCheckedChange = { vm.toggleCategorySelection(category.category.id) }
+                    )
+                },
+                supportingContent = {
+                    val target = category.category.monthlyTarget.takeIf { it != 0.toDouble() } ?: 1.0f
+                    CustomLinearProgressIndicator(
+                        progress = vm.getCategorySpending(category.category.id).toFloat() / target.toFloat()
+                    )
                 }
-            }
+            )
+        }
+        TableCell(weight = CategoryColumn.ACTUAL_SPENDING.weight) {
+            val formattedSpending = String.format("%.2f zł", vm.getCategorySpending(category.category.id))
+            InputChip(
+                label = { Text(formattedSpending) },
+                onClick = { showDialog = true },
+                enabled = false,
+                selected = false,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+        TableCell(weight = CategoryColumn.MONTHLY_TARGET.weight) {
+            val formattedTarget = String.format("%.2f zł", category.category.monthlyTarget)
+            InputChip(
+                label = { Text(formattedTarget) },
+                onClick = { showDialog = true },
+                selected = showDialog,
+                modifier = Modifier.padding(8.dp)
+            )
         }
     }
 }
