@@ -9,27 +9,43 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.example.project.domain.models.group.GroupWithCategoriesAndKeywordsData
 import org.example.project.domain.models.keyword.KeywordData
+import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.domain.repositories.CategoryRepository
 import org.example.project.domain.repositories.KeywordRepository
+import org.example.project.domain.repositories.TransactionRepository
+import java.time.LocalDate
+import kotlin.math.absoluteValue
 
-class KeywordsScreenViewModel(
+class CategoriesScreenViewModel(
     private val categoryRepository: CategoryRepository,
     private val keywordRepository: KeywordRepository,
+    private val transactionRepository: TransactionRepository,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(ImportState())
+    private val _uiState = MutableStateFlow(CategoriesState())
     val uiState = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
             getCategoriesWithKeywords()
         }
+        viewModelScope.launch {
+            getTransactionsForCurrentMonth()
+        }
     }
 
     private suspend fun getCategoriesWithKeywords() {
         categoryRepository.getGroupsWithCategoriesAndKeywords().collectLatest {
             _uiState.update { currentState ->
-                currentState.copy(categoryGroups = it)
+                currentState.copy(categoryGroupsWithKeywords = it)
+            }
+        }
+    }
+
+    private suspend fun getTransactionsForCurrentMonth() {
+        transactionRepository.getTransactionsForMonth(LocalDate.now()).collectLatest {
+            _uiState.update { currentState ->
+                currentState.copy(transactions = it)
             }
         }
     }
@@ -76,16 +92,40 @@ class KeywordsScreenViewModel(
         }
     }
 
+    fun getCategorySpending(categoryId: String): Double {
+        return _uiState.value.transactions.filter { it.categoryId == categoryId }
+            .sumOf { it.amount }.absoluteValue
+    }
+
+    fun toggleCategorySelection(id: String) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                categoryGroupsWithKeywords = currentState.categoryGroupsWithKeywords.map { group ->
+                    group.copy(
+                        categories = group.categories.map { category ->
+                            if (category.category.id == id) {
+                                category.copy(category = category.category.copy(isSelected = !category.category.isSelected))
+                            } else {
+                                category
+                            }
+                        }
+                    )
+                }
+            )
+        }
+    }
+
     fun moveKeyword(keywordId: String, newCategoryId: String) {
         viewModelScope.launch {
             keywordRepository.moveKeyword(keywordId, newCategoryId)
         }
     }
 
-    data class ImportState(
+    data class CategoriesState(
         val isError: Throwable? = null,
         val isLoading: Boolean = false,
 
-        val categoryGroups: List<GroupWithCategoriesAndKeywordsData> = emptyList(),
+        val categoryGroupsWithKeywords: List<GroupWithCategoriesAndKeywordsData> = emptyList(),
+        val transactions: List<TransactionData> = emptyList(),
     )
 }

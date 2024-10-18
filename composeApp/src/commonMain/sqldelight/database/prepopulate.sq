@@ -1,7 +1,7 @@
 INSERT INTO GroupEntity (id, name) VALUES ('1', 'Expenses');
 INSERT INTO GroupEntity (id, name) VALUES ('2', 'Income');
 
-INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('1', 'Food', '1');
+INSERT INTO CategoryEntity (id, name, categoryGroupId, monthlyTarget) VALUES ('1', 'Food', '1',500);
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('2', 'Transport', '1');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('3', 'Entertainment', '1');
 

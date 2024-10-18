@@ -115,13 +115,13 @@ fun CategoryGroupItem(
             HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
             categories.forEach { category ->
                 CategoryItem(
-                    title = category.name,
+                    title = category.category.name,
                     keywords = category.keywords,
-                    onAddKeyword = { keyword -> onAddKeyword(keyword, category.id) },
+                    onAddKeyword = { keyword -> onAddKeyword(keyword, category.category.id) },
                     onKeywordUpdated = onKeywordUpdated,
                     onRemoveKeyword = onRemoveKeyword,
                     onKeywordDropped = { keywordId ->
-                        onKeywordDropped(keywordId, category.id)
+                        onKeywordDropped(keywordId, category.category.id)
                     }
                 )
             }

@@ -106,6 +106,7 @@ DELETE FROM GroupEntity WHERE id = :id;
 CREATE TABLE CategoryEntity (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
+    monthlyTarget REAL,
     categoryGroupId TEXT NOT NULL,
     FOREIGN KEY (categoryGroupId) REFERENCES GroupEntity(id)
 );
@@ -113,6 +114,9 @@ CREATE TABLE CategoryEntity (
 insertCategory:
 INSERT INTO CategoryEntity
 VALUES ?;
+
+updateMonthlyTarget:
+UPDATE CategoryEntity SET monthlyTarget = :monthlyTarget WHERE id = :id;
 
 updateCategory:
 UPDATE CategoryEntity SET name = :name, categoryGroupId = :categoryGroupId WHERE id = :id;

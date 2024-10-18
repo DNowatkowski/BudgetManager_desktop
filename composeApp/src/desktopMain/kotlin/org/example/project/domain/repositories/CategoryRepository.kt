@@ -11,4 +11,5 @@ interface CategoryRepository {
     suspend fun insertCategoryGroup(name: String)
     suspend fun updateCategoryGroup(id: String, name: String)
     suspend fun deleteCategoryGroup(id: String)
+    suspend fun updateMonthlyTarget(categoryId: String, target: Double)
 }

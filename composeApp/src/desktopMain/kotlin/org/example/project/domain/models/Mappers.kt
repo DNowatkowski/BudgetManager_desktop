@@ -18,6 +18,7 @@ fun CategoryEntity.toDomainModel(
         id = id,
         name = name,
         categoryGroupId = categoryGroupId,
+        monthlyTarget = monthlyTarget ?: 0.0,
     )
 }
 

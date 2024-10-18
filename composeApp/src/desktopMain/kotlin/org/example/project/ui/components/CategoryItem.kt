@@ -5,6 +5,8 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,7 +31,7 @@ import java.awt.datatransfer.DataFlavor
 
 @OptIn(
     ExperimentalFoundationApi::class,
-    ExperimentalComposeUiApi::class,
+    ExperimentalComposeUiApi::class, ExperimentalLayoutApi::class,
 )
 @Composable
 fun CategoryItem(
@@ -40,7 +42,6 @@ fun CategoryItem(
     onRemoveKeyword: (KeywordData) -> Unit,
     onKeywordDropped: (String) -> Unit,
 ) {
-    val listState = rememberLazyListState()
     var showTargetBorder by remember { mutableStateOf(false) }
     val dragAndDropTarget = remember {
         object : DragAndDropTarget {
@@ -72,7 +73,7 @@ fun CategoryItem(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 2.dp)
+            .padding(horizontal = 8.dp)
             .then(
                 if (showTargetBorder)
                     Modifier
@@ -90,25 +91,20 @@ fun CategoryItem(
                 target = dragAndDropTarget
             )
     ) {
-        Text("$title:", modifier = Modifier.padding(start = 8.dp))
-        LazyRow(
-            state = listState,
+        Text("$title:", modifier = Modifier.padding(start = 8.dp), style = MaterialTheme.typography.bodyMedium)
+        FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            items(count = keywords.size, key = { keywords[it].id }) { index ->
-                val keyword = keywords[index]
+            keywords.forEach { keyword ->
                 KeywordChip(
                     keyword = keyword,
                     onRemoveKeyword = onRemoveKeyword,
                     onKeywordUpdated = onKeywordUpdated,
-                    modifier = Modifier.animateItem()
                 )
             }
-            item {
-                AddKeywordChip(
-                    onAddKeyword = onAddKeyword,
-                )
-            }
+            AddKeywordChip(
+                onAddKeyword = onAddKeyword,
+            )
         }
     }
 }

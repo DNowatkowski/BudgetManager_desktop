@@ -147,7 +147,6 @@ fun HeaderRow(
                         }
                     }
                     .alpha(if (sortOption == BudgetScreenViewModel.TransactionSortOption.AMOUNT) 1f else 0.5f)
-
             )
         }
     }

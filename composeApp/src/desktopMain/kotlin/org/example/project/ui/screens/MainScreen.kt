@@ -12,18 +12,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import org.example.project.ui.screens.budgetScreen.BudgetScreen
-import org.example.project.ui.screens.keywords.KeywordsScreen
+import org.example.project.ui.screens.keywords.CategoriesScreen
 
 
 @Composable
 fun MainScreen() {
-    Navigator(KeywordsScreen()) { navigator ->
+    Navigator(CategoriesScreen()) { navigator ->
         Row(modifier = Modifier.fillMaxSize()) {
             ModalDrawerSheet(modifier = Modifier.width(240.dp)) {
                 NavigationDrawerItem(
                     label = { Text(text = "Import") },
-                    selected = navigator.lastItem is KeywordsScreen,
-                    onClick = { navigator.replace(KeywordsScreen()) }
+                    selected = navigator.lastItem is CategoriesScreen,
+                    onClick = { navigator.replace(CategoriesScreen()) }
                 )
                 NavigationDrawerItem(
                     label = { Text(text = "Budget") },

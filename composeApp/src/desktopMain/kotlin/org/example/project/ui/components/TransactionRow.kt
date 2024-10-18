@@ -114,12 +114,13 @@ fun TransactionRow(
         TableCell(
             weight = TransactionColumn.AMOUNT.weight
         ) {
+            val formattedAmount = String.format("%.2f zł", transaction.amount)
             Text(
-                text = if (transaction.amount < 0) "${transaction.amount} zł" else "+${transaction.amount} zł",
+                text = if (transaction.amount < 0) formattedAmount else "+$formattedAmount",
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = if (transaction.amount < 0) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
                 ),
-                maxLines = 3,
+                maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
 
                 )

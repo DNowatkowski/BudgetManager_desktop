@@ -9,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
+import org.example.project.domain.models.category.CategoryData
 import org.example.project.domain.models.category.CategoryWithKeywords
 import org.example.project.domain.models.group.GroupWithCategoriesAndKeywordsData
 import org.example.project.domain.models.group.GroupWithCategoryData
@@ -33,8 +34,7 @@ class CategoryRepositoryImpl(
                     categories = categories.filter { it.categoryGroupId == group.id }
                         .map { category ->
                             CategoryWithKeywords(
-                                id = category.id,
-                                name = category.name,
+                                category = category.toDomainModel(),
                                 keywords = keywords.filter { it.categoryId == category.id }
                                     .map { it.toDomainModel() }
                             )
@@ -64,9 +64,10 @@ class CategoryRepositoryImpl(
         withContext(Dispatchers.IO) {
             database.databaseQueries.insertCategory(
                 CategoryEntity(
-                    UUID.randomUUID().toString(),
-                    name,
-                    groupId
+                    id = UUID.randomUUID().toString(),
+                    name = name,
+                    monthlyTarget = 0.00,
+                    categoryGroupId = groupId
                 )
             )
         }
@@ -92,6 +93,12 @@ class CategoryRepositoryImpl(
     override suspend fun deleteCategoryGroup(id: String) {
         withContext(Dispatchers.IO) {
             database.databaseQueries.deleteCategoryGroupWithDependencies(id)
+        }
+    }
+
+    override suspend fun updateMonthlyTarget(categoryId: String, target: Double) {
+        withContext(Dispatchers.IO) {
+            database.databaseQueries.updateMonthlyTarget(target, categoryId)
         }
     }
 }

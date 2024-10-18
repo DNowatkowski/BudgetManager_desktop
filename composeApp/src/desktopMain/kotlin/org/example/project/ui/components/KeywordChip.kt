@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,7 +54,7 @@ fun KeywordChip(
             onDismiss = { showDialog = false },
             label = "Keyword",
         )
-    Box() {
+    Box {
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
@@ -75,7 +76,7 @@ fun KeywordChip(
         }
         InputChip(
             selected = false,
-            label = { Text(keyword.keyword) },
+            label = { Text(keyword.keyword, style = MaterialTheme.typography.bodySmall) },
             onClick = { expanded = true },
             modifier = modifier.dragAndDropSource(
                 // Creates a visual representation of the data being dragged

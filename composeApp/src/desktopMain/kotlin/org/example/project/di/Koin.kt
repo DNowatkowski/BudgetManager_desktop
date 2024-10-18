@@ -12,7 +12,7 @@ import org.example.project.domain.repositories.CategoryRepository
 import org.example.project.domain.repositories.KeywordRepository
 import org.example.project.domain.repositories.TransactionRepository
 import org.example.project.ui.screens.budgetScreen.BudgetScreenViewModel
-import org.example.project.ui.screens.keywords.KeywordsScreenViewModel
+import org.example.project.ui.screens.keywords.CategoriesScreenViewModel
 import org.koin.compose.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
@@ -45,6 +45,6 @@ val appModule = module {
             .build()
     }
     single<CategoryRepository> { CategoryRepositoryImpl(get()) }
-    viewModel { KeywordsScreenViewModel(get(), get()) }
+    viewModel { CategoriesScreenViewModel(get(), get(), get()) }
     viewModel { BudgetScreenViewModel(get(), get(), get(), get()) }
 }
