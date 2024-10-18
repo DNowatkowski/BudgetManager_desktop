@@ -275,7 +275,8 @@ private fun CategoryRow(vm: CategoriesScreenViewModel, category: CategoryWithKey
             numbersOnly = true,
             onDismiss = { showDialog = false },
             label = "Monthly target",
-            initialText = category.category.monthlyTarget.toString()
+            initialText = category.category.monthlyTarget.takeIf { it != 0.0 }?.toString(
+            ) ?: "0.00"
         )
     }
     Row(
@@ -292,15 +293,18 @@ private fun CategoryRow(vm: CategoriesScreenViewModel, category: CategoryWithKey
                     )
                 },
                 supportingContent = {
-                    val target = category.category.monthlyTarget.takeIf { it != 0.toDouble() } ?: 1.0f
+                    val target =
+                        category.category.monthlyTarget.takeIf { it != 0.toDouble() } ?: 1.0f
                     CustomLinearProgressIndicator(
-                        progress = vm.getCategorySpending(category.category.id).toFloat() / target.toFloat()
+                        progress = vm.getCategorySpending(category.category.id)
+                            .toFloat() / target.toFloat()
                     )
                 }
             )
         }
         TableCell(weight = CategoryColumn.ACTUAL_SPENDING.weight) {
-            val formattedSpending = String.format("%.2f zł", vm.getCategorySpending(category.category.id))
+            val formattedSpending =
+                String.format("%.2f zł", vm.getCategorySpending(category.category.id))
             InputChip(
                 label = { Text(formattedSpending) },
                 onClick = { showDialog = true },
