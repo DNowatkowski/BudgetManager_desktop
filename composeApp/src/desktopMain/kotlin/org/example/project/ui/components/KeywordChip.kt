@@ -76,7 +76,7 @@ fun KeywordChip(
         }
         InputChip(
             selected = false,
-            label = { Text(keyword.keyword, style = MaterialTheme.typography.bodySmall) },
+            label = { Text(keyword.keyword, style = MaterialTheme.typography.labelMedium) },
             onClick = { expanded = true },
             modifier = modifier.dragAndDropSource(
                 // Creates a visual representation of the data being dragged

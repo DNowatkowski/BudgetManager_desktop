@@ -89,9 +89,21 @@ class CategoryRepositoryImpl(
         }
     }
 
+    override suspend fun updateCategory(id: String, name: String) {
+        withContext(Dispatchers.IO) {
+            database.databaseQueries.updateCategory(id = id, name = name)
+        }
+    }
+
     override suspend fun deleteCategoryGroup(id: String) {
         withContext(Dispatchers.IO) {
             database.databaseQueries.deleteCategoryGroupWithDependencies(id)
+        }
+    }
+
+    override suspend fun deleteCategory(id: String) {
+        withContext(Dispatchers.IO) {
+            database.databaseQueries.deleteCategoryById(id)
         }
     }
 

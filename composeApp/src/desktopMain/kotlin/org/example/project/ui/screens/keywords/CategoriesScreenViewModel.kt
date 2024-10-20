@@ -86,9 +86,21 @@ class CategoriesScreenViewModel(
         }
     }
 
+    fun updateCategory(categoryId: String, name: String) {
+        viewModelScope.launch {
+            categoryRepository.updateCategory(categoryId, name)
+        }
+    }
+
     fun removeGroup(groupId: String) {
         viewModelScope.launch {
             categoryRepository.deleteCategoryGroup(groupId)
+        }
+    }
+
+    fun removeCategory(categoryId: String) {
+        viewModelScope.launch {
+            categoryRepository.deleteCategory(categoryId)
         }
     }
 
