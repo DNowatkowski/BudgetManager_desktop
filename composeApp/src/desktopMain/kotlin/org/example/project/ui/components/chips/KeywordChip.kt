@@ -1,4 +1,4 @@
-package org.example.project.ui.components
+package org.example.project.ui.components.chips
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.draganddrop.dragAndDropSource
@@ -33,6 +33,7 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import org.example.project.domain.models.keyword.KeywordData
+import org.example.project.ui.components.dialogs.InputDialog
 import java.awt.datatransfer.StringSelection
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)

@@ -1,4 +1,4 @@
-package org.example.project.ui.components
+package org.example.project.ui.components.chips
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.example.project.ui.components.dialogs.InputDialog
 
 @Composable
 fun AddKeywordChip(

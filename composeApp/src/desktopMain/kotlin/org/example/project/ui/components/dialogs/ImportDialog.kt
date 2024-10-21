@@ -1,4 +1,4 @@
-package org.example.project.ui.components
+package org.example.project.ui.components.dialogs
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

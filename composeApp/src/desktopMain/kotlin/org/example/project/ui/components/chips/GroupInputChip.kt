@@ -1,4 +1,4 @@
-package org.example.project.ui.components
+package org.example.project.ui.components.chips
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -16,40 +16,39 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import org.example.project.domain.models.category.CategoryData
+import org.example.project.domain.models.group.GroupWithCategoryData
 
 @Composable
-fun CategoryInputChip(
-    categoriesForGroup: List<CategoryData>,
-    enabled: Boolean = true,
-    selectedCategory: CategoryData?,
-    onCategorySelected: (CategoryData) -> Unit
+fun GroupInputChip(
+    groups: List<GroupWithCategoryData>,
+    selectedGroup: GroupWithCategoryData?,
+    onGroupSelected: (GroupWithCategoryData) -> Unit
 ) {
     var dropdownMenuExpanded by remember { mutableStateOf(false) }
 
-    Box(contentAlignment = Alignment.BottomEnd) {
+    Box {
         DropdownMenu(
             expanded = dropdownMenuExpanded,
             onDismissRequest = { dropdownMenuExpanded = false }
         ) {
-            categoriesForGroup.forEach { category ->
+            groups.forEach { group ->
                 TextButton(
                     onClick = {
-                        onCategorySelected(category)
+                        onGroupSelected(group)
                         dropdownMenuExpanded = false
                     }
                 ) {
                     Text(
-                        category.name,
-                        style = MaterialTheme.typography.bodySmall,
+                        group.name,
+                        style = MaterialTheme.typography.labelMedium,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-                    Spacer(modifier = androidx.compose.ui.Modifier.weight(1f).widthIn(10.dp))
-                    if (selectedCategory == category)
+                    Spacer(modifier = Modifier.weight(1f).widthIn(10.dp))
+                    if (selectedGroup == group)
                         Icon(Icons.Filled.Check, null)
                 }
             }
@@ -57,12 +56,11 @@ fun CategoryInputChip(
     }
     InputChip(
         selected = dropdownMenuExpanded,
-        enabled = enabled,
         onClick = { dropdownMenuExpanded = !dropdownMenuExpanded },
         label = {
             Text(
-                selectedCategory?.name ?: "Undefined",
-                style = MaterialTheme.typography.bodySmall,
+                selectedGroup?.name ?: "Undefined",
+                style = MaterialTheme.typography.labelMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

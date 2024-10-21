@@ -1,4 +1,4 @@
-package org.example.project.ui.components
+package org.example.project.ui.components.table
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import org.example.project.constants.TransactionColumn
 import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.transaction.TransactionData
+import org.example.project.ui.components.chips.CategoryInputChip
+import org.example.project.ui.components.chips.GroupInputChip
 
 @Composable
 fun TransactionRow(

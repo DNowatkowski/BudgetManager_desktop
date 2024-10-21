@@ -1,4 +1,4 @@
-package org.example.project.ui.components
+package org.example.project.ui.components.dialogs
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.OutlinedTextField

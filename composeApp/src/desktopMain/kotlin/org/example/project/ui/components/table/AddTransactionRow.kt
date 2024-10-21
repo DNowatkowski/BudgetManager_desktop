@@ -1,4 +1,4 @@
-package org.example.project.ui.components
+package org.example.project.ui.components.table
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,7 +32,11 @@ import network.chaintech.kmp_date_time_picker.ui.datepicker.WheelDatePickerCompo
 import org.example.project.constants.TransactionColumn
 import org.example.project.domain.models.category.CategoryData
 import org.example.project.domain.models.group.GroupWithCategoryData
+import org.example.project.domain.models.stringToDouble
 import org.example.project.domain.models.transaction.TransactionData
+import org.example.project.ui.components.TransactionTextField
+import org.example.project.ui.components.chips.CategoryInputChip
+import org.example.project.ui.components.chips.GroupInputChip
 import java.time.LocalDate
 import java.util.UUID
 
@@ -114,7 +118,7 @@ fun AddTransactionRow(
             ) {
                 InputChip(
                     selected = showDatePicker,
-                    label = { Text(date.toString(), style = MaterialTheme.typography.bodySmall) },
+                    label = { Text(date.toString(), style = MaterialTheme.typography.labelMedium) },
                     onClick = { showDatePicker = true },
                 )
             }
@@ -141,21 +145,14 @@ fun AddTransactionRow(
             TableCell(
                 weight = TransactionColumn.DESCRIPTION.weight
             ) {
-                BasicTextField(
+               TransactionTextField(
                     value = description,
                     onValueChange = { description = it },
-                    textStyle = MaterialTheme.typography.bodySmall,
+                    placeholder = null,
+                   suffix = null,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(MaterialTheme.shapes.small)
-                        .border(
-                            1.dp, Color.Gray,
-                            shape = MaterialTheme.shapes.small
-                        )
-                        .background(MaterialTheme.colorScheme.surface)
-                        .padding(8.dp)
-
-                )
+               )
             }
 
             TableCell(
@@ -185,21 +182,10 @@ fun AddTransactionRow(
                 weight = TransactionColumn.AMOUNT.weight,
                 modifier = Modifier.padding(end = 8.dp)
             ) {
-                BasicTextField(
+                TransactionTextField(
                     value = amount,
-                    singleLine = true,
                     onValueChange = { amount = it },
-                    textStyle = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(MaterialTheme.shapes.small)
-                        .border(
-                            1.dp, Color.Gray,
-                            shape = MaterialTheme.shapes.small
-                        )
-                        .background(MaterialTheme.colorScheme.surface)
-                        .padding(8.dp)
-
+                    isError = amount.toDoubleOrNull() == null,
                 )
             }
         }
@@ -217,6 +203,7 @@ fun AddTransactionRow(
                 Text("Cancel")
             }
             Button(
+                enabled = amount.toDoubleOrNull() != null,
                 onClick = {
                     onAdded(
                         TransactionData(
@@ -224,7 +211,7 @@ fun AddTransactionRow(
                             date = date,
                             payee = payee,
                             description = description,
-                            amount = amount.toDouble(),
+                            amount = amount.stringToDouble(),
                             categoryId = selectedCategory?.id,
                         )
                     )

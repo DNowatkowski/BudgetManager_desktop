@@ -1,4 +1,4 @@
-package org.example.project.ui.components
+package org.example.project.ui.components.table
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
