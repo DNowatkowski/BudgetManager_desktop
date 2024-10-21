@@ -60,7 +60,6 @@ import org.example.project.domain.models.stringToDouble
 import org.example.project.domain.models.stringToDoubleOrNull
 import org.example.project.domain.models.toReadableString
 import org.example.project.ui.components.CustomLinearProgressIndicator
-import org.example.project.ui.components.DateSwitcher
 import org.example.project.ui.components.chips.AddKeywordChip
 import org.example.project.ui.components.dialogs.BudgetManagerDialog
 import org.example.project.ui.components.dialogs.InputDialog
@@ -72,13 +71,14 @@ import org.koin.core.annotation.KoinExperimentalAPI
 import java.time.LocalDate
 
 
-class CategoriesScreen : Screen {
+data class CategoriesScreen(
+    val activeMonth: LocalDate,
+) : Screen {
     @OptIn(KoinExperimentalAPI::class)
     @Composable
     override fun Content() {
         val vm = koinViewModel<CategoriesScreenViewModel>()
         val uiState by vm.uiState.collectAsStateWithLifecycle()
-
         val showDialog = remember { mutableStateOf(false) }
 
         if (showDialog.value) {
@@ -90,15 +90,14 @@ class CategoriesScreen : Screen {
             )
         }
 
+        LaunchedEffect(activeMonth) {
+            vm.getDataForMonth(activeMonth)
+        }
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()
         ) {
-            DateSwitcher(
-                activeMonth = uiState.activeMonth,
-                onNextMonth = { vm.nextMonth() },
-                onPreviousMonth = { vm.previousMonth() },
-            )
             Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
                 TextButton(
                     onClick = { showDialog.value = true }
@@ -122,7 +121,7 @@ class CategoriesScreen : Screen {
                     CategoryRow(
                         vm = vm,
                         category = category,
-                        activeMonth = uiState.activeMonth,
+                        activeMonth = activeMonth,
                         spending = uiState.categorySpending[category.category] ?: 0.0
                     )
                 }
@@ -286,7 +285,7 @@ private fun CategoryRow(
     var showEditCategoryDialog by remember { mutableStateOf(false) }
     var showAlertDialog by remember { mutableStateOf(false) }
     var dropDownExpanded by remember { mutableStateOf(false) }
-    val progress by remember(activeMonth, category.category.monthlyTarget) {
+    val progress by remember(activeMonth, category.category.monthlyTarget, spending) {
         val target = category.category.monthlyTarget
         mutableStateOf(
             try {

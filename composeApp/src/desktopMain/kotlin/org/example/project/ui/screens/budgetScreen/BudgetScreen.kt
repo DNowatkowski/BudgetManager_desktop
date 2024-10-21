@@ -43,14 +43,16 @@ import io.github.vinceglb.filekit.core.PickerType
 import io.github.vinceglb.filekit.core.PlatformFile
 import org.example.project.ui.components.table.AddTransactionRow
 import org.example.project.ui.components.dialogs.BudgetManagerDialog
-import org.example.project.ui.components.DateSwitcher
 import org.example.project.ui.components.table.HeaderRow
 import org.example.project.ui.components.dialogs.ImportDialog
 import org.example.project.ui.components.table.TransactionRow
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
+import java.time.LocalDate
 
-class BudgetScreen : Screen {
+data class BudgetScreen(
+    val activeMonth: LocalDate
+) : Screen {
     @OptIn(KoinExperimentalAPI::class)
     @Composable
     override fun Content() {
@@ -63,6 +65,10 @@ class BudgetScreen : Screen {
         var showAlertDialog by remember { mutableStateOf(false) }
         var showImportDialog by remember { mutableStateOf(false) }
         var platformFile: PlatformFile? by remember { mutableStateOf(null) }
+
+        LaunchedEffect(activeMonth) {
+            vm.getTransactionsForMonth(activeMonth)
+        }
 
         LaunchedEffect(showNewTransactionRow) {
             if (showNewTransactionRow) {
@@ -110,11 +116,6 @@ class BudgetScreen : Screen {
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            DateSwitcher(
-                activeMonth = uiState.activeMonth,
-                onNextMonth = { vm.nextMonth() },
-                onPreviousMonth = { vm.previousMonth() }
-            )
             Row(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp).fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically

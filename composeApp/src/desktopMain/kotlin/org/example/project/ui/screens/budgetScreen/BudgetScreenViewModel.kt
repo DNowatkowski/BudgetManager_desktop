@@ -37,15 +37,15 @@ class BudgetScreenViewModel(
 
     init {
         _queryJob = viewModelScope.launch {
-            getTransactions(_uiState.value.activeMonth)
+            getTransactions(LocalDate.now())
         }
         viewModelScope.launch {
             getGroupsWithCategories()
         }
     }
 
-    private suspend fun getTransactions(month: LocalDate) {
-        transactionRepository.getTransactionsForMonth(month).collectLatest {
+    private suspend fun getTransactions(date: LocalDate) {
+        transactionRepository.getTransactionsForMonth(date).collectLatest {
             _transactions = it
             _uiState.update { currentState ->
                 currentState.copy(
@@ -57,6 +57,13 @@ class BudgetScreenViewModel(
                         )
                 )
             }
+        }
+    }
+
+    fun getTransactionsForMonth(date: LocalDate) {
+        _queryJob?.cancel()
+        _queryJob = viewModelScope.launch {
+            getTransactions(date)
         }
     }
 
@@ -95,30 +102,6 @@ class BudgetScreenViewModel(
     fun addTransaction(transaction: TransactionData) {
         viewModelScope.launch {
             transactionRepository.insertTransaction(transaction)
-        }
-    }
-
-    fun previousMonth() {
-        _queryJob?.cancel()
-        _queryJob = viewModelScope.launch {
-            getTransactions(_uiState.value.activeMonth.minusMonths(1))
-        }
-        _uiState.update { currentState ->
-            currentState.copy(
-                activeMonth = currentState.activeMonth.minusMonths(1)
-            )
-        }
-    }
-
-    fun nextMonth() {
-        _queryJob?.cancel()
-        _queryJob = viewModelScope.launch {
-            getTransactions(_uiState.value.activeMonth.plusMonths(1))
-        }
-        _uiState.update { currentState ->
-            currentState.copy(
-                activeMonth = currentState.activeMonth.plusMonths(1)
-            )
         }
     }
 
@@ -263,7 +246,6 @@ class BudgetScreenViewModel(
 
     data class BudgetState(
         val searchText: String = "",
-        val activeMonth: LocalDate = LocalDate.now(),
         val groups: List<GroupWithCategoryData> = emptyList(),
         val transactions: List<TransactionData> = emptyList(),
         val sortOption: TransactionSortOption = TransactionSortOption.DATE,

@@ -13,7 +13,6 @@ import org.example.project.domain.models.category.CategoryData
 import org.example.project.domain.models.group.GroupData
 import org.example.project.domain.models.group.GroupWithCategoriesAndKeywordsData
 import org.example.project.domain.models.keyword.KeywordData
-import org.example.project.domain.models.toReadableString
 import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.domain.repositories.CategoryRepository
 import org.example.project.domain.repositories.KeywordRepository
@@ -32,12 +31,6 @@ class CategoriesScreenViewModel(
 
     private var _queryJob: Job? = null
 
-    init {
-        _queryJob = viewModelScope.launch {
-            getData(LocalDate.now())
-        }
-    }
-
     private suspend fun getData(date: LocalDate) {
         combine(
             categoryRepository.getGroupsWithCategoriesAndKeywords(),
@@ -48,7 +41,6 @@ class CategoriesScreenViewModel(
                 isError = null,
                 categoryGroupsWithKeywords = groupWithCategoriesAndKeywords,
                 transactions = transactions,
-                activeMonth = date,
                 groupTargets = groupWithCategoriesAndKeywords.associate { group ->
                     group.group to group.categories.sumOf { it.category.monthlyTarget }.absoluteValue
                 },
@@ -74,6 +66,12 @@ class CategoriesScreenViewModel(
         }
     }
 
+    fun getDataForMonth(date: LocalDate) {
+        _queryJob?.cancel()
+        _queryJob = viewModelScope.launch {
+            getData(date)
+        }
+    }
 
     fun addCategory(name: String, groupId: String) {
         viewModelScope.launch {
@@ -141,19 +139,6 @@ class CategoriesScreenViewModel(
 //        }
 //    }
 
-    fun previousMonth() {
-        _queryJob?.cancel()
-        _queryJob = viewModelScope.launch {
-            getData(_uiState.value.activeMonth.minusMonths(1))
-        }
-    }
-
-    fun nextMonth() {
-        _queryJob?.cancel()
-        _queryJob = viewModelScope.launch {
-            getData(_uiState.value.activeMonth.plusMonths(1))
-        }
-    }
 
     data class CategoriesState(
         val isError: Throwable? = null,
@@ -161,9 +146,8 @@ class CategoriesScreenViewModel(
 
         val categoryGroupsWithKeywords: List<GroupWithCategoriesAndKeywordsData> = emptyList(),
         val transactions: List<TransactionData> = emptyList(),
-        val activeMonth: LocalDate = LocalDate.now(),
         val groupTargets: Map<GroupData, Double> = emptyMap(),
         val groupSpending: Map<GroupData, Double> = emptyMap(),
-        val categorySpending: Map<CategoryData,Double> = emptyMap()
+        val categorySpending: Map<CategoryData, Double> = emptyMap()
     )
 }
