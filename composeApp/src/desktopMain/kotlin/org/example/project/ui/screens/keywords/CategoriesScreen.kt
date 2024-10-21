@@ -115,15 +115,15 @@ class CategoriesScreen : Screen {
                 GroupRow(
                     vm = vm,
                     group = group,
-                    spending = uiState.groupSpending[group.group] ?: "NaN",
-                    target = uiState.groupTargets[group.group] ?: "NaN"
+                    spending = uiState.groupSpending[group.group] ?: 0.0,
+                    target = uiState.groupTargets[group.group] ?: 0.0
                 )
                 group.categories.forEach { category ->
                     CategoryRow(
                         vm = vm,
                         category = category,
                         activeMonth = uiState.activeMonth,
-                        spending = uiState.categorySpending[category.category] ?: "NaN"
+                        spending = uiState.categorySpending[category.category] ?: 0.0
                     )
                 }
             }
@@ -172,8 +172,8 @@ private fun TargetHeaderRow() {
 private fun GroupRow(
     vm: CategoriesScreenViewModel,
     group: GroupWithCategoriesAndKeywordsData,
-    target: String,
-    spending: String,
+    target: Double,
+    spending: Double,
 ) {
 
     var dropdownExpanded by remember { mutableStateOf(false) }
@@ -219,7 +219,7 @@ private fun GroupRow(
         }
         TableCell(weight = CategoryColumn.ACTUAL_SPENDING.weight) {
             TransactionTextField(
-                value = spending,
+                value = spending.toReadableString(),
                 readOnly = true,
                 enabled = false,
                 onValueChange = {},
@@ -228,7 +228,7 @@ private fun GroupRow(
         }
         TableCell(weight = CategoryColumn.MONTHLY_TARGET.weight) {
             TransactionTextField(
-                value = target,
+                value = target.toReadableString(),
                 readOnly = true,
                 enabled = false,
                 onValueChange = {},
@@ -279,7 +279,7 @@ private fun GroupRow(
 private fun CategoryRow(
     vm: CategoriesScreenViewModel,
     category: CategoryWithKeywords,
-    spending: String,
+    spending: Double,
     activeMonth: LocalDate
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -290,7 +290,7 @@ private fun CategoryRow(
         val target = category.category.monthlyTarget
         mutableStateOf(
             try {
-                (spending.stringToDouble() / target).toFloat()
+                (spending / target).toFloat()
             } catch (e: IllegalArgumentException) {
                 0.0f
             }
@@ -342,7 +342,7 @@ private fun CategoryRow(
             }
             TableCell(weight = CategoryColumn.ACTUAL_SPENDING.weight) {
                 TransactionTextField(
-                    value = spending,
+                    value = spending.toReadableString(),
                     readOnly = true,
                     enabled = false,
                     onValueChange = {},

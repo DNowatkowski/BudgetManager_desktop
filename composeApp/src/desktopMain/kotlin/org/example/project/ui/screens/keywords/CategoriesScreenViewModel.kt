@@ -50,7 +50,7 @@ class CategoriesScreenViewModel(
                 transactions = transactions,
                 activeMonth = date,
                 groupTargets = groupWithCategoriesAndKeywords.associate { group ->
-                    group.group to group.categories.sumOf { it.category.monthlyTarget }.absoluteValue.toReadableString()
+                    group.group to group.categories.sumOf { it.category.monthlyTarget }.absoluteValue
                 },
 
                 groupSpending = groupWithCategoriesAndKeywords.associate { group ->
@@ -58,7 +58,6 @@ class CategoriesScreenViewModel(
                         .filter { transaction -> group.categories.any { it.category.id == transaction.categoryId } }
                         .sumOf { it.amount }
                         .absoluteValue
-                        .toReadableString()
                 },
                 categorySpending = groupWithCategoriesAndKeywords.flatMap { it.categories }
                     .associate { category ->
@@ -66,7 +65,6 @@ class CategoriesScreenViewModel(
                             .filter { it.categoryId == category.category.id }
                             .sumOf { it.amount }
                             .absoluteValue
-                            .toReadableString()
                     }
 
             )
@@ -131,11 +129,6 @@ class CategoriesScreenViewModel(
         }
     }
 
-    fun getCategorySpending(categoryId: String): Double {
-        return _uiState.value.transactions.filter { it.categoryId == categoryId }
-            .sumOf { it.amount }.absoluteValue
-    }
-
     fun setMonthlyTarget(categoryId: String, target: Double) {
         viewModelScope.launch {
             categoryRepository.updateMonthlyTarget(categoryId = categoryId, target = target)
@@ -169,8 +162,8 @@ class CategoriesScreenViewModel(
         val categoryGroupsWithKeywords: List<GroupWithCategoriesAndKeywordsData> = emptyList(),
         val transactions: List<TransactionData> = emptyList(),
         val activeMonth: LocalDate = LocalDate.now(),
-        val groupTargets: Map<GroupData, String> = emptyMap(),
-        val groupSpending: Map<GroupData, String> = emptyMap(),
-        val categorySpending: Map<CategoryData,String> = emptyMap()
+        val groupTargets: Map<GroupData, Double> = emptyMap(),
+        val groupSpending: Map<GroupData, Double> = emptyMap(),
+        val categorySpending: Map<CategoryData,Double> = emptyMap()
     )
 }
