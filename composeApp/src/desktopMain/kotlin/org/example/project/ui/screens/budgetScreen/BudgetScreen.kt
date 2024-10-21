@@ -41,8 +41,8 @@ import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.core.PickerMode
 import io.github.vinceglb.filekit.core.PickerType
 import io.github.vinceglb.filekit.core.PlatformFile
+import org.example.project.ui.components.dialogs.AlertDialog
 import org.example.project.ui.components.table.AddTransactionRow
-import org.example.project.ui.components.dialogs.BudgetManagerDialog
 import org.example.project.ui.components.table.TransactionsHeaderRow
 import org.example.project.ui.components.dialogs.ImportDialog
 import org.example.project.ui.components.table.TransactionRow
@@ -95,20 +95,13 @@ data class BudgetScreen(
         }
 
         if (showAlertDialog)
-            BudgetManagerDialog(
+            AlertDialog(
                 title = "Delete transaction",
+                text = "Are you sure you want to delete the selected transactions?",
                 onDismiss = { showAlertDialog = false },
-                onConfirmed = { vm.deleteSelectedTransactions() },
-                confirmButtonText = "Delete",
-                dismissButtonText = "Cancel",
-                content = {
-                    Icon(
-                        Icons.Filled.Warning,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Text("Are you sure you want to delete selected transactions?")
+                onConfirmed = {
+                    vm.deleteSelectedTransactions()
+                    showAlertDialog = false
                 }
             )
 

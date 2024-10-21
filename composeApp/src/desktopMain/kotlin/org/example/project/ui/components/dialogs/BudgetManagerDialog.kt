@@ -2,17 +2,16 @@ package org.example.project.ui.components.dialogs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Button
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -38,26 +37,29 @@ fun BudgetManagerDialog(
     Dialog(
         onDismissRequest = onDismiss,
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+        Box(
             modifier = modifier
-                .sizeIn(minWidth = 150.dp, minHeight = 100.dp)
-                .wrapContentSize()
+                .heightIn(min = 220.dp)
+                .wrapContentWidth()
                 .clip(MaterialTheme.shapes.large)
                 .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f))
-                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
+                .padding(horizontal = 24.dp, vertical = 16.dp)
 
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.labelLarge
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.align(Alignment.TopCenter)
             )
-            HorizontalDivider(modifier = Modifier.fillMaxWidth())
-            content()
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                content()
+            }
             Row(
                 horizontalArrangement = Arrangement.End,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.align(Alignment.BottomEnd)
             ) {
                 Button(
                     enabled = confirmEnabled,

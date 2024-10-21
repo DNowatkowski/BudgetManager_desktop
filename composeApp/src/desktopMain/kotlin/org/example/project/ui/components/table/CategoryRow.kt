@@ -51,7 +51,7 @@ import org.example.project.ui.components.CustomLinearProgressIndicator
 import org.example.project.ui.components.TransactionTextField
 import org.example.project.ui.components.chips.AddKeywordChip
 import org.example.project.ui.components.chips.KeywordChip
-import org.example.project.ui.components.dialogs.BudgetManagerDialog
+import org.example.project.ui.components.dialogs.AlertDialog
 import org.example.project.ui.components.dialogs.InputDialog
 import java.time.LocalDate
 
@@ -180,21 +180,14 @@ fun CategoryRow(
                 Spacer(modifier = Modifier.weight(1f))
                 Box {
                     if (showAlertDialog) {
-                        BudgetManagerDialog(
-                            title = "Delete transaction",
+                        AlertDialog(
+                            title = "Remove Category",
+                            text = "Are you sure you want to remove this category?",
+                            onConfirmed = {
+                                onCategoryRemoved(category.category.id)
+                                showAlertDialog = false
+                            },
                             onDismiss = { showAlertDialog = false },
-                            onConfirmed = { onCategoryRemoved(category.category.id) },
-                            confirmButtonText = "Delete",
-                            dismissButtonText = "Cancel",
-                            content = {
-                                Icon(
-                                    Icons.Filled.Warning,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.error,
-                                    modifier = Modifier.size(40.dp)
-                                )
-                                Text("Are you sure you want to delete category?")
-                            }
                         )
                     }
                     DropdownMenu(
