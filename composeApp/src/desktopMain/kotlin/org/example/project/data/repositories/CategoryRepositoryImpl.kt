@@ -28,8 +28,7 @@ class CategoryRepositoryImpl(
         ) { groups, categories, keywords ->
             groups.map { group ->
                 GroupWithCategoriesAndKeywordsData(
-                    id = group.id,
-                    name = group.name,
+                    group = group.toDomainModel(),
                     categories = categories.filter { it.categoryGroupId == group.id }
                         .map { category ->
                             CategoryWithKeywords(
@@ -109,7 +108,10 @@ class CategoryRepositoryImpl(
 
     override suspend fun updateMonthlyTarget(categoryId: String, target: Double) {
         withContext(Dispatchers.IO) {
-            database.databaseQueries.updateMonthlyTarget(target, categoryId)
+            database.databaseQueries.updateMonthlyTarget(
+                monthlyTarget = target,
+                id = categoryId
+            )
         }
     }
 }
