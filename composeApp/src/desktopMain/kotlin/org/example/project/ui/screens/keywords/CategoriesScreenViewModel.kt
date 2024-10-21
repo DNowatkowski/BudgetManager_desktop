@@ -2,13 +2,18 @@ package org.example.project.ui.screens.keywords
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.example.project.domain.models.category.CategoryData
+import org.example.project.domain.models.group.GroupData
 import org.example.project.domain.models.group.GroupWithCategoriesAndKeywordsData
 import org.example.project.domain.models.keyword.KeywordData
+import org.example.project.domain.models.toReadableString
 import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.domain.repositories.CategoryRepository
 import org.example.project.domain.repositories.KeywordRepository
@@ -25,30 +30,52 @@ class CategoriesScreenViewModel(
     private val _uiState = MutableStateFlow(CategoriesState())
     val uiState = _uiState.asStateFlow()
 
+    private var _queryJob: Job? = null
+
     init {
-        viewModelScope.launch {
-            getCategoriesWithKeywords()
-        }
-        viewModelScope.launch {
-            getTransactionsForCurrentMonth()
+        _queryJob = viewModelScope.launch {
+            getData(LocalDate.now())
         }
     }
 
-    private suspend fun getCategoriesWithKeywords() {
-        categoryRepository.getGroupsWithCategoriesAndKeywords().collectLatest {
-            _uiState.update { currentState ->
-                currentState.copy(categoryGroupsWithKeywords = it)
-            }
+    private suspend fun getData(date: LocalDate) {
+        combine(
+            categoryRepository.getGroupsWithCategoriesAndKeywords(),
+            transactionRepository.getTransactionsForMonth(date)
+        ) { groupWithCategoriesAndKeywords, transactions ->
+            CategoriesState(
+                isLoading = false,
+                isError = null,
+                categoryGroupsWithKeywords = groupWithCategoriesAndKeywords,
+                transactions = transactions,
+                activeMonth = date,
+                groupTargets = groupWithCategoriesAndKeywords.associate { group ->
+                    group.group to group.categories.sumOf { it.category.monthlyTarget }.absoluteValue.toReadableString()
+                },
+
+                groupSpending = groupWithCategoriesAndKeywords.associate { group ->
+                    group.group to transactions
+                        .filter { transaction -> group.categories.any { it.category.id == transaction.categoryId } }
+                        .sumOf { it.amount }
+                        .absoluteValue
+                        .toReadableString()
+                },
+                categorySpending = groupWithCategoriesAndKeywords.flatMap { it.categories }
+                    .associate { category ->
+                        category.category to transactions
+                            .filter { it.categoryId == category.category.id }
+                            .sumOf { it.amount }
+                            .absoluteValue
+                            .toReadableString()
+                    }
+
+            )
+        }.collectLatest { currentState ->
+            _uiState.update { currentState }
+
         }
     }
 
-    private suspend fun getTransactionsForCurrentMonth() {
-        transactionRepository.getTransactionsForMonth(LocalDate.now()).collectLatest {
-            _uiState.update { currentState ->
-                currentState.copy(transactions = it)
-            }
-        }
-    }
 
     fun addCategory(name: String, groupId: String) {
         viewModelScope.launch {
@@ -109,41 +136,9 @@ class CategoriesScreenViewModel(
             .sumOf { it.amount }.absoluteValue
     }
 
-    fun getGroupSpending(groupId: String): Double {
-        return _uiState.value.categoryGroupsWithKeywords
-            .flatMap { it.categories }
-            .filter { it.category.categoryGroupId == groupId }
-            .sumOf { getCategorySpending(it.category.id) }
-    }
-
-    fun getGroupTarget(groupId: String): Double {
-        return _uiState.value.categoryGroupsWithKeywords
-            .flatMap { it.categories }
-            .filter { it.category.categoryGroupId == groupId }
-            .sumOf { it.category.monthlyTarget }
-    }
-
     fun setMonthlyTarget(categoryId: String, target: Double) {
         viewModelScope.launch {
-            categoryRepository.updateMonthlyTarget(categoryId, target)
-        }
-    }
-
-    fun toggleCategorySelection(id: String) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                categoryGroupsWithKeywords = currentState.categoryGroupsWithKeywords.map { group ->
-                    group.copy(
-                        categories = group.categories.map { category ->
-                            if (category.category.id == id) {
-                                category.copy(category = category.category.copy(isSelected = !category.category.isSelected))
-                            } else {
-                                category
-                            }
-                        }
-                    )
-                }
-            )
+            categoryRepository.updateMonthlyTarget(categoryId = categoryId, target = target)
         }
     }
 
@@ -153,11 +148,29 @@ class CategoriesScreenViewModel(
         }
     }
 
+    fun previousMonth() {
+        _queryJob?.cancel()
+        _queryJob = viewModelScope.launch {
+            getData(_uiState.value.activeMonth.minusMonths(1))
+        }
+    }
+
+    fun nextMonth() {
+        _queryJob?.cancel()
+        _queryJob = viewModelScope.launch {
+            getData(_uiState.value.activeMonth.plusMonths(1))
+        }
+    }
+
     data class CategoriesState(
         val isError: Throwable? = null,
         val isLoading: Boolean = false,
 
         val categoryGroupsWithKeywords: List<GroupWithCategoriesAndKeywordsData> = emptyList(),
         val transactions: List<TransactionData> = emptyList(),
+        val activeMonth: LocalDate = LocalDate.now(),
+        val groupTargets: Map<GroupData, String> = emptyMap(),
+        val groupSpending: Map<GroupData, String> = emptyMap(),
+        val categorySpending: Map<CategoryData,String> = emptyMap()
     )
 }

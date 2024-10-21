@@ -10,17 +10,13 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
@@ -37,6 +33,7 @@ import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -45,35 +42,35 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusEvent
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
 import org.example.project.constants.CategoryColumn
 import org.example.project.domain.models.category.CategoryWithKeywords
+import org.example.project.domain.models.group.GroupData
 import org.example.project.domain.models.group.GroupWithCategoriesAndKeywordsData
 import org.example.project.domain.models.stringToDouble
-import org.example.project.ui.components.AddKeywordChip
-import org.example.project.ui.components.BudgetManagerDialog
-import org.example.project.ui.components.CategoryGroupItem
-import org.example.project.ui.components.InputDialog
-import org.example.project.ui.components.KeywordChip
+import org.example.project.domain.models.stringToDoubleOrNull
+import org.example.project.domain.models.toReadableString
+import org.example.project.ui.components.CustomLinearProgressIndicator
+import org.example.project.ui.components.DateSwitcher
+import org.example.project.ui.components.chips.AddKeywordChip
+import org.example.project.ui.components.dialogs.BudgetManagerDialog
+import org.example.project.ui.components.dialogs.InputDialog
+import org.example.project.ui.components.chips.KeywordChip
 import org.example.project.ui.components.TransactionTextField
-import org.example.project.ui.components.TableCell
+import org.example.project.ui.components.table.TableCell
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
-import kotlin.math.roundToInt
+import java.time.LocalDate
 
 
 class CategoriesScreen : Screen {
@@ -94,78 +91,42 @@ class CategoriesScreen : Screen {
             )
         }
 
-        Column(modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()) {
-            HeaderRow(showDialog)
-            HorizontalDivider(modifier = Modifier.fillMaxWidth())
-            Targets(vm, uiState)
-        }
-    }
-}
-
-@Composable
-private fun HeaderRow(
-    showDialog: MutableState<Boolean>
-) {
-    Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-        TextButton(
-            onClick = { showDialog.value = true }
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()
         ) {
-            Icon(Icons.Filled.AddCircle, null)
-            Text(" Add group")
-        }
-        Spacer(modifier = Modifier.weight(1f))
-    }
-}
-
-@Composable
-private fun Keywords(
-    vm: CategoriesScreenViewModel,
-    uiState: CategoriesScreenViewModel.CategoriesState
-) {
-    val gridState = rememberLazyStaggeredGridState(0)
-
-    LazyVerticalStaggeredGrid(
-        state = gridState,
-        columns = StaggeredGridCells.Adaptive(500.dp),
-        verticalItemSpacing = 16.dp,
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        modifier = Modifier.padding(top = 16.dp),
-    ) {
-        items(uiState.categoryGroupsWithKeywords.size) { index ->
-            val group = uiState.categoryGroupsWithKeywords[index]
-            CategoryGroupItem(
-                title = group.name,
-                categories = group.categories,
-                onAddCategory = { text -> vm.addCategory(text, group.id) },
-                onAddKeyword = { text, categoryId -> vm.addKeyword(text, categoryId) },
-                onRemoveKeyword = { id -> vm.removeKeyword(id) },
-                onUpdateGroup = { text -> vm.updateGroup(text, group.id) },
-                onRemoveGroup = { vm.removeGroup(group.id) },
-                onKeywordUpdated = { keyword -> vm.updateKeyword(keyword) },
-                onKeywordDropped = { keywordId, newCategoryId ->
-                    vm.moveKeyword(
-                        keywordId = keywordId,
-                        newCategoryId = newCategoryId
-                    )
-                },
-                modifier = Modifier.animateItem()
+            DateSwitcher(
+                activeMonth = uiState.activeMonth,
+                onNextMonth = { vm.nextMonth() },
+                onPreviousMonth = { vm.previousMonth() },
             )
-        }
-    }
-}
-
-@Composable
-private fun Targets(
-    vm: CategoriesScreenViewModel,
-    uiState: CategoriesScreenViewModel.CategoriesState,
-) {
-    Column {
-        TargetHeaderRow()
-        HorizontalDivider()
-        uiState.categoryGroupsWithKeywords.forEach { group ->
-            GroupRow(vm, group)
-            group.categories.forEach { category ->
-                CategoryRow(vm, category)
+            Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                TextButton(
+                    onClick = { showDialog.value = true }
+                ) {
+                    Icon(Icons.Filled.AddCircle, null)
+                    Text(" Add group")
+                }
+                Spacer(modifier = Modifier.weight(1f))
+            }
+            HorizontalDivider(modifier = Modifier.fillMaxWidth())
+            TargetHeaderRow()
+            HorizontalDivider()
+            uiState.categoryGroupsWithKeywords.forEach { group ->
+                GroupRow(
+                    vm = vm,
+                    group = group,
+                    spending = uiState.groupSpending[group.group] ?: "NaN",
+                    target = uiState.groupTargets[group.group] ?: "NaN"
+                )
+                group.categories.forEach { category ->
+                    CategoryRow(
+                        vm = vm,
+                        category = category,
+                        activeMonth = uiState.activeMonth,
+                        spending = uiState.categorySpending[category.category] ?: "NaN"
+                    )
+                }
             }
         }
     }
@@ -209,7 +170,13 @@ private fun TargetHeaderRow() {
 }
 
 @Composable
-private fun GroupRow(vm: CategoriesScreenViewModel, group: GroupWithCategoriesAndKeywordsData) {
+private fun GroupRow(
+    vm: CategoriesScreenViewModel,
+    group: GroupWithCategoriesAndKeywordsData,
+    target: String,
+    spending: String,
+) {
+
     var dropdownExpanded by remember { mutableStateOf(false) }
     var showAddCategoryDialog by remember { mutableStateOf(false) }
     var showEditGroupDialog by remember { mutableStateOf(false) }
@@ -217,21 +184,22 @@ private fun GroupRow(vm: CategoriesScreenViewModel, group: GroupWithCategoriesAn
     if (showAddCategoryDialog) {
         InputDialog(
             title = "Add Category",
-            onConfirmed = { text -> vm.addCategory(text, group.id) },
+            onConfirmed = { text -> vm.addCategory(text, group.group.id) },
             onDismiss = { showAddCategoryDialog = false },
-            label = "Category",
+            label = "Category name",
         )
     }
 
     if (showEditGroupDialog) {
         InputDialog(
             title = "Edit Group",
-            initialText = group.name,
-            onConfirmed = { text -> vm.updateGroup(text, group.id) },
+            initialText = group.group.name,
+            onConfirmed = { text -> vm.updateGroup(text, group.group.id) },
             onDismiss = { showEditGroupDialog = false },
-            label = "Group",
+            label = "Group name",
         )
     }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
@@ -240,7 +208,7 @@ private fun GroupRow(vm: CategoriesScreenViewModel, group: GroupWithCategoriesAn
             ListItem(
                 headlineContent = {
                     Text(
-                        group.name,
+                        group.group.name,
                         style = MaterialTheme.typography.titleMedium
                     )
                 },
@@ -251,21 +219,21 @@ private fun GroupRow(vm: CategoriesScreenViewModel, group: GroupWithCategoriesAn
             )
         }
         TableCell(weight = CategoryColumn.ACTUAL_SPENDING.weight) {
-            val formattedSpending = String.format("%.2f", vm.getGroupSpending(group.id))
             TransactionTextField(
-                value = formattedSpending,
+                value = spending,
                 readOnly = true,
                 enabled = false,
                 onValueChange = {},
+                modifier = Modifier.widthIn(max = 120.dp)
             )
         }
         TableCell(weight = CategoryColumn.MONTHLY_TARGET.weight) {
-            val formattedSpending = String.format("%.2f", vm.getGroupTarget(group.id))
             TransactionTextField(
-                value = formattedSpending,
+                value = target,
                 readOnly = true,
                 enabled = false,
                 onValueChange = {},
+                modifier = Modifier.widthIn(max = 120.dp)
             )
             Spacer(modifier = Modifier.weight(1f))
             Box {
@@ -273,7 +241,7 @@ private fun GroupRow(vm: CategoriesScreenViewModel, group: GroupWithCategoriesAn
                     expanded = dropdownExpanded,
                     onDismissRequest = { dropdownExpanded = false },
                 ) {
-                    DropdownMenuItem(onClick = { vm.removeGroup(group.id) }) {
+                    DropdownMenuItem(onClick = { vm.removeGroup(group.group.id) }) {
                         Icon(Icons.Filled.Delete, null)
                         Spacer(Modifier.width(8.dp))
                         Text("Remove")
@@ -309,12 +277,27 @@ private fun GroupRow(vm: CategoriesScreenViewModel, group: GroupWithCategoriesAn
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun CategoryRow(vm: CategoriesScreenViewModel, category: CategoryWithKeywords) {
-
+private fun CategoryRow(
+    vm: CategoriesScreenViewModel,
+    category: CategoryWithKeywords,
+    spending: String,
+    activeMonth: LocalDate
+) {
     var expanded by remember { mutableStateOf(false) }
     var showEditCategoryDialog by remember { mutableStateOf(false) }
     var showAlertDialog by remember { mutableStateOf(false) }
     var dropDownExpanded by remember { mutableStateOf(false) }
+    val progress by remember(activeMonth, category.category.monthlyTarget) {
+        val spending = vm.getCategorySpending(category.category.id)
+        val target = category.category.monthlyTarget
+        mutableStateOf(
+            try {
+                (spending / target).toFloat()
+            } catch (e: IllegalArgumentException) {
+                0.0f
+            }
+        )
+    }
 
     if (showEditCategoryDialog) {
         InputDialog(
@@ -327,7 +310,7 @@ private fun CategoryRow(vm: CategoriesScreenViewModel, category: CategoryWithKey
                 )
             },
             onDismiss = { showEditCategoryDialog = false },
-            label = "Category",
+            label = "Category name",
         )
     }
 
@@ -351,69 +334,74 @@ private fun CategoryRow(vm: CategoriesScreenViewModel, category: CategoryWithKey
                             Icon(Icons.Filled.KeyboardArrowDown, null)
                     },
                     supportingContent = {
-                        val target =
-                            category.category.monthlyTarget.takeIf { it != 0.toDouble() }
-                                ?: 1.0f
                         CustomLinearProgressIndicator(
-                            progress = vm.getCategorySpending(category.category.id)
-                                .toFloat() / target.toFloat()
+                            progress = progress,
+                            modifier = Modifier.padding(end = 20.dp)
                         )
                     },
                     modifier = Modifier.height(60.dp)
                 )
             }
             TableCell(weight = CategoryColumn.ACTUAL_SPENDING.weight) {
-                val formattedSpending =
-                    String.format("%.2f", vm.getCategorySpending(category.category.id))
                 TransactionTextField(
-                    value = formattedSpending,
+                    value = spending,
                     readOnly = true,
                     enabled = false,
                     onValueChange = {},
-                    modifier = Modifier.padding(2.dp)
+                    modifier = Modifier.padding(2.dp).widthIn(max = 120.dp)
                 )
             }
             TableCell(weight = CategoryColumn.MONTHLY_TARGET.weight) {
-                val formattedTarget = String.format("%.2f", category.category.monthlyTarget)
-                var targetText by remember { mutableStateOf(formattedTarget) }
+
+                var targetText by remember { mutableStateOf("") }
                 var showSaveButton by remember { mutableStateOf(false) }
+                var isError by remember { mutableStateOf(false) }
 
                 LaunchedEffect(targetText) {
-                    showSaveButton = targetText != formattedTarget
+                    showSaveButton =
+                        targetText != category.category.monthlyTarget.toReadableString()
                 }
                 TransactionTextField(
                     value = targetText,
                     onValueChange = {
                         targetText = it
+                        isError = it.stringToDoubleOrNull() == null
                     },
-                    modifier = Modifier.padding(2.dp).onFocusEvent {
-                        if (!it.isFocused) {
-                            targetText = formattedTarget
-                            showSaveButton = false
+                    isError = isError,
+                    modifier = Modifier
+                        .padding(2.dp)
+                        .onFocusEvent {
+                            if (!it.isFocused && !showSaveButton) {
+                                targetText = category.category.monthlyTarget.toReadableString()
+                                showSaveButton = false
+                            }
                         }
-                    }
+                        .widthIn(max = 120.dp)
                 )
                 AnimatedVisibility(showSaveButton) {
                     IconButton(
                         onClick = {
                             vm.setMonthlyTarget(
-                                category.category.id,
-                                targetText.stringToDouble()
+                                categoryId = category.category.id,
+                                target = targetText.stringToDouble()
                             )
                             showSaveButton = false
-                        }
+                        },
+                        colors = IconButtonDefaults.iconButtonColors().copy(
+                            contentColor = MaterialTheme.colorScheme.primary
+                        ),
+                        enabled = !isError
                     ) {
                         Icon(
                             Icons.Outlined.CheckCircle,
                             null,
-                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(30.dp)
                         )
                     }
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Box {
-                    if(showAlertDialog){
+                    if (showAlertDialog) {
                         BudgetManagerDialog(
                             title = "Delete transaction",
                             onDismiss = { showAlertDialog = false },
@@ -486,33 +474,6 @@ private fun CategoryRow(vm: CategoriesScreenViewModel, category: CategoryWithKey
                     )
                 }
             }
-
         }
-    }
-}
-
-@Composable
-fun CustomLinearProgressIndicator(
-    modifier: Modifier = Modifier,
-    progress: Float = 0.0f,
-    clipShape: Shape = RoundedCornerShape(16.dp)
-) {
-    val red = (255 * progress).roundToInt()
-    val green = (255 * (1 - progress)).roundToInt()
-    val progressColor = Color(red, green, 0)
-
-    Box(
-        modifier = modifier
-            .clip(clipShape)
-            .background(Color.LightGray.copy(alpha = 0.5f))
-            .fillMaxWidth()
-            .height(8.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .background(progressColor)
-                .fillMaxHeight()
-                .fillMaxWidth(progress)
-        )
     }
 }

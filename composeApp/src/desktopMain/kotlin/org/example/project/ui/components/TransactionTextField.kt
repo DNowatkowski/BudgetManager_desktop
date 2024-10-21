@@ -4,14 +4,11 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -70,9 +67,6 @@ fun TransactionTextField(
             value = value,
             modifier =
             modifier
-                .requiredHeight(40.dp)
-                .requiredWidth(100.dp)
-
                 .then(
                     if (label != null) {
                         Modifier
@@ -85,8 +79,8 @@ fun TransactionTextField(
                     }
                 )
                 .defaultMinSize(
-                    minWidth = OutlinedTextFieldDefaults.MinWidth,
-                    minHeight = OutlinedTextFieldDefaults.MinHeight
+                    minWidth = 80.dp,
+                    minHeight = 40.dp
                 ),
             onValueChange = onValueChange,
             enabled = enabled,

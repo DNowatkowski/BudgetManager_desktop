@@ -41,12 +41,12 @@ import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.core.PickerMode
 import io.github.vinceglb.filekit.core.PickerType
 import io.github.vinceglb.filekit.core.PlatformFile
-import org.example.project.ui.components.AddTransactionRow
-import org.example.project.ui.components.BudgetManagerDialog
+import org.example.project.ui.components.table.AddTransactionRow
+import org.example.project.ui.components.dialogs.BudgetManagerDialog
 import org.example.project.ui.components.DateSwitcher
-import org.example.project.ui.components.HeaderRow
-import org.example.project.ui.components.ImportDialog
-import org.example.project.ui.components.TransactionRow
+import org.example.project.ui.components.table.HeaderRow
+import org.example.project.ui.components.dialogs.ImportDialog
+import org.example.project.ui.components.table.TransactionRow
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 

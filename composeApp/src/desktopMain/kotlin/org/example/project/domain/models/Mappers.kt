@@ -1,16 +1,23 @@
 package org.example.project.domain.models
 
 import database.CategoryEntity
+import database.GroupEntity
 import database.KeywordEntity
 import database.TransactionEntity
 import org.example.project.data.repositories.TransactionDto
 import org.example.project.domain.models.category.CategoryData
+import org.example.project.domain.models.group.GroupData
 import org.example.project.domain.models.keyword.KeywordData
 import org.example.project.domain.models.transaction.TransactionData
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.util.UUID
+
+fun GroupEntity.toDomainModel() = GroupData(
+    id = id,
+    name = name,
+)
 
 fun CategoryEntity.toDomainModel(
 ): CategoryData {
@@ -82,8 +89,26 @@ fun TransactionDto.toDomainModel() = TransactionData(
 
 fun String.stringToDouble(): Double {
     return try {
-        this.replace(",", ".").toDouble()
+        this.toDouble()
     } catch (e: NumberFormatException) {
+        this.replace(",", ".").toDouble()
+    } catch (e: Exception) {
         0.00
     }
+}
+
+fun String.stringToDoubleOrNull(): Double? {
+    return try {
+        this.toDouble()
+    } catch (e: NumberFormatException) {
+        try {
+            this.replace(",", ".").toDouble()
+        } catch (e: NumberFormatException) {
+            null
+        }
+    }
+}
+
+fun Double.toReadableString(): String {
+    return String.format("%.2f", this)
 }

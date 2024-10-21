@@ -18,7 +18,7 @@ import org.example.project.domain.models.toLocalDate
 import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.domain.repositories.CategoryRepository
 import org.example.project.domain.repositories.TransactionRepository
-import org.example.project.ui.components.ImportOptions
+import org.example.project.ui.components.dialogs.ImportOptions
 import java.io.InputStream
 import java.time.LocalDate
 
