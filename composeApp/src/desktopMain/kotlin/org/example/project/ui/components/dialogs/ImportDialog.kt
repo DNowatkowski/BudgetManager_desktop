@@ -1,34 +1,34 @@
 package org.example.project.ui.components.dialogs
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.InputChip
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
-import kotlinx.datetime.toJavaLocalDate
-import kotlinx.datetime.toKotlinLocalDate
-import network.chaintech.kmp_date_time_picker.ui.datepicker.WheelDatePickerComponent.WheelDatePicker
+import androidx.compose.ui.unit.sp
 import java.time.LocalDate
 
 @Composable
@@ -38,9 +38,10 @@ fun ImportDialog(
 ) {
     var fromDate by remember { mutableStateOf(LocalDate.now().minusMonths(1)) }
     var toDate by remember { mutableStateOf(LocalDate.now()) }
-    var dividedBy by remember { mutableIntStateOf(2) }
+    var dividedBy by remember { mutableFloatStateOf(2f) }
     var selectedDateOption: DateOptions by remember { mutableStateOf(DateOptions.ALL_TRANSACTIONS) }
     var selectedValueOption: ValueOptions by remember { mutableStateOf(ValueOptions.TOTAL_VALUES) }
+    var skipDuplicates by remember { mutableStateOf(true) }
 
     BudgetManagerDialog(
         title = "Import Settings",
@@ -51,199 +52,149 @@ fun ImportDialog(
                 ImportOptions(
                     dateFrom = if (selectedDateOption == DateOptions.DATE_RANGE) fromDate else null,
                     dateTo = if (selectedDateOption == DateOptions.DATE_RANGE) toDate else null,
-                    valuesDividedBy = if (selectedValueOption == ValueOptions.VALUES_DIVIDED_BY) dividedBy else 1
+                    valuesDividedBy = if (selectedValueOption == ValueOptions.VALUES_DIVIDED_BY) dividedBy.toInt() else 1,
+                    skipDuplicates = skipDuplicates
                 )
             )
         },
         onDismiss = onDismiss,
     ) {
-        val options = listOf("Dates", "Values")
-        val pagerState = rememberPagerState(initialPage = 0, pageCount = { options.size })
-        val coroutineScope = rememberCoroutineScope()
-
-        SingleChoiceSegmentedButtonRow {
-            options.forEachIndexed { index, option ->
-                SegmentedButton(
-                    selected = index == pagerState.currentPage,
-                    onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
-                    shape = SegmentedButtonDefaults.itemShape(index, options.size)
+        Card(
+            modifier = Modifier.widthIn(min = 400.dp),
+            elevation = CardDefaults.cardElevation(8.dp)
+        ) {
+            Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.padding(16.dp).fillMaxWidth()
                 ) {
-                    Text(option)
-                }
-            }
-        }
-        HorizontalPager(state = pagerState, beyondViewportPageCount = 1) { page ->
-            when (page) {
-                0 -> DatesTab(
-                    fromDate,
-                    toDate,
-                    { fromDate = it },
-                    { toDate = it },
-                    selectedDateOption
-                ) {
-                    selectedDateOption = it
-                }
+                    Column {
+                        Text("All transactions", style = MaterialTheme.typography.bodyLarge)
+                        Text(
+                            "Includes all transactions in the selected file",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    }
 
-                1 -> ValuesTab(dividedBy, { dividedBy = it }, selectedValueOption) {
-                    selectedValueOption = it
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun DatesTab(
-    fromDate: LocalDate,
-    toDate: LocalDate,
-    fromDateChanged: (LocalDate) -> Unit,
-    toDateChanged: (LocalDate) -> Unit,
-    selectedOption: DateOptions,
-    selectedOptionChanged: (DateOptions) -> Unit
-) {
-
-    var expandedFrom by remember { mutableStateOf(false) }
-    var expandedTo by remember { mutableStateOf(false) }
-
-    Column {
-        DateOptions.entries.forEach { option ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    checked = selectedOption == option,
-                    onCheckedChange = { selectedOptionChanged(option) }
-                )
-                Text(option.text)
-                if (option == DateOptions.DATE_RANGE) {
-                    DateRangePicker(
-                        fromDate = fromDate,
-                        toDate = toDate,
-                        enabled = selectedOption == DateOptions.DATE_RANGE,
-                        fromDateChanged = fromDateChanged,
-                        toDateChanged = toDateChanged,
-                        expandedFrom = expandedFrom,
-                        expandedTo = expandedTo,
-                        onExpandedFromChange = { expandedFrom = it },
-                        onExpandedToChange = { expandedTo = it }
+                    Switch(
+                        checked = selectedDateOption == DateOptions.ALL_TRANSACTIONS,
+                        onCheckedChange = {
+                            selectedDateOption =
+                                if (it) DateOptions.ALL_TRANSACTIONS else DateOptions.DATE_RANGE
+                        },
+                        modifier = Modifier.padding(end = 8.dp)
                     )
                 }
-            }
-        }
-    }
-}
-
-@Composable
-private fun DateRangePicker(
-    fromDate: LocalDate,
-    toDate: LocalDate,
-    enabled: Boolean,
-    fromDateChanged: (LocalDate) -> Unit,
-    toDateChanged: (LocalDate) -> Unit,
-    expandedFrom: Boolean,
-    expandedTo: Boolean,
-    onExpandedFromChange: (Boolean) -> Unit,
-    onExpandedToChange: (Boolean) -> Unit
-) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        DatePickerDropdown(
-            expanded = expandedFrom,
-            date = fromDate,
-            onDateChange = fromDateChanged,
-            onExpandedChange = onExpandedFromChange,
-            maxDate = toDate,
-            enabled = enabled,
-            minDate = LocalDate.MIN
-        )
-        Text("to:")
-        DatePickerDropdown(
-            expanded = expandedTo,
-            date = toDate,
-            onDateChange = toDateChanged,
-            onExpandedChange = onExpandedToChange,
-            minDate = fromDate,
-            enabled = enabled,
-            maxDate = LocalDate.MAX
-        )
-    }
-}
-
-@Composable
-private fun DatePickerDropdown(
-    expanded: Boolean,
-    date: LocalDate,
-    enabled: Boolean,
-    onDateChange: (LocalDate) -> Unit,
-    onExpandedChange: (Boolean) -> Unit,
-    minDate: LocalDate,
-    maxDate: LocalDate
-) {
-    Box {
-        DropdownMenu(expanded = expanded, onDismissRequest = { onExpandedChange(false) }) {
-            Box(modifier = Modifier.padding(horizontal = 16.dp)) {
-                WheelDatePicker(
-                    title = "Select date:",
-                    rowCount = 5,
-                    doneLabelStyle = MaterialTheme.typography.titleSmall.copy(color = MaterialTheme.colorScheme.primary),
-                    startDate = date.toKotlinLocalDate(),
-                    minDate = minDate.toKotlinLocalDate(),
-                    maxDate = maxDate.toKotlinLocalDate(),
-                    onDoneClick = {
-                        onDateChange(it.toJavaLocalDate())
-                        onExpandedChange(false)
-                    },
-                    height = 200.dp,
-                    dateTextStyle = MaterialTheme.typography.labelMedium,
-                )
-            }
-        }
-        InputChip(
-            selected = expanded,
-            enabled = enabled,
-            onClick = { onExpandedChange(true) },
-            label = { Text(date.toString()) },
-            modifier = Modifier.padding(horizontal = 8.dp)
-        )
-    }
-}
-
-@Composable
-fun ValuesTab(
-    dividedBy: Int,
-    dividedByChanged: (Int) -> Unit,
-    selectedOption: ValueOptions,
-    selectedOptionChanged: (ValueOptions) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Column {
-        ValueOptions.entries.forEach { option ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    checked = selectedOption == option,
-                    onCheckedChange = { selectedOptionChanged(option) }
-                )
-                Text(option.text)
-
-                if (option == ValueOptions.VALUES_DIVIDED_BY) {
-                    Box {
-                        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                            (2..4).forEach {
-                                DropdownMenuItem(onClick = {
-                                    dividedByChanged(it)
-                                    expanded = false
-                                }) {
-                                    Text(it.toString())
-                                }
-                            }
-                        }
-                        InputChip(
-                            selected = expanded,
-                            enabled = selectedOption == ValueOptions.VALUES_DIVIDED_BY,
-                            onClick = { expanded = true },
-                            label = { Text(dividedBy.toString()) },
-                            modifier = Modifier.padding(horizontal = 8.dp)
+                AnimatedVisibility(selectedDateOption == DateOptions.DATE_RANGE) {
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp).fillMaxWidth())
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(12.dp)
+                    ) {
+                        TextField(
+                            value = fromDate.toString(),
+                            onValueChange = { },
+                            readOnly = true,
+                            modifier = Modifier.weight(1f).clickable { }
+                        )
+                        Text("to", modifier = Modifier.weight(0.5f), textAlign = TextAlign.Center)
+                        TextField(
+                            value = toDate.toString(),
+                            onValueChange = { },
+                            readOnly = true,
+                            modifier = Modifier.weight(1f).clickable { }
                         )
                     }
                 }
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Card(elevation = CardDefaults.cardElevation(8.dp)) {
+            Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.padding(16.dp).fillMaxWidth()
+                ) {
+                    Column {
+                        Text("Original values", style = MaterialTheme.typography.bodyLarge)
+                        Text(
+                            "Keeps original values of imported transactions",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    }
+
+                    Switch(
+                        checked = selectedValueOption == ValueOptions.TOTAL_VALUES,
+                        onCheckedChange = {
+                            selectedValueOption =
+                                if (it) ValueOptions.TOTAL_VALUES else ValueOptions.VALUES_DIVIDED_BY
+                        },
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                }
+                AnimatedVisibility(selectedValueOption == ValueOptions.VALUES_DIVIDED_BY) {
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp).fillMaxWidth())
+                    Column(
+                        modifier = Modifier.padding(12.dp)
+                    ) {
+                        Text("Select the number to divide the values by:")
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth().padding(start = 4.dp, bottom = 8.dp)
+                        ) {
+
+                            (1..4).forEach { value ->
+                                Text(
+                                    text = value.toString(),
+                                    style = if (dividedBy.toInt() == value)
+                                        MaterialTheme.typography.labelLarge.copy(fontSize = 18.sp)
+                                    else
+                                        MaterialTheme.typography.labelMedium,
+                                )
+                            }
+
+                        }
+                        Slider(
+                            value = dividedBy,
+                            onValueChange = { dividedBy = it },
+                            valueRange = 1f..4f,
+                            steps = 2,
+                            modifier = Modifier.fillMaxWidth().height(21.dp)
+                        )
+                    }
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Card {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.padding(16.dp).fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.weight(0.7f)) {
+                    Text("Skip duplicates", style = MaterialTheme.typography.bodyLarge)
+                    Text(
+                        "Skips transactions that have already been imported, based on description, date and value",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                    )
+                }
+
+                Switch(
+                    checked = skipDuplicates,
+                    onCheckedChange = {
+                        skipDuplicates = it
+                    },
+                    modifier = Modifier.padding(end = 8.dp)
+                )
             }
         }
     }
@@ -252,7 +203,8 @@ fun ValuesTab(
 data class ImportOptions(
     val dateFrom: LocalDate?,
     val dateTo: LocalDate?,
-    val valuesDividedBy: Int = 1
+    val valuesDividedBy: Int = 1,
+    val skipDuplicates: Boolean = true,
 )
 
 enum class DateOptions(val text: String) {

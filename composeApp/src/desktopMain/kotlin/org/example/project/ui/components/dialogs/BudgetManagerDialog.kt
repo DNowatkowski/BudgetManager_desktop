@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -39,7 +40,7 @@ fun BudgetManagerDialog(
     ) {
         Box(
             modifier = modifier
-                .heightIn(min = 220.dp)
+                .wrapContentHeight()
                 .wrapContentWidth()
                 .clip(MaterialTheme.shapes.large)
                 .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f))
@@ -52,8 +53,8 @@ fun BudgetManagerDialog(
                 modifier = Modifier.align(Alignment.TopCenter)
             )
             Column(
-                modifier = Modifier.align(Alignment.Center),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier.align(Alignment.Center).padding(top = 48.dp, bottom = 58.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 content()
             }
