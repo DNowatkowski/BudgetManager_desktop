@@ -142,11 +142,11 @@ class CategoriesScreenViewModel(
         }
     }
 
-    fun moveKeyword(keywordId: String, newCategoryId: String) {
-        viewModelScope.launch {
-            keywordRepository.moveKeyword(keywordId, newCategoryId)
-        }
-    }
+//    fun moveKeyword(keywordId: String, newCategoryId: String) {
+//        viewModelScope.launch {
+//            keywordRepository.moveKeyword(keywordId, newCategoryId)
+//        }
+//    }
 
     fun previousMonth() {
         _queryJob?.cancel()

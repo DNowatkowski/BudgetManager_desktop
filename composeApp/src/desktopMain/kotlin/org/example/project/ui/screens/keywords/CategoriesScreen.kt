@@ -55,7 +55,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
 import org.example.project.constants.CategoryColumn
 import org.example.project.domain.models.category.CategoryWithKeywords
-import org.example.project.domain.models.group.GroupData
 import org.example.project.domain.models.group.GroupWithCategoriesAndKeywordsData
 import org.example.project.domain.models.stringToDouble
 import org.example.project.domain.models.stringToDoubleOrNull
@@ -288,11 +287,10 @@ private fun CategoryRow(
     var showAlertDialog by remember { mutableStateOf(false) }
     var dropDownExpanded by remember { mutableStateOf(false) }
     val progress by remember(activeMonth, category.category.monthlyTarget) {
-        val spending = vm.getCategorySpending(category.category.id)
         val target = category.category.monthlyTarget
         mutableStateOf(
             try {
-                (spending / target).toFloat()
+                (spending.stringToDouble() / target).toFloat()
             } catch (e: IllegalArgumentException) {
                 0.0f
             }
