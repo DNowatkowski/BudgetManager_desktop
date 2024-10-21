@@ -34,7 +34,8 @@ import java.util.Locale
 fun DateSwitcher(
     activeMonth: LocalDate,
     onNextMonth: () -> Unit,
-    onPreviousMonth: () -> Unit
+    onPreviousMonth: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var visible by remember { mutableStateOf(true) }
     var monthText by remember { mutableStateOf(activeMonth.month.toString()) }
@@ -54,7 +55,7 @@ fun DateSwitcher(
     }
 
 
-    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+    Row(horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = modifier) {
         IconButton(onClick = {
             slideDirection = -1
             onPreviousMonth()

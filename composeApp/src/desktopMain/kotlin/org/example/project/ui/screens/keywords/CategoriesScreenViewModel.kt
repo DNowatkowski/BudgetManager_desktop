@@ -103,9 +103,9 @@ class CategoriesScreenViewModel(
         }
     }
 
-    fun updateGroup(text: String, groupId: String) {
+    fun updateGroup(name: String, groupId: String) {
         viewModelScope.launch {
-            categoryRepository.updateCategoryGroup(id = groupId, name = text)
+            categoryRepository.updateCategoryGroup(id = groupId, name = name)
         }
     }
 

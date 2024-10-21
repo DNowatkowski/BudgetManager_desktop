@@ -25,7 +25,7 @@ import org.example.project.constants.TransactionColumn
 import org.example.project.ui.screens.budgetScreen.BudgetScreenViewModel
 
 @Composable
-fun HeaderRow(
+fun TransactionsHeaderRow(
     allSelectedChecked: Boolean,
     sortOption: BudgetScreenViewModel.TransactionSortOption,
     sortOrder: BudgetScreenViewModel.SortOrder,

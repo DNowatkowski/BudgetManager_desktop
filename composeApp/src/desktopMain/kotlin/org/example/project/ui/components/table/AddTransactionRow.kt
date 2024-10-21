@@ -16,6 +16,9 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.datetime.toJavaLocalDate
 import network.chaintech.kmp_date_time_picker.ui.datepicker.WheelDatePickerComponent.WheelDatePicker
 import org.example.project.constants.TransactionColumn
+import org.example.project.constants.TransactionType
 import org.example.project.domain.models.category.CategoryData
 import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.stringToDouble
@@ -67,7 +71,7 @@ fun AddTransactionRow(
         mutableStateOf("")
     }
     var amount: String by remember {
-        mutableStateOf("0.00")
+        mutableStateOf("")
     }
 
 
@@ -125,34 +129,27 @@ fun AddTransactionRow(
             TableCell(
                 weight = TransactionColumn.PAYEE.weight
             ) {
-                BasicTextField(
+                TransactionTextField(
                     value = payee,
                     onValueChange = { payee = it },
-                    textStyle = MaterialTheme.typography.bodySmall,
+                    placeholder = null,
+                    suffix = null,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(MaterialTheme.shapes.small)
-                        .border(
-                            1.dp, Color.Gray,
-                            shape = MaterialTheme.shapes.small
-                        )
-                        .background(MaterialTheme.colorScheme.surface)
-                        .padding(8.dp)
-
                 )
             }
 
             TableCell(
                 weight = TransactionColumn.DESCRIPTION.weight
             ) {
-               TransactionTextField(
+                TransactionTextField(
                     value = description,
                     onValueChange = { description = it },
                     placeholder = null,
-                   suffix = null,
+                    suffix = null,
                     modifier = Modifier
                         .fillMaxWidth()
-               )
+                )
             }
 
             TableCell(
@@ -191,10 +188,42 @@ fun AddTransactionRow(
         }
 
         Row(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().padding(top = 8.dp),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            var transactionType by remember {
+                mutableStateOf(TransactionType.EXPENSE)
+            }
+            SingleChoiceSegmentedButtonRow(
+                modifier = Modifier.padding(horizontal = 8.dp)
+            ) {
+                SegmentedButton(
+                    selected = transactionType == TransactionType.EXPENSE,
+                    onClick = {
+                        transactionType = TransactionType.EXPENSE
+                    },
+                    shape = SegmentedButtonDefaults.itemShape(
+                        TransactionType.EXPENSE.ordinal,
+                        TransactionType.entries.size
+                    )
+                ) {
+                    Text("Expense")
+                }
+                SegmentedButton(
+                    selected = transactionType == TransactionType.INCOME,
+                    onClick = {
+                        transactionType = TransactionType.INCOME
+                    },
+                    shape = SegmentedButtonDefaults.itemShape(
+                        TransactionType.INCOME.ordinal,
+                        TransactionType.entries.size
+                    )
+                ) {
+                    Text("Income")
+                }
+            }
+
             OutlinedButton(
                 onClick = {
                     onCanceled()
@@ -211,7 +240,10 @@ fun AddTransactionRow(
                             date = date,
                             payee = payee,
                             description = description,
-                            amount = amount.stringToDouble(),
+                            amount = when (transactionType) {
+                                TransactionType.EXPENSE -> -amount.stringToDouble()
+                                TransactionType.INCOME -> amount.stringToDouble()
+                            },
                             categoryId = selectedCategory?.id,
                         )
                     )

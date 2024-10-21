@@ -1,15 +1,19 @@
 package org.example.project.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -63,11 +67,17 @@ fun MainScreen() {
                     onClick = { navigator.replace(ReportsScreen()) }
                 )
             }
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.colorScheme.background),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
                 DateSwitcher(
                     activeMonth = uiState.activeMonth,
                     onPreviousMonth = { vm.previousMonth() },
-                    onNextMonth = { vm.nextMonth() }
+                    onNextMonth = { vm.nextMonth() },
+                    modifier = Modifier.padding(vertical = 8.dp)
                 )
                 LaunchedEffect(uiState.activeMonth) {
                     when (navigator.lastItem) {

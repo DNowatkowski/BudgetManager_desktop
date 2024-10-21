@@ -43,7 +43,7 @@ import io.github.vinceglb.filekit.core.PickerType
 import io.github.vinceglb.filekit.core.PlatformFile
 import org.example.project.ui.components.table.AddTransactionRow
 import org.example.project.ui.components.dialogs.BudgetManagerDialog
-import org.example.project.ui.components.table.HeaderRow
+import org.example.project.ui.components.table.TransactionsHeaderRow
 import org.example.project.ui.components.dialogs.ImportDialog
 import org.example.project.ui.components.table.TransactionRow
 import org.koin.compose.viewmodel.koinViewModel
@@ -163,7 +163,7 @@ data class BudgetScreen(
                 )
             }
             HorizontalDivider()
-            HeaderRow(
+            TransactionsHeaderRow(
                 allSelectedChecked = uiState.transactions.any { it.isSelected },
                 onAllSelectedChange = { vm.toggleAllTransactionsSelection(it) },
                 sortOption = uiState.sortOption,
