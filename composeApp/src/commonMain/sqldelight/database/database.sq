@@ -71,6 +71,9 @@ SELECT * FROM KeywordEntity WHERE id = :id;
 deleteKeywordById:
 DELETE FROM KeywordEntity WHERE id = :id;
 
+deleteKeywordsForCategory:
+DELETE FROM KeywordEntity WHERE categoryId = :categoryId;
+
 deleteAllKeywords:
 DELETE FROM KeywordEntity;
 
@@ -99,6 +102,9 @@ SELECT * FROM GroupEntity;
 
 updateCategoryGroup:
 UPDATE GroupEntity SET name = :name WHERE id = :id;
+
+deleteGroupById:
+DELETE FROM GroupEntity WHERE id = :id;
 
 deleteCategoryGroupWithDependencies:
 DELETE FROM TransactionEntity WHERE categoryId IN (SELECT id FROM CategoryEntity WHERE categoryGroupId = :id);
@@ -133,6 +139,9 @@ SELECT * FROM CategoryEntity WHERE id = :id OR :id IS NULL;
 
 deleteCategoryById:
 DELETE FROM CategoryEntity WHERE id = :id;
+
+getCategoriesForGroup:
+SELECT * FROM CategoryEntity WHERE categoryGroupId = :categoryGroupId;
 
 deleteAllCategories:
 DELETE FROM CategoryEntity;

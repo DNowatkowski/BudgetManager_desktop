@@ -1,4 +1,4 @@
-package org.example.project.ui.screens.keywords
+package org.example.project.ui.screens.categories
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -21,11 +21,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
+import org.example.project.ui.components.dialogs.AlertDialog
 import org.example.project.ui.components.dialogs.InputDialog
 import org.example.project.ui.components.table.CategoriesHeaderRow
 import org.example.project.ui.components.table.CategoryRow
@@ -43,13 +45,14 @@ data class CategoriesScreen(
     override fun Content() {
         val vm = koinViewModel<CategoriesScreenViewModel>()
         val uiState by vm.uiState.collectAsStateWithLifecycle()
-        val showDialog = remember { mutableStateOf(false) }
+        var showDialog by remember { mutableStateOf(false) }
+        var showAlertDialog by remember { mutableStateOf(false) }
 
-        if (showDialog.value) {
+        if (showDialog) {
             InputDialog(
                 title = "Add group",
                 onConfirmed = { text -> vm.addGroup(text) },
-                onDismiss = { showDialog.value = false },
+                onDismiss = { showDialog = false },
                 label = "Group name"
             )
         }
@@ -64,7 +67,7 @@ data class CategoriesScreen(
         ) {
             Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
                 TextButton(
-                    onClick = { showDialog.value = true }
+                    onClick = { showDialog = true }
                 ) {
                     Icon(Icons.Filled.AddCircle, null)
                     Text(" Add group")
@@ -78,6 +81,15 @@ data class CategoriesScreen(
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
                 uiState.categoryGroupsWithKeywords.forEach { group ->
+
+                    if (showAlertDialog)
+                        AlertDialog(
+                            title = "Remove group",
+                            text = "Are you sure you want to remove this group and all it's categories?",
+                            onDismiss = { showAlertDialog = false },
+                            onConfirmed = { vm.removeGroup(groupId = group.group.id) }
+                        )
+
                     GroupRow(
                         group = group,
                         spending = uiState.groupSpending[group.group] ?: 0.0,
@@ -89,7 +101,7 @@ data class CategoriesScreen(
                                 name = name
                             )
                         },
-                        onGroupRemoved = { vm.removeGroup(it) }
+                        onGroupRemoved = { showAlertDialog = true }
                     )
                     group.categories.forEach { category ->
                         CategoryRow(

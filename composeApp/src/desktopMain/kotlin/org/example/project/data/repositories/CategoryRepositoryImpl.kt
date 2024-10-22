@@ -96,12 +96,18 @@ class CategoryRepositoryImpl(
 
     override suspend fun deleteCategoryGroup(id: String) {
         withContext(Dispatchers.IO) {
-            database.databaseQueries.deleteCategoryGroupWithDependencies(id)
+            val categories = database.databaseQueries.getCategoriesForGroup(id).executeAsList()
+            categories.forEach { category ->
+                database.databaseQueries.deleteKeywordsForCategory(category.id)
+                database.databaseQueries.deleteCategoryById(category.id)
+            }
+            database.databaseQueries.deleteGroupById(id)
         }
     }
 
     override suspend fun deleteCategory(id: String) {
         withContext(Dispatchers.IO) {
+            database.databaseQueries.deleteKeywordsForCategory(id)
             database.databaseQueries.deleteCategoryById(id)
         }
     }

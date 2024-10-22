@@ -13,7 +13,7 @@ import org.example.project.domain.repositories.KeywordRepository
 import org.example.project.domain.repositories.TransactionRepository
 import org.example.project.ui.screens.MainScreenViewModel
 import org.example.project.ui.screens.budgetScreen.BudgetScreenViewModel
-import org.example.project.ui.screens.keywords.CategoriesScreenViewModel
+import org.example.project.ui.screens.categories.CategoriesScreenViewModel
 import org.koin.compose.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module

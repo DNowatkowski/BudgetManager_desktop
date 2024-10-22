@@ -1,4 +1,4 @@
-package org.example.project.ui.screens.keywords
+package org.example.project.ui.screens.categories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

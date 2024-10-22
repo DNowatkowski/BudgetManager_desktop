@@ -20,7 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.navigator.Navigator
 import org.example.project.ui.components.DateSwitcher
 import org.example.project.ui.screens.budgetScreen.BudgetScreen
-import org.example.project.ui.screens.keywords.CategoriesScreen
+import org.example.project.ui.screens.categories.CategoriesScreen
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import java.time.LocalDate
