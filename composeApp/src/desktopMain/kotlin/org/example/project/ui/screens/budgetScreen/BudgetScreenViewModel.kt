@@ -5,9 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.fasterxml.jackson.dataformat.csv.CsvMapper
 import com.fasterxml.jackson.dataformat.csv.CsvSchema
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.example.project.data.repositories.TransactionDto
@@ -112,6 +116,7 @@ class BudgetScreenViewModel(
                 .readValues<TransactionDto>(stream)
                 .readAll()
                 .applyFilters(importOptions)
+                .removeDuplicates(importOptions)
                 .applyValueDivision(importOptions)
 
             transactionRepository.insertTransactions(list.map { it.toDomainModel() })
@@ -124,6 +129,7 @@ class BudgetScreenViewModel(
                 val localDate = it.date.toLocalDate()
                 localDate.isAfter(importOptions.dateFrom) && localDate.isBefore(importOptions.dateTo)
             }
+
         } else {
             this
         }
@@ -137,6 +143,30 @@ class BudgetScreenViewModel(
             }
         } else {
             this
+        }
+    }
+
+    private suspend fun List<TransactionDto>.removeDuplicates(importOptions: ImportOptions): List<TransactionDto> {
+        if (!importOptions.skipDuplicates) {
+            return this
+        } else {
+            val list = this.toMutableList()
+            coroutineScope {
+                val jobs = this@removeDuplicates.map { transaction ->
+                    async {
+                        val duplicate =
+                            transactionRepository.getTransactionsForDay(transaction.date.toLocalDate())
+                                .firstOrNull()?.find {
+                                    transaction.description == it.description && transaction.amount.stringToDouble() == it.amount
+                                }
+                        if (duplicate != null) {
+                            list.remove(transaction)
+                        }
+                    }
+                }
+                jobs.awaitAll()
+            }
+            return list
         }
     }
 

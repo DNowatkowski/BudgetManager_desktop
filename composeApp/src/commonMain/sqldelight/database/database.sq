@@ -30,6 +30,10 @@ SELECT * FROM TransactionEntity WHERE id = :id;
 deleteTransactionById:
 DELETE FROM TransactionEntity WHERE id = :id;
 
+getTransactionsForDay:
+SELECT * FROM TransactionEntity
+WHERE date = :date;
+
 deleteAllTransactions:
 DELETE FROM TransactionEntity;
 

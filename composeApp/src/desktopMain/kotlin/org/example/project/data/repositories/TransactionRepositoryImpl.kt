@@ -33,6 +33,14 @@ class TransactionRepositoryImpl(
             }
     }
 
+    override fun getTransactionsForDay(date: LocalDate): Flow<List<TransactionData>> {
+        return database.databaseQueries.getTransactionsForDay(date.toString()).asFlow()
+            .mapToList(Dispatchers.IO)
+            .map { transactions ->
+                transactions.map { it.toDomainModel() }
+            }
+    }
+
     override suspend fun insertTransactions(transactions: List<TransactionData>) {
         withContext(Dispatchers.IO) {
             transactions.forEach { transaction ->

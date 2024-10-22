@@ -91,9 +91,11 @@ fun String.stringToDouble(): Double {
     return try {
         this.toDouble()
     } catch (e: NumberFormatException) {
-        this.replace(",", ".").toDouble()
-    } catch (e: Exception) {
-        0.00
+        try {
+            this.replace(",", ".").toDouble()
+        } catch (e: NumberFormatException) {
+            throw e
+        }
     }
 }
 
@@ -111,4 +113,9 @@ fun String.stringToDoubleOrNull(): Double? {
 
 fun Double.toReadableString(): String {
     return String.format("%.2f", this)
+}
+
+fun LocalDate.toReadableString(): String {
+    val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
+    return this.format(formatter)
 }

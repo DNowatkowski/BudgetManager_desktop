@@ -7,6 +7,7 @@ import java.time.LocalDate
 interface TransactionRepository {
     fun getAllTransactions(): Flow<List<TransactionData>>
     fun getTransactionsForMonth(date: LocalDate): Flow<List<TransactionData>>
+    fun getTransactionsForDay(date: LocalDate): Flow<List<TransactionData>>
     suspend fun insertTransactions(transactions: List<TransactionData>)
     suspend fun insertTransaction(transaction: TransactionData)
     suspend fun deleteTransactions(transactionIds: List<String>)

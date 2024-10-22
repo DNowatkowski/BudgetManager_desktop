@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -33,13 +35,17 @@ import org.example.project.constants.TransactionType
 import org.example.project.domain.models.category.CategoryData
 import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.stringToDouble
+import org.example.project.domain.models.toReadableString
 import org.example.project.domain.models.transaction.TransactionData
+import org.example.project.ui.components.CustomSelectableDates
+import org.example.project.ui.components.DatePickerPopup
 import org.example.project.ui.components.TransactionTextField
 import org.example.project.ui.components.chips.CategoryInputChip
 import org.example.project.ui.components.chips.GroupInputChip
 import java.time.LocalDate
 import java.util.UUID
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTransactionRow(
     groups: List<GroupWithCategoryData>,
@@ -84,29 +90,6 @@ fun AddTransactionRow(
                 weight = TransactionColumn.CHECKBOX.weight,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Box {
-                    DropdownMenu(
-                        shape = MaterialTheme.shapes.large,
-                        expanded = showDatePicker,
-                        onDismissRequest = {
-                            showDatePicker = false
-                        }
-                    ) {
-                        Box(modifier = Modifier.padding(horizontal = 16.dp)) {
-                            WheelDatePicker(
-                                title = "Select date:",
-                                rowCount = 5,
-                                doneLabelStyle = MaterialTheme.typography.titleSmall.copy(color = MaterialTheme.colorScheme.primary),
-                                onDoneClick = {
-                                    date = it.toJavaLocalDate()
-                                    showDatePicker = false
-                                },
-                                height = 200.dp,
-                                dateTextStyle = MaterialTheme.typography.labelMedium,
-                            )
-                        }
-                    }
-                }
                 Checkbox(
                     checked = true,
                     onCheckedChange = null,
@@ -116,9 +99,21 @@ fun AddTransactionRow(
             TableCell(
                 weight = TransactionColumn.DATE.weight
             ) {
+                if (showDatePicker)
+                    DatePickerPopup(
+                        onDismissRequest = { showDatePicker = false },
+                        onDateSelected = {
+                            if (it != null) {
+                                date = it
+                            }
+                            showDatePicker = false
+                        },
+                        initialDate = date,
+                        selectableDates = CustomSelectableDates()
+                    )
                 InputChip(
                     selected = showDatePicker,
-                    label = { Text(date.toString(), style = MaterialTheme.typography.labelMedium) },
+                    label = { Text(date.toReadableString(), style = MaterialTheme.typography.labelMedium) },
                     onClick = { showDatePicker = true },
                 )
             }

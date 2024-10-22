@@ -1,7 +1,6 @@
 package org.example.project.ui.components.dialogs
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,12 +11,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -29,6 +29,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.example.project.domain.models.toReadableString
+import org.example.project.ui.components.CustomSelectableDates
+import org.example.project.ui.components.DatePickerPopup
 import java.time.LocalDate
 
 @Composable
@@ -92,21 +95,52 @@ fun ImportDialog(
                     Row(
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(12.dp)
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp)
                     ) {
-                        TextField(
-                            value = fromDate.toString(),
-                            onValueChange = { },
-                            readOnly = true,
-                            modifier = Modifier.weight(1f).clickable { }
-                        )
-                        Text("to", modifier = Modifier.weight(0.5f), textAlign = TextAlign.Center)
-                        TextField(
-                            value = toDate.toString(),
-                            onValueChange = { },
-                            readOnly = true,
-                            modifier = Modifier.weight(1f).clickable { }
-                        )
+                        Column {
+                            var showDatePicker by remember { mutableStateOf(false) }
+
+                            if (showDatePicker)
+                                DatePickerPopup(
+                                    onDismissRequest = { showDatePicker = false },
+                                    initialDate = fromDate,
+                                    onDateSelected = {
+                                        fromDate = it
+                                        showDatePicker = false
+                                    },
+                                    selectableDates = CustomSelectableDates(
+                                        dateBefore = toDate,
+                                    )
+                                )
+
+                            InputChip(
+                                selected = showDatePicker,
+                                onClick = { showDatePicker = true },
+                                label = { Text(fromDate.toReadableString()) },
+
+                                )
+                        }
+                        Text("to", textAlign = TextAlign.Center)
+                        Column {
+                            var showDatePicker by remember { mutableStateOf(false) }
+                            if (showDatePicker)
+                                DatePickerPopup(
+                                    onDismissRequest = { showDatePicker = false },
+                                    initialDate = toDate,
+                                    onDateSelected = {
+                                        toDate = it
+                                        showDatePicker = false
+                                    },
+                                    selectableDates = CustomSelectableDates(
+                                        dateAfter = fromDate,
+                                    )
+                                )
+                            InputChip(
+                                selected = showDatePicker,
+                                onClick = { showDatePicker = true },
+                                label = { Text(toDate.toReadableString()) },
+                            )
+                        }
                     }
                 }
             }
@@ -173,7 +207,7 @@ fun ImportDialog(
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Card {
+        Card(elevation = CardDefaults.cardElevation(8.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -216,3 +250,5 @@ enum class ValueOptions(val text: String) {
     TOTAL_VALUES("Total values"),
     VALUES_DIVIDED_BY("Values divided by:")
 }
+
+
