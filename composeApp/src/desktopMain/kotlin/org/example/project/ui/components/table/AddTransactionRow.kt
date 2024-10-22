@@ -2,7 +2,6 @@ package org.example.project.ui.components.table
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
@@ -28,8 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kotlinx.datetime.toJavaLocalDate
-import network.chaintech.kmp_date_time_picker.ui.datepicker.WheelDatePickerComponent.WheelDatePicker
 import org.example.project.constants.TransactionColumn
 import org.example.project.constants.TransactionType
 import org.example.project.domain.models.category.CategoryData
@@ -45,7 +40,6 @@ import org.example.project.ui.components.chips.GroupInputChip
 import java.time.LocalDate
 import java.util.UUID
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTransactionRow(
     groups: List<GroupWithCategoryData>,
