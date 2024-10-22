@@ -37,6 +37,7 @@ kotlin {
             implementation(libs.jackson.dataformat.csv)
             implementation(libs.date.picker)
             implementation(libs.androidx.compose.material.iconsExtended)
+            implementation(libs.kandy)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

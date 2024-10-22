@@ -1,4 +1,4 @@
-package org.example.project.ui.screens.budgetScreen
+package org.example.project.ui.screens.budget
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

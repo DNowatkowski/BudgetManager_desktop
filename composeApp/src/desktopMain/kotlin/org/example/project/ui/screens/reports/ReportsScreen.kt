@@ -1,4 +1,4 @@
-package org.example.project.ui.screens
+package org.example.project.ui.screens.reports
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -8,5 +8,7 @@ class ReportsScreen : Screen {
     @Composable
     override fun Content() {
         Text("Reports Screen")
+
+        
     }
 }

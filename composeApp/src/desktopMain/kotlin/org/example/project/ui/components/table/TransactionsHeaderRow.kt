@@ -22,7 +22,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.example.project.constants.TransactionColumn
-import org.example.project.ui.screens.budgetScreen.BudgetScreenViewModel
+import org.example.project.ui.screens.budget.BudgetScreenViewModel
 
 @Composable
 fun TransactionsHeaderRow(

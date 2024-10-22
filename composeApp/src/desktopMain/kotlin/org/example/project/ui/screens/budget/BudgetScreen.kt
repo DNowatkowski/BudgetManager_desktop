@@ -1,4 +1,4 @@
-package org.example.project.ui.screens.budgetScreen
+package org.example.project.ui.screens.budget
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable

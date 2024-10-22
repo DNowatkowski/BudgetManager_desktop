@@ -106,11 +106,6 @@ UPDATE GroupEntity SET name = :name WHERE id = :id;
 deleteGroupById:
 DELETE FROM GroupEntity WHERE id = :id;
 
-deleteCategoryGroupWithDependencies:
-DELETE FROM TransactionEntity WHERE categoryId IN (SELECT id FROM CategoryEntity WHERE categoryGroupId = :id);
-DELETE FROM KeywordEntity WHERE categoryId IN (SELECT id FROM CategoryEntity WHERE categoryGroupId = :id);
-DELETE FROM CategoryEntity WHERE categoryGroupId = :id;
-DELETE FROM GroupEntity WHERE id = :id;
 -------------------------------------------------------------------------------------
 
 CREATE TABLE CategoryEntity (
