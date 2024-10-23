@@ -7,6 +7,7 @@ import org.example.project.domain.models.group.GroupWithCategoryData
 interface CategoryRepository {
     fun getGroupsWithCategoriesAndKeywords(): Flow<List<GroupWithCategoriesAndKeywordsData>>
     fun getGroupsWithCategories(): Flow<List<GroupWithCategoryData>>
+    fun getExpenseGroupsWithCategories(): Flow<List<GroupWithCategoryData>>
     suspend fun insertCategory(name: String, groupId: String)
     suspend fun insertCategoryGroup(name: String)
     suspend fun updateCategoryGroup(id: String, name: String)

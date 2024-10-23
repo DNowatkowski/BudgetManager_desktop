@@ -59,6 +59,21 @@ class CategoryRepositoryImpl(
         }
     }
 
+    override fun getExpenseGroupsWithCategories(): Flow<List<GroupWithCategoryData>> {
+        return combine(
+            database.databaseQueries.getAllCategoryGroups().asFlow().mapToList(Dispatchers.IO),
+            database.databaseQueries.getAllCategories().asFlow().mapToList(Dispatchers.IO),
+        ) { groups, categories ->
+            groups.filter { it.isIncomeGroup == false }.map { group ->
+                GroupWithCategoryData(
+                    group = group.toDomainModel(),
+                    categories = categories.filter { it.categoryGroupId == group.id }
+                        .map { it.toDomainModel() }
+                )
+            }
+        }
+    }
+
     override suspend fun insertCategory(name: String, groupId: String) {
         withContext(Dispatchers.IO) {
             database.databaseQueries.insertCategory(

@@ -36,6 +36,10 @@ getTransactionsForDay:
 SELECT * FROM TransactionEntity
 WHERE date = :date;
 
+getTransactionsForMonthRange:
+SELECT * FROM TransactionEntity
+WHERE date >= :startDate AND date <= :endDate;
+
 deleteAllTransactions:
 DELETE FROM TransactionEntity;
 
