@@ -33,6 +33,7 @@ import ir.ehsannarmani.compose_charts.models.GridProperties
 import ir.ehsannarmani.compose_charts.models.IndicatorProperties
 import ir.ehsannarmani.compose_charts.models.LabelProperties
 import ir.ehsannarmani.compose_charts.models.Pie
+import ir.ehsannarmani.compose_charts.models.PopupProperties
 import org.example.project.domain.models.toReadableString
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -58,21 +59,23 @@ data class ReportsScreen(val activeMonth: LocalDate) : Screen {
             modifier = Modifier.fillMaxSize().padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            MonthlyExpensesCard(pieChartState)
-            IncomeAndExpenses(uiState)
+            PieChart(pieChartState, modifier = Modifier.weight(6f))
+            LineChart(uiState, modifier = Modifier.weight(4f))
         }
     }
 }
 
 @Composable
-private fun MonthlyExpensesCard(
+private fun PieChart(
     state: ReportsScreenViewModel.PieChartState,
+    modifier: Modifier = Modifier,
 ) {
     Card(
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors().copy(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
         ),
+        modifier = modifier
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -157,7 +160,6 @@ private fun MonthlyExpensesCard(
                             data = animatedPies,
                             modifier = Modifier.size(300.dp),
                             selectedScale = 1.2f,
-                            onPieClick = {},
                             selectedPaddingDegree = 4f,
                             style = Pie.Style.Stroke()
                         )
@@ -180,22 +182,23 @@ private fun MonthlyExpensesCard(
 }
 
 @Composable
-private fun IncomeAndExpenses(
-    state: ReportsScreenViewModel.LineChartState
+private fun LineChart(
+    state: ReportsScreenViewModel.LineChartState,
+    modifier: Modifier = Modifier,
 ) {
-
     Card(
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors().copy(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
         ),
+        modifier = modifier
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(16.dp)
         ) {
             if (!state.isLoading) {
-                val maxValue by remember {
+                val maxValue by remember(state.incomeExpenseLines) {
                     mutableStateOf(
                         closestHigherMultipleOf1000(state.incomeExpenseLines.flatMap { it.values }
                             .maxOrNull()
@@ -207,7 +210,7 @@ private fun IncomeAndExpenses(
                     curvedEdges = false,
                     labelProperties = LabelProperties(
                         enabled = true,
-                        labels = state.lineChartLabels
+                        labels = state.lineChartLabels,
                     ),
                     maxValue = maxValue,
                     gridProperties = GridProperties(
@@ -227,6 +230,13 @@ private fun IncomeAndExpenses(
                             formatter.format(it) + " zł"
                         }
                     ),
+                    popupProperties = PopupProperties(
+                        enabled = true,
+                        contentBuilder = {
+                            val formatter = NumberFormat.getNumberInstance(Locale("pl", "PL"))
+                            formatter.format(it) + " zł"
+                        }
+                    )
                 )
             }
         }

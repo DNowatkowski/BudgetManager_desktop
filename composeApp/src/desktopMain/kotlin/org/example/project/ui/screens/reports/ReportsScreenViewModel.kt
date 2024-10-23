@@ -169,7 +169,6 @@ class ReportsScreenViewModel(
         }
     }
 
-
     data class LineChartState(
         val isLoading: Boolean = true,
         val isError: Throwable? = null,
