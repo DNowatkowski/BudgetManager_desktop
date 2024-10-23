@@ -65,7 +65,9 @@ fun MainScreen() {
                 NavigationDrawerItem(
                     label = { Text(text = "Reports") },
                     selected = navigator.lastItem is ReportsScreen,
-                    onClick = { navigator.replace(ReportsScreen()) }
+                    onClick = { navigator.replace(ReportsScreen(
+                        uiState.activeMonth
+                    )) }
                 )
             }
             Column(
@@ -99,7 +101,7 @@ fun MainScreen() {
                         }
 
                         is ReportsScreen -> {
-                            navigator.replace(ReportsScreen())
+                            navigator.replace(ReportsScreen(uiState.activeMonth))
                         }
                     }
                 }

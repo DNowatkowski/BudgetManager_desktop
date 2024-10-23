@@ -1,5 +1,6 @@
 package org.example.project.domain.models
 
+import androidx.compose.ui.graphics.Color
 import database.CategoryEntity
 import database.GroupEntity
 import database.KeywordEntity
@@ -17,6 +18,7 @@ import java.util.UUID
 fun GroupEntity.toDomainModel() = GroupData(
     id = id,
     name = name,
+    color = Color(colorCode.toInt()),
 )
 
 fun CategoryEntity.toDomainModel(
@@ -111,8 +113,12 @@ fun String.stringToDoubleOrNull(): Double? {
     }
 }
 
-fun Double.toReadableString(): String {
-    return String.format("%.2f", this)
+fun Double.toReadableString(withCurrency: Boolean = false): String {
+    return if (withCurrency) {
+        String.format("%.2f zł", this)
+    } else {
+        String.format("%.2f", this)
+    }
 }
 
 fun LocalDate.toReadableString(): String {

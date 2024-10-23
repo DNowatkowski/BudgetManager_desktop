@@ -16,7 +16,7 @@ sql-delight = "2.0.2"
 statelyCommon = "2.0.5"
 jackson-csv = "2.18.0"
 date-picker = "1.0.5"
-kandy = "0.7.0"
+compose-charts = "0.0.5"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -44,8 +44,7 @@ stately-common = { module = "co.touchlab:stately-common", version.ref = "stately
 
 jackson-dataformat-csv = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-csv",version.ref = "jackson-csv" }
 date-picker = { module = "network.chaintech:kmp-date-time-picker", version.ref = "date-picker" }
-
-kandy = { module = "org.jetbrains.kotlinx:kandy-lets-plot", version.ref = "kandy" }
+compose-charts = {module = "io.github.ehsannarmani:compose-charts", version.ref = "compose-charts"}
 
 [plugins]
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }

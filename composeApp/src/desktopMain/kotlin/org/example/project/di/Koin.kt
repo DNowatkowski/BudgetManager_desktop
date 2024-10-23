@@ -14,6 +14,7 @@ import org.example.project.domain.repositories.TransactionRepository
 import org.example.project.ui.screens.MainScreenViewModel
 import org.example.project.ui.screens.budget.BudgetScreenViewModel
 import org.example.project.ui.screens.categories.CategoriesScreenViewModel
+import org.example.project.ui.screens.reports.ReportsScreenViewModel
 import org.koin.compose.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
@@ -49,4 +50,5 @@ val appModule = module {
     viewModel { CategoriesScreenViewModel(get(), get(), get()) }
     viewModel { BudgetScreenViewModel(get(), get(), get(), get()) }
     viewModel { MainScreenViewModel() }
+    viewModel { ReportsScreenViewModel(get(), get()) }
 }

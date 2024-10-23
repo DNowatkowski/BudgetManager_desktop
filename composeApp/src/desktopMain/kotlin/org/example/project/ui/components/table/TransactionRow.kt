@@ -39,7 +39,7 @@ fun TransactionRow(
     var selectedGroup by remember(selectedCategory?.categoryGroupId) {
         mutableStateOf(
             selectedCategory?.let { category ->
-                groups.find { it.id == category.categoryGroupId }
+                groups.find { it.group.id == category.categoryGroupId }
             }
         )
     }

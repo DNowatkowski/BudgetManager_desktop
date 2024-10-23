@@ -1,5 +1,6 @@
 package org.example.project.data.repositories
 
+import androidx.compose.ui.graphics.toArgb
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import database.CategoryEntity
@@ -14,6 +15,7 @@ import org.example.project.domain.models.group.GroupWithCategoriesAndKeywordsDat
 import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.toDomainModel
 import org.example.project.domain.repositories.CategoryRepository
+import org.example.project.ui.screens.reports.generateRandomColor
 import java.util.UUID
 
 class CategoryRepositoryImpl(
@@ -49,8 +51,7 @@ class CategoryRepositoryImpl(
         ) { groups, categories ->
             groups.map { group ->
                 GroupWithCategoryData(
-                    id = group.id,
-                    name = group.name,
+                    group = group.toDomainModel(),
                     categories = categories.filter { it.categoryGroupId == group.id }
                         .map { it.toDomainModel() }
                 )
@@ -75,8 +76,9 @@ class CategoryRepositoryImpl(
         withContext(Dispatchers.IO) {
             database.databaseQueries.insertCategoryGroup(
                 GroupEntity(
-                    UUID.randomUUID().toString(),
-                    name
+                    id = UUID.randomUUID().toString(),
+                    name = name,
+                    colorCode = generateRandomColor().toArgb().toDouble()
                 )
             )
         }
