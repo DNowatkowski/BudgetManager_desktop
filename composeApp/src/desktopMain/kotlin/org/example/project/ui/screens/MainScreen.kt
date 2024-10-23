@@ -47,64 +47,44 @@ fun MainScreen() {
         Row(modifier = Modifier.fillMaxSize()) {
             ModalDrawerSheet(
                 modifier = Modifier.width(250.dp),
-                drawerContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                drawerContainerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
-                NavigationDrawerItem(
-                    label = { Text(text = "Categories") },
+                NavigationItem(
+                    text = "Categories",
                     selected = navigator.lastItem is CategoriesScreen,
-                    shape = MaterialTheme.shapes.medium,
+                    icon = { Icon(Icons.Outlined.Category, contentDescription = "Categories") },
                     onClick = {
                         navigator.replace(
                             CategoriesScreen(
                                 activeMonth = uiState.activeMonth
                             )
                         )
-                    },
-                    icon = { Icon(Icons.Outlined.Category, null) },
-                    colors = NavigationDrawerItemDefaults.colors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                        selectedTextColor = MaterialTheme.colorScheme.primary,
-                        selectedIconColor = MaterialTheme.colorScheme.primary
-                    ),
-                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+                    }
                 )
-                NavigationDrawerItem(
-                    label = { Text(text = "Transactions") },
+                NavigationItem(
+                    text = "Transactions",
                     selected = navigator.lastItem is BudgetScreen,
-                    shape = MaterialTheme.shapes.medium,
-                    icon = { Icon(Icons.Outlined.MonetizationOn, null) },
-                    colors = NavigationDrawerItemDefaults.colors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                        selectedTextColor = MaterialTheme.colorScheme.primary,
-                        selectedIconColor = MaterialTheme.colorScheme.primary
-                    ),
+                    icon = {
+                        Icon(
+                            Icons.Outlined.MonetizationOn,
+                            contentDescription = "Transactions"
+                        )
+                    },
                     onClick = {
                         navigator.replace(
                             BudgetScreen(
                                 activeMonth = uiState.activeMonth,
                             )
                         )
-                    },
-                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+                    }
                 )
-                NavigationDrawerItem(
-                    label = { Text(text = "Reports") },
+                NavigationItem(
+                    text = "Reports",
                     selected = navigator.lastItem is ReportsScreen,
-                    shape = MaterialTheme.shapes.medium,
-                    icon = { Icon(Icons.Outlined.BarChart, null) },
-                    colors = NavigationDrawerItemDefaults.colors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-                        selectedTextColor = MaterialTheme.colorScheme.primary,
-                        selectedIconColor = MaterialTheme.colorScheme.primary
-                    ),
+                    icon = { Icon(Icons.Outlined.BarChart, contentDescription = "Reports") },
                     onClick = {
-                        navigator.replace(
-                            ReportsScreen(
-                                uiState.activeMonth
-                            )
-                        )
-                    },
-                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+                        navigator.replace(ReportsScreen(uiState.activeMonth))
+                    }
                 )
             }
             Column(
@@ -146,4 +126,26 @@ fun MainScreen() {
             }
         }
     }
+}
+
+@Composable
+private fun NavigationItem(
+    text: String,
+    selected: Boolean,
+    icon: @Composable () -> Unit,
+    onClick: () -> Unit,
+) {
+    NavigationDrawerItem(
+        label = { Text(text = text) },
+        selected = selected,
+        shape = MaterialTheme.shapes.medium,
+        icon = icon,
+        colors = NavigationDrawerItemDefaults.colors(
+            selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+            selectedTextColor = MaterialTheme.colorScheme.primary,
+            selectedIconColor = MaterialTheme.colorScheme.primary
+        ),
+        onClick = onClick,
+        modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+    )
 }

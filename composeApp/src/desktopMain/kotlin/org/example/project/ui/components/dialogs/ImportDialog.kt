@@ -28,6 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.example.project.constants.DateOptions
+import org.example.project.constants.ImportOptions
+import org.example.project.constants.ValueOptions
 import org.example.project.domain.models.toReadableString
 import org.example.project.ui.components.CustomSelectableDates
 import org.example.project.ui.components.DatePickerPopup
@@ -232,22 +235,3 @@ fun ImportDialog(
         }
     }
 }
-
-data class ImportOptions(
-    val dateFrom: LocalDate?,
-    val dateTo: LocalDate?,
-    val valuesDividedBy: Int = 1,
-    val skipDuplicates: Boolean = true,
-)
-
-enum class DateOptions(val text: String) {
-    ALL_TRANSACTIONS("All transactions"),
-    DATE_RANGE("Date range")
-}
-
-enum class ValueOptions(val text: String) {
-    TOTAL_VALUES("Total values"),
-    VALUES_DIVIDED_BY("Values divided by:")
-}
-
-

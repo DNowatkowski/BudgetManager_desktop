@@ -19,7 +19,6 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ImportExport
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -41,10 +40,10 @@ import io.github.vinceglb.filekit.core.PickerMode
 import io.github.vinceglb.filekit.core.PickerType
 import io.github.vinceglb.filekit.core.PlatformFile
 import org.example.project.ui.components.dialogs.AlertDialog
-import org.example.project.ui.components.table.AddTransactionRow
-import org.example.project.ui.components.table.TransactionsHeaderRow
 import org.example.project.ui.components.dialogs.ImportDialog
+import org.example.project.ui.components.table.AddTransactionRow
 import org.example.project.ui.components.table.TransactionRow
+import org.example.project.ui.components.table.TransactionsHeaderRow
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import java.time.LocalDate
@@ -154,7 +153,6 @@ data class BudgetScreen(
                     modifier = Modifier.width(250.dp).height(50.dp)
                 )
             }
-            HorizontalDivider()
             TransactionsHeaderRow(
                 allSelectedChecked = uiState.transactions.any { it.isSelected },
                 onAllSelectedChange = { vm.toggleAllTransactionsSelection(it) },
@@ -163,7 +161,6 @@ data class BudgetScreen(
                 onSortOptionChanged = { vm.updateSortOption(it) },
                 onSortOrderChanged = { vm.toggleSortOrder() }
             )
-            HorizontalDivider()
             LazyColumn(
                 state = listState,
             ) {

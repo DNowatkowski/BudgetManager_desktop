@@ -118,7 +118,6 @@ class ReportsScreenViewModel(
             )
         }.collectLatest { currentState ->
             _lineChartState.update { currentState }
-
         }
     }
 
@@ -165,7 +164,6 @@ class ReportsScreenViewModel(
             )
         }.collectLatest { currentState ->
             _pieChartState.update { currentState }
-
         }
     }
 
@@ -175,8 +173,7 @@ class ReportsScreenViewModel(
 
         val incomeExpenseLines: List<Line> = emptyList(),
         val lineChartLabels: List<String> = emptyList(),
-
-        )
+    )
 
     data class PieChartState(
         val isLoading: Boolean = true,

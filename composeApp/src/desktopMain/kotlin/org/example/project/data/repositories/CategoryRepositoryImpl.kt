@@ -15,7 +15,7 @@ import org.example.project.domain.models.group.GroupWithCategoriesAndKeywordsDat
 import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.toDomainModel
 import org.example.project.domain.repositories.CategoryRepository
-import org.example.project.ui.screens.reports.generateRandomColor
+import org.example.project.utils.generateRandomColor
 import java.util.UUID
 
 class CategoryRepositoryImpl(

@@ -106,7 +106,12 @@ fun AddTransactionRow(
                     )
                 InputChip(
                     selected = showDatePicker,
-                    label = { Text(date.toReadableString(), style = MaterialTheme.typography.labelMedium) },
+                    label = {
+                        Text(
+                            date.toReadableString(),
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    },
                     onClick = { showDatePicker = true },
                 )
             }

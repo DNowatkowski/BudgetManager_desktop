@@ -6,13 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -82,40 +80,9 @@ data class CategoriesScreen(
                     Text(" Add group")
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                Column(
-                    modifier = Modifier
-                        .clip(MaterialTheme.shapes.large)
-                        .background(moneyGreen.copy(alpha = 0.1f))
-                        .border(2.dp, moneyGreen.copy(alpha = 0.6f), MaterialTheme.shapes.large)
-                        .padding(vertical = 8.dp, horizontal = 16.dp)
-
-                ) {
-                    val incomeGroup by remember(uiState.groupTargets) { mutableStateOf(uiState.groupTargets.keys.find { it.isIncomeGroup }) }
-                    Text(
-                        text = "Income: ${uiState.groupTargets[incomeGroup]?.toReadableString(true)}",
-                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight(30)),
-                        color = moneyGreen
-                    )
-                    val unassignedFunds by remember(uiState.groupTargets) {
-                        val incomeGroupTarget = uiState.groupTargets[incomeGroup] ?: 0.0
-                        val otherGroupTargetsSum =
-                            uiState.groupTargets.filterKeys { it != incomeGroup }.values.sum().absoluteValue
-                        mutableStateOf(
-                            (incomeGroupTarget - otherGroupTargetsSum).toReadableString(
-                                true
-                            )
-                        )
-                    }
-                    Text(
-                        "Unassigned: $unassignedFunds",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = moneyGreen.copy(alpha = 0.7f)
-                    )
-                }
+                TotalCard(uiState)
             }
-            HorizontalDivider(modifier = Modifier.fillMaxWidth())
             CategoriesHeaderRow()
-            HorizontalDivider()
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
@@ -174,5 +141,41 @@ data class CategoriesScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun TotalCard(
+    uiState: CategoriesScreenViewModel.CategoriesState
+) {
+    Column(
+        modifier = Modifier
+            .clip(MaterialTheme.shapes.large)
+            .background(moneyGreen.copy(alpha = 0.1f))
+            .border(2.dp, moneyGreen.copy(alpha = 0.6f), MaterialTheme.shapes.large)
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+
+    ) {
+        val incomeGroup by remember(uiState.groupTargets) { mutableStateOf(uiState.groupTargets.keys.find { it.isIncomeGroup }) }
+        Text(
+            text = "Income: ${uiState.groupTargets[incomeGroup]?.toReadableString(true)}",
+            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight(30)),
+            color = moneyGreen
+        )
+        val unassignedFunds by remember(uiState.groupTargets) {
+            val incomeGroupTarget = uiState.groupTargets[incomeGroup] ?: 0.0
+            val otherGroupTargetsSum =
+                uiState.groupTargets.filterKeys { it != incomeGroup }.values.sum().absoluteValue
+            mutableStateOf(
+                (incomeGroupTarget - otherGroupTargetsSum).toReadableString(
+                    true
+                )
+            )
+        }
+        Text(
+            "Unassigned: $unassignedFunds",
+            style = MaterialTheme.typography.bodyMedium,
+            color = moneyGreen.copy(alpha = 0.7f)
+        )
     }
 }

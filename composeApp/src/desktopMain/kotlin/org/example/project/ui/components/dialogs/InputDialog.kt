@@ -49,5 +49,4 @@ fun InputDialog(
             modifier = Modifier.widthIn(min = 300.dp),
         )
     }
-
 }

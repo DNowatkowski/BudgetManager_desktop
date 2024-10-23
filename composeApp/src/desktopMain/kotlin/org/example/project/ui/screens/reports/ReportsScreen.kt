@@ -35,12 +35,12 @@ import ir.ehsannarmani.compose_charts.models.LabelProperties
 import ir.ehsannarmani.compose_charts.models.Pie
 import ir.ehsannarmani.compose_charts.models.PopupProperties
 import org.example.project.domain.models.toReadableString
+import org.example.project.utils.closestHigherMultipleOf1000
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.util.Locale
-import kotlin.random.Random
 
 data class ReportsScreen(val activeMonth: LocalDate) : Screen {
     @OptIn(KoinExperimentalAPI::class)
@@ -241,24 +241,4 @@ private fun LineChart(
             }
         }
     }
-}
-
-fun generateRandomColor(): Color {
-    val hue = Random.nextInt(0, 360) // Random hue between 0 and 360
-    val saturation = Random.nextInt(35, 65) // Low saturation for pastel colors
-    val lightness = Random.nextInt(65, 80) // High lightness for bright colors
-
-    val color = Color.hsl(
-        hue = hue.toFloat(),
-        saturation = saturation.toFloat() / 100,
-        lightness = lightness.toFloat() / 100,
-    )
-    return color
-}
-
-fun closestHigherMultipleOf1000(number: Double?): Double {
-    return if (number != null) {
-        ((number / 1000).toInt() * 1000 + 1000.0)
-    } else
-        1000.0
 }

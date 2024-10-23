@@ -13,10 +13,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun AlertDialog(
     title: String,
-    text:String,
+    text: String,
     onDismiss: () -> Unit,
     onConfirmed: () -> Unit,
-){
+) {
     BudgetManagerDialog(
         title = title,
         onDismiss = { onDismiss() },
