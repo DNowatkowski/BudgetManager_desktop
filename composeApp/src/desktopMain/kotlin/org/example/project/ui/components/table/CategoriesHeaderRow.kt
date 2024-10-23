@@ -1,5 +1,6 @@
 package org.example.project.ui.components.table
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,36 +20,21 @@ import org.example.project.constants.CategoryColumn
 @Composable
 fun CategoriesHeaderRow() {
     Row(
-        modifier = Modifier.fillMaxWidth().height(40.dp),
+        modifier = Modifier.fillMaxWidth().height(40.dp)
+            .background(MaterialTheme.colorScheme.surfaceContainer),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         TableCell(weight = CategoryColumn.CATEGORY.weight) {
-            Text(
-                "Category",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.padding(start = 8.dp)
-            )
+            TableHeaderText("CATEGORY", modifier = Modifier.padding(start = 8.dp))
         }
         VerticalDivider()
         TableCell(weight = CategoryColumn.ACTUAL_SPENDING.weight) {
-            Text(
-                "Actual spending",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleSmall,
-            )
+            TableHeaderText("ACTUAL VALUES")
         }
         VerticalDivider()
         TableCell(weight = CategoryColumn.MONTHLY_TARGET.weight) {
-            Text(
-                "Monthly target",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleSmall,
-            )
+            TableHeaderText("MONTHLY TARGET")
         }
     }
 }

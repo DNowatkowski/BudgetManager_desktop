@@ -166,6 +166,7 @@ data class CategoriesScreen(
                                 )
                             },
                             category = category,
+                            groupColor = group.group.color,
                             activeMonth = activeMonth,
                             spending = uiState.categorySpending[category.category] ?: 0.0
                         )

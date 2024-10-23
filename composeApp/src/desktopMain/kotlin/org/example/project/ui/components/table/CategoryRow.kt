@@ -39,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.example.project.constants.CategoryColumn
 import org.example.project.domain.models.category.CategoryWithKeywords
@@ -58,6 +59,7 @@ import java.time.LocalDate
 @Composable
 fun CategoryRow(
     category: CategoryWithKeywords,
+    groupColor: Color,
     spending: Double,
     activeMonth: LocalDate,
     onCategoryUpdated: (String, String) -> Unit,
@@ -116,6 +118,7 @@ fun CategoryRow(
                     supportingContent = {
                         CustomLinearProgressIndicator(
                             progress = progress,
+                            barColor = groupColor,
                             modifier = Modifier.padding(end = 20.dp)
                         )
                     },

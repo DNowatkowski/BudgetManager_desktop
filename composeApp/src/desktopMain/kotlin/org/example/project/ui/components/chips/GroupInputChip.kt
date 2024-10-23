@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
+import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -17,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.example.project.domain.models.group.GroupWithCategoryData
@@ -57,6 +59,9 @@ fun GroupInputChip(
     InputChip(
         selected = dropdownMenuExpanded,
         onClick = { dropdownMenuExpanded = !dropdownMenuExpanded },
+        colors = InputChipDefaults.inputChipColors().copy(
+            containerColor = selectedGroup?.group?.color?.copy(alpha = 0.6f) ?: Color.Unspecified
+        ),
         label = {
             Text(
                 selectedGroup?.group?.name ?: "Undefined",

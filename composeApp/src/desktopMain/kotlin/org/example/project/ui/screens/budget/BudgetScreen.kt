@@ -1,6 +1,7 @@
 package org.example.project.ui.screens.budget
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -195,7 +196,9 @@ data class BudgetScreen(
                         onCategorySelected = { transactionId, newCategoryId ->
                             vm.updateCategoryForTransaction(transactionId, newCategoryId)
                         },
-                        modifier = Modifier.animateItem()
+                        modifier = Modifier.animateItem().background(
+                            if (index % 2 == 0) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surfaceContainer
+                        )
                     )
                 }
             }

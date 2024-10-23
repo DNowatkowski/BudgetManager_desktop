@@ -6,9 +6,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BarChart
+import androidx.compose.material.icons.outlined.CandlestickChart
+import androidx.compose.material.icons.outlined.Category
+import androidx.compose.material.icons.outlined.MonetizationOn
+import androidx.compose.material.icons.outlined.Money
+import androidx.compose.material.icons.outlined.PieChartOutline
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemColors
+import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,35 +50,66 @@ fun MainScreen() {
         )
     ) { navigator ->
         Row(modifier = Modifier.fillMaxSize()) {
-            ModalDrawerSheet(modifier = Modifier.width(240.dp)) {
+            ModalDrawerSheet(
+                modifier = Modifier.width(250.dp),
+                drawerContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            ) {
                 NavigationDrawerItem(
-                    label = { Text(text = "Import") },
+                    label = { Text(text = "Categories") },
                     selected = navigator.lastItem is CategoriesScreen,
+                    shape = MaterialTheme.shapes.medium,
                     onClick = {
                         navigator.replace(
                             CategoriesScreen(
                                 activeMonth = uiState.activeMonth
                             )
                         )
-                    }
+                    },
+                    icon = { Icon(Icons.Outlined.Category, null) },
+                    colors = NavigationDrawerItemDefaults.colors(
+                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        selectedIconColor = MaterialTheme.colorScheme.primary
+                    ),
+                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
                 )
                 NavigationDrawerItem(
-                    label = { Text(text = "Budget") },
+                    label = { Text(text = "Transactions") },
                     selected = navigator.lastItem is BudgetScreen,
+                    shape = MaterialTheme.shapes.medium,
+                    icon = { Icon(Icons.Outlined.MonetizationOn, null) },
+                    colors = NavigationDrawerItemDefaults.colors(
+                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        selectedIconColor = MaterialTheme.colorScheme.primary
+                    ),
                     onClick = {
                         navigator.replace(
                             BudgetScreen(
                                 activeMonth = uiState.activeMonth,
                             )
                         )
-                    }
+                    },
+                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
                 )
                 NavigationDrawerItem(
                     label = { Text(text = "Reports") },
                     selected = navigator.lastItem is ReportsScreen,
-                    onClick = { navigator.replace(ReportsScreen(
-                        uiState.activeMonth
-                    )) }
+                    shape = MaterialTheme.shapes.medium,
+                    icon = { Icon(Icons.Outlined.BarChart, null) },
+                    colors = NavigationDrawerItemDefaults.colors(
+                        selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        selectedIconColor = MaterialTheme.colorScheme.primary
+                    ),
+                    onClick = {
+                        navigator.replace(
+                            ReportsScreen(
+                                uiState.activeMonth
+                            )
+                        )
+                    },
+                    modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
                 )
             }
             Column(
@@ -75,7 +117,7 @@ fun MainScreen() {
                     .fillMaxSize()
                     .background(color = MaterialTheme.colorScheme.background),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
+            ) {
                 DateSwitcher(
                     activeMonth = uiState.activeMonth,
                     onPreviousMonth = { vm.previousMonth() },

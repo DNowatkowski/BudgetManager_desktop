@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.example.project.constants.TransactionColumn
+import org.example.project.constants.moneyGreen
 import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.ui.components.chips.CategoryInputChip
@@ -120,7 +121,7 @@ fun TransactionRow(
             Text(
                 text = if (transaction.amount < 0) formattedAmount else "+$formattedAmount",
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    color = if (transaction.amount < 0) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+                    color = if (transaction.amount < 0) MaterialTheme.colorScheme.error else moneyGreen
                 ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

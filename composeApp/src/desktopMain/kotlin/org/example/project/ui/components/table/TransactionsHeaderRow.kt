@@ -1,5 +1,6 @@
 package org.example.project.ui.components.table
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -34,7 +35,7 @@ fun TransactionsHeaderRow(
     onSortOrderChanged: () -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().height(40.dp),
+        modifier = Modifier.fillMaxWidth().height(40.dp).background(MaterialTheme.colorScheme.surfaceContainer),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -52,12 +53,7 @@ fun TransactionsHeaderRow(
         TableCell(
             weight = TransactionColumn.DATE.weight
         ) {
-            Text(
-                "Date",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleSmall,
-            )
+            TableHeaderText("DATE")
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 imageVector = if (sortOrder == BudgetScreenViewModel.SortOrder.DESCENDING)
@@ -80,57 +76,33 @@ fun TransactionsHeaderRow(
         TableCell(
             weight = TransactionColumn.PAYEE.weight
         ) {
-            Text(
-                "Payee",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleSmall,
-            )
+            TableHeaderText("PAYEE")
         }
         VerticalDivider()
         TableCell(
             weight = TransactionColumn.DESCRIPTION.weight
         ) {
-            Text(
-                "Description",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleSmall,
-            )
+            TableHeaderText("DESCRIPTION",)
         }
         VerticalDivider()
         TableCell(
             weight = TransactionColumn.GROUP.weight
         ) {
-            Text(
-                "Group",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleSmall,
-            )
+            TableHeaderText("GROUP"
+                )
         }
         VerticalDivider()
         TableCell(
             weight = TransactionColumn.CATEGORY.weight
         ) {
-            Text(
-                "Category",
-                style = MaterialTheme.typography.titleSmall,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            TableHeaderText("CATEGORY")
         }
         VerticalDivider()
         TableCell(
             weight = TransactionColumn.AMOUNT.weight,
             modifier = Modifier.padding(end = 8.dp)
         ) {
-            Text(
-                "Amount",
-                style = MaterialTheme.typography.titleSmall,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            TableHeaderText("AMOUNT")
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 imageVector = if (sortOrder == BudgetScreenViewModel.SortOrder.DESCENDING)

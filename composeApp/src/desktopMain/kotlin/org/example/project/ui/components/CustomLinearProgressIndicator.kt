@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CustomLinearProgressIndicator(
+    barColor: Color = MaterialTheme.colorScheme.primary,
     modifier: Modifier = Modifier,
     progress: Float = 0.0f,
     clipShape: Shape = RoundedCornerShape(16.dp)
@@ -35,13 +36,13 @@ fun CustomLinearProgressIndicator(
     Box(
         modifier = modifier
             .clip(clipShape)
-            .background(Color.LightGray.copy(alpha = 0.5f))
+            .background(Color.LightGray.copy(alpha = 0.3f))
             .fillMaxWidth()
-            .height(8.dp)
+            .height(6.dp)
     ) {
         Box(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.secondary)
+                .background(barColor)
                 .fillMaxHeight()
                 .fillMaxWidth(animatedProgress)
         )
