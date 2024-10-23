@@ -1,3 +1,5 @@
+import kotlin.Boolean;
+
 PRAGMA user_version = 1;
 
 CREATE TABLE TransactionEntity (
@@ -87,7 +89,9 @@ SELECT * FROM KeywordEntity WHERE categoryId = :categoryId OR :categoryId IS NUL
 -------------------------------------------------------------------------------------
 CREATE TABLE GroupEntity (
     id TEXT PRIMARY KEY,
-    name TEXT NOT NULL
+    name TEXT NOT NULL,
+    isIncomeGroup INTEGER AS Boolean DEFAULT 0,
+    colorCode REAL NOT NULL
 );
 
 insertCategoryGroup:

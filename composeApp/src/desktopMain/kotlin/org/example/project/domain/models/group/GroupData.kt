@@ -6,4 +6,5 @@ data class GroupData(
     val id: String,
     val color: Color,
     val name: String,
+    val isIncomeGroup: Boolean,
 )

@@ -1,6 +1,7 @@
 package org.example.project.ui.screens.categories
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,9 +25,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
+import org.example.project.constants.moneyGreen
+import org.example.project.domain.models.toReadableString
 import org.example.project.ui.components.dialogs.AlertDialog
 import org.example.project.ui.components.dialogs.InputDialog
 import org.example.project.ui.components.table.CategoriesHeaderRow
@@ -35,6 +40,7 @@ import org.example.project.ui.components.table.GroupRow
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import java.time.LocalDate
+import kotlin.math.absoluteValue
 
 
 data class CategoriesScreen(
@@ -65,7 +71,10 @@ data class CategoriesScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()
         ) {
-            Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.Bottom
+            ) {
                 TextButton(
                     onClick = { showDialog = true }
                 ) {
@@ -73,6 +82,36 @@ data class CategoriesScreen(
                     Text(" Add group")
                 }
                 Spacer(modifier = Modifier.weight(1f))
+                Column(
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.large)
+                        .background(moneyGreen.copy(alpha = 0.1f))
+                        .border(2.dp, moneyGreen.copy(alpha = 0.6f), MaterialTheme.shapes.large)
+                        .padding(vertical = 8.dp, horizontal = 16.dp)
+
+                ) {
+                    val incomeGroup by remember(uiState.groupTargets) { mutableStateOf(uiState.groupTargets.keys.find { it.isIncomeGroup }) }
+                    Text(
+                        text = "Income: ${uiState.groupTargets[incomeGroup]?.toReadableString(true)}",
+                        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight(30)),
+                        color = moneyGreen
+                    )
+                    val unassignedFunds by remember(uiState.groupTargets) {
+                        val incomeGroupTarget = uiState.groupTargets[incomeGroup] ?: 0.0
+                        val otherGroupTargetsSum =
+                            uiState.groupTargets.filterKeys { it != incomeGroup }.values.sum().absoluteValue
+                        mutableStateOf(
+                            (incomeGroupTarget - otherGroupTargetsSum).toReadableString(
+                                true
+                            )
+                        )
+                    }
+                    Text(
+                        "Unassigned: $unassignedFunds",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = moneyGreen.copy(alpha = 0.7f)
+                    )
+                }
             }
             HorizontalDivider(modifier = Modifier.fillMaxWidth())
             CategoriesHeaderRow()

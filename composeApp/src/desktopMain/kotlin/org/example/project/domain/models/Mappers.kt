@@ -19,6 +19,7 @@ fun GroupEntity.toDomainModel() = GroupData(
     id = id,
     name = name,
     color = Color(colorCode.toInt()),
+    isIncomeGroup = isIncomeGroup ?: false,
 )
 
 fun CategoryEntity.toDomainModel(

@@ -39,7 +39,7 @@ class CategoriesScreenViewModel(
             CategoriesState(
                 isLoading = false,
                 isError = null,
-                categoryGroupsWithKeywords = groupWithCategoriesAndKeywords,
+                categoryGroupsWithKeywords = groupWithCategoriesAndKeywords.sortedByDescending { it.group.isIncomeGroup },
                 transactions = transactions,
                 groupTargets = groupWithCategoriesAndKeywords.associate { group ->
                     group.group to group.categories.sumOf { it.category.monthlyTarget }.absoluteValue

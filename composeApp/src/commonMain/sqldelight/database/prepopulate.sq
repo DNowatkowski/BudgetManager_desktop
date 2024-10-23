@@ -1,16 +1,22 @@
-INSERT INTO GroupEntity (id, name) VALUES ('1', 'Expenses');
-INSERT INTO GroupEntity (id, name) VALUES ('2', 'Income');
+INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('1', 'Expenses',-2108685, 0);
+INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('2', 'Income', -3496997, 1);
+INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('3', 'Dom', -6365210,0);
 
 INSERT INTO CategoryEntity (id, name, categoryGroupId, monthlyTarget) VALUES ('1', 'Food', '1',500);
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('2', 'Transport', '1');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('3', 'Entertainment', '1');
 
-INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('4', 'Salary', '2');
+
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('4', 'Income', '2');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('5', 'Bonus', '2');
+
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('6', 'Śmieci', '3');
 
 INSERT INTO KeywordEntity (id, keyword, categoryId) VALUES ('1', 'Biedronka', '1');
 INSERT INTO KeywordEntity (id, keyword, categoryId) VALUES ('2', 'Lidl', '1');
-INSERT INTO KeywordEntity (id, keyword, categoryId) VALUES ('3', 'Public transport', '2');
-INSERT INTO KeywordEntity (id, keyword, categoryId) VALUES ('4', 'Taxi', '2');
+INSERT INTO KeywordEntity (id, keyword, categoryId) VALUES ('3', 'Orlen', '2');
+INSERT INTO KeywordEntity (id, keyword, categoryId) VALUES ('4', 'Mol', '2');
 INSERT INTO KeywordEntity (id, keyword, categoryId) VALUES ('5', 'Movies', '3');
-
+INSERT INTO KeywordEntity (id, keyword, categoryId) VALUES ('645', 'Sylwia', '4');
+INSERT INTO KeywordEntity (id, keyword, categoryId) VALUES ('643', 'Dominik', '4');
+INSERT INTO KeywordEntity (id, keyword, categoryId) VALUES ('613', 'Komunal', '6');

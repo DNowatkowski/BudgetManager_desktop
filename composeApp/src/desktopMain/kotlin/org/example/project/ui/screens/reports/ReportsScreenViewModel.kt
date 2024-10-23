@@ -28,10 +28,12 @@ class ReportsScreenViewModel(
     private var _queryJob: Job? = null
 
     init {
-        _uiState.update { it.copy(
-            isLoading = true,
+        _uiState.update {
+            it.copy(
+                isLoading = true,
 
-        ) }
+                )
+        }
     }
 
     fun getDataForMonth(date: LocalDate) {
@@ -56,7 +58,7 @@ class ReportsScreenViewModel(
                         .sumOf { it.amount }
                         .absoluteValue
                 },
-                groupPies = groupsWithCategories.map { group ->
+                groupPies = groupsWithCategories.filter { !it.group.isIncomeGroup }.map { group ->
                     Pie(
                         data = group.categories.sumOf { category ->
                             transactions

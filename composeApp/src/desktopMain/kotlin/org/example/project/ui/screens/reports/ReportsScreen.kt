@@ -50,7 +50,6 @@ data class ReportsScreen(val activeMonth: LocalDate) : Screen {
             MonthlyTotalsCard(uiState)
         }
     }
-
 }
 
 
@@ -70,43 +69,43 @@ private fun MonthlyTotalsCard(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "Monthly totals",
+                text = "Monthly expenses",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(8.dp)
             )
             Row {
                 Column {
-                    uiState.groupsWithCategories.forEach { group ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier.widthIn(min = 200.dp)
-                        ) {
+                    uiState.groupsWithCategories.filter { !it.group.isIncomeGroup }
+                        .forEach { group ->
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                modifier = Modifier.padding(8.dp)
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.widthIn(min = 200.dp)
                             ) {
-                                Box(
-                                    modifier = Modifier.size(15.dp)
-                                        .clip(CircleShape)
-                                        .background(color = group.group.color)
-                                        .padding(top = 4.dp)
-                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    modifier = Modifier.padding(8.dp)
+                                ) {
+                                    Box(
+                                        modifier = Modifier.size(15.dp)
+                                            .clip(CircleShape)
+                                            .background(color = group.group.color)
+                                            .padding(top = 4.dp)
+                                    )
+                                    Text(
+                                        text = group.group.name,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                }
                                 Text(
-                                    text = group.group.name,
-                                    style = MaterialTheme.typography.bodyMedium
+                                    uiState.groupSpending[group.group]?.toReadableString(true)
+                                        .orEmpty(),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                                 )
                             }
-                            Text(
-                                uiState.groupSpending[group.group]?.toReadableString(true).orEmpty(),
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                            )
                         }
-
-
-                    }
                 }
                 val animatedPies = uiState.groupPies.map { pie ->
                     val animatedValue by animateFloatAsState(targetValue = pie.data.toFloat())

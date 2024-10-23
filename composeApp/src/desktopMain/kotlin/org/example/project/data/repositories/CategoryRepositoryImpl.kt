@@ -78,7 +78,8 @@ class CategoryRepositoryImpl(
                 GroupEntity(
                     id = UUID.randomUUID().toString(),
                     name = name,
-                    colorCode = generateRandomColor().toArgb().toDouble()
+                    colorCode = generateRandomColor().toArgb().toDouble(),
+                    isIncomeGroup = false
                 )
             )
         }
