@@ -1,5 +1,6 @@
 package org.example.project.ui.screens.categories
 
+import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.rememberScrollbarAdapter
+import androidx.compose.foundation.v2.ScrollbarAdapter
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -51,6 +54,7 @@ data class CategoriesScreen(
         val uiState by vm.uiState.collectAsStateWithLifecycle()
         var showDialog by remember { mutableStateOf(false) }
         var showAlertDialog by remember { mutableStateOf(false) }
+        val scrollState = rememberScrollState(0)
 
         if (showDialog) {
             InputDialog(
@@ -84,7 +88,7 @@ data class CategoriesScreen(
             }
             CategoriesHeaderRow()
             Column(
-                modifier = Modifier.verticalScroll(rememberScrollState())
+                modifier = Modifier.verticalScroll(scrollState)
             ) {
                 uiState.categoryGroupsWithKeywords.forEach { group ->
 
@@ -141,6 +145,11 @@ data class CategoriesScreen(
                 }
             }
         }
+        val adapter: ScrollbarAdapter = rememberScrollbarAdapter(scrollState)
+        VerticalScrollbar(
+            modifier = Modifier.align(Alignment.CenterEnd),
+            adapter =rememberScrollbarAdapter(scrollState)
+        )
     }
 }
 

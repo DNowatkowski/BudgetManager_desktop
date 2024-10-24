@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.example.project.constants.ImportOptions
 import org.example.project.data.repositories.TransactionDto
 import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.stringToDouble
@@ -22,7 +23,6 @@ import org.example.project.domain.models.toLocalDate
 import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.domain.repositories.CategoryRepository
 import org.example.project.domain.repositories.TransactionRepository
-import org.example.project.ui.components.dialogs.ImportOptions
 import java.io.InputStream
 import java.time.LocalDate
 
