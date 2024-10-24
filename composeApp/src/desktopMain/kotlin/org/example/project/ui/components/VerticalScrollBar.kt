@@ -3,7 +3,6 @@ package org.example.project.ui.components
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,7 +29,7 @@ fun VerticalScrollBar(
 
     var scrollBarHeight by remember { mutableStateOf(0) }
     var innerBarHeight by remember { mutableStateOf(0) }
-    var padding: Int by remember(scrollState.value, scrollBarHeight) {
+    val padding: Int by remember(scrollState.value, scrollBarHeight) {
         val p =
             ((scrollState.value.toDouble() / scrollState.maxValue.toDouble()) * (scrollBarHeight - innerBarHeight)).toInt()
 
@@ -60,7 +59,7 @@ fun VerticalScrollBar(
 ) {
     var scrollBarHeight by remember { mutableStateOf(0) }
     var innerBarHeight by remember { mutableStateOf(0) }
-    var padding: Int by remember(listState.firstVisibleItemIndex, listState.firstVisibleItemScrollOffset, scrollBarHeight) {
+    val padding: Int by remember(listState.firstVisibleItemIndex, listState.firstVisibleItemScrollOffset, scrollBarHeight) {
         val totalItems = listState.layoutInfo.totalItemsCount
         val visibleItems = listState.layoutInfo.visibleItemsInfo.size
         val totalScrollRange = totalItems - visibleItems
