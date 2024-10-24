@@ -15,8 +15,6 @@ kotlin {
 
         commonMain.dependencies {
             implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -26,7 +24,7 @@ kotlin {
             implementation(libs.kotlin.csv.jvm)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.transitions)
-            implementation(libs.androidx.compose.material3)
+
             implementation(libs.file.kit.core)
             implementation(libs.file.kit.compose)
             implementation(libs.koin.core)
@@ -41,6 +39,7 @@ kotlin {
             implementation(libs.compose.charts)
         }
         desktopMain.dependencies {
+            implementation(libs.androidx.compose.material3)
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
 

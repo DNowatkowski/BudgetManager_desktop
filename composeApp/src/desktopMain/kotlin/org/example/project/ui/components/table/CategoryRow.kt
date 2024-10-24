@@ -180,7 +180,7 @@ fun CategoryRow(
                     }
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                Box {
+                Box(modifier = Modifier.padding(end = 8.dp)) {
                     if (showAlertDialog) {
                         AlertDialog(
                             title = "Remove Category",

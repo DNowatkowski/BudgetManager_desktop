@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -111,7 +112,7 @@ fun GroupRow(
                 modifier = Modifier.widthIn(max = 120.dp)
             )
             Spacer(modifier = Modifier.weight(1f))
-            Box {
+            Box(modifier = Modifier.padding(end = 8.dp)) {
                 DropdownMenu(
                     expanded = dropdownExpanded,
                     onDismissRequest = { dropdownExpanded = false },
@@ -140,11 +141,11 @@ fun GroupRow(
                         Text("Add Category")
                     }
                 }
-            }
-            IconButton(
-                onClick = { dropdownExpanded = !dropdownExpanded }
-            ) {
-                Icon(Icons.Outlined.MoreVert, null, modifier = Modifier.size(20.dp))
+                IconButton(
+                    onClick = { dropdownExpanded = !dropdownExpanded }
+                ) {
+                    Icon(Icons.Outlined.MoreVert, null, modifier = Modifier.size(20.dp))
+                }
             }
         }
     }

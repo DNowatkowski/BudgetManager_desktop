@@ -3,6 +3,7 @@ package org.example.project.ui.screens.categories
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cafe.adriel.voyager.core.screen.Screen
 import org.example.project.constants.moneyGreen
 import org.example.project.domain.models.toReadableString
+import org.example.project.ui.components.VerticalScrollBar
 import org.example.project.ui.components.dialogs.AlertDialog
 import org.example.project.ui.components.dialogs.InputDialog
 import org.example.project.ui.components.table.CategoriesHeaderRow
@@ -69,89 +71,98 @@ data class CategoriesScreen(
             vm.getDataForMonth(activeMonth)
         }
 
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()
-        ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.Bottom
-            ) {
-                TextButton(
-                    onClick = { showDialog = true }
-                ) {
-                    Icon(Icons.Filled.AddCircle, null)
-                    Text(" Add group")
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                TotalCard(uiState)
-            }
-            CategoriesHeaderRow()
             Column(
-                modifier = Modifier.verticalScroll(scrollState)
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()
             ) {
-                uiState.categoryGroupsWithKeywords.forEach { group ->
-
-                    if (showAlertDialog)
-                        AlertDialog(
-                            title = "Remove group",
-                            text = "Are you sure you want to remove this group and all it's categories?",
-                            onDismiss = { showAlertDialog = false },
-                            onConfirmed = { vm.removeGroup(groupId = group.group.id) }
-                        )
-
-                    GroupRow(
-                        group = group,
-                        spending = uiState.groupSpending[group.group] ?: 0.0,
-                        target = uiState.groupTargets[group.group] ?: 0.0,
-                        onGroupUpdated = { id, name -> vm.updateGroup(groupId = id, name = name) },
-                        onCategoryAdded = { groupId, name ->
-                            vm.addCategory(
-                                groupId = groupId,
-                                name = name
-                            )
-                        },
-                        onGroupRemoved = { showAlertDialog = true }
-                    )
-                    group.categories.forEach { category ->
-                        CategoryRow(
-                            onCategoryRemoved = { vm.removeCategory(categoryId = category.category.id) },
-                            onCategoryUpdated = { id, name ->
-                                vm.updateCategory(
-                                    categoryId = id,
-                                    name = name
-                                )
-                            },
-                            onKeywordRemoved = { keyword -> vm.removeKeyword(keyword) },
-                            onKeywordAdded = { categoryId, text ->
-                                vm.addKeyword(
-                                    categoryId = categoryId,
-                                    text = text
-                                )
-                            },
-                            onKeywordUpdated = { vm.updateKeyword(it) },
-                            onMonthlyTargetSet = { categoryId, target ->
-                                vm.setMonthlyTarget(
-                                    categoryId = categoryId,
-                                    target = target
-                                )
-                            },
-                            category = category,
-                            groupColor = group.group.color,
-                            activeMonth = activeMonth,
-                            spending = uiState.categorySpending[category.category] ?: 0.0
-                        )
+                Row(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    TextButton(
+                        onClick = { showDialog = true }
+                    ) {
+                        Icon(Icons.Filled.AddCircle, null)
+                        Text(" Add group")
                     }
+                    Spacer(modifier = Modifier.weight(1f))
+                    TotalCard(uiState)
+                }
+                CategoriesHeaderRow()
+
+                Box{
+                    Column(
+                        modifier = Modifier.verticalScroll(scrollState)
+                    ) {
+                        uiState.categoryGroupsWithKeywords.forEach { group ->
+
+                            if (showAlertDialog)
+                                AlertDialog(
+                                    title = "Remove group",
+                                    text = "Are you sure you want to remove this group and all it's categories?",
+                                    onDismiss = { showAlertDialog = false },
+                                    onConfirmed = { vm.removeGroup(groupId = group.group.id) }
+                                )
+
+                            GroupRow(
+                                group = group,
+                                spending = uiState.groupSpending[group.group] ?: 0.0,
+                                target = uiState.groupTargets[group.group] ?: 0.0,
+                                onGroupUpdated = { id, name ->
+                                    vm.updateGroup(
+                                        groupId = id,
+                                        name = name
+                                    )
+                                },
+                                onCategoryAdded = { groupId, name ->
+                                    vm.addCategory(
+                                        groupId = groupId,
+                                        name = name
+                                    )
+                                },
+                                onGroupRemoved = { showAlertDialog = true }
+                            )
+                            group.categories.forEach { category ->
+                                CategoryRow(
+                                    onCategoryRemoved = { vm.removeCategory(categoryId = category.category.id) },
+                                    onCategoryUpdated = { id, name ->
+                                        vm.updateCategory(
+                                            categoryId = id,
+                                            name = name
+                                        )
+                                    },
+                                    onKeywordRemoved = { keyword -> vm.removeKeyword(keyword) },
+                                    onKeywordAdded = { categoryId, text ->
+                                        vm.addKeyword(
+                                            categoryId = categoryId,
+                                            text = text
+                                        )
+                                    },
+                                    onKeywordUpdated = { vm.updateKeyword(it) },
+                                    onMonthlyTargetSet = { categoryId, target ->
+                                        vm.setMonthlyTarget(
+                                            categoryId = categoryId,
+                                            target = target
+                                        )
+                                    },
+                                    category = category,
+                                    groupColor = group.group.color,
+                                    activeMonth = activeMonth,
+                                    spending = uiState.categorySpending[category.category] ?: 0.0
+                                )
+                            }
+                        }
+                    }
+                    VerticalScrollBar(
+                        scrollState = scrollState,
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                    )
                 }
             }
-        }
-        val adapter: ScrollbarAdapter = rememberScrollbarAdapter(scrollState)
-        VerticalScrollbar(
-            modifier = Modifier.align(Alignment.CenterEnd),
-            adapter =rememberScrollbarAdapter(scrollState)
-        )
+
     }
 }
+
 
 @Composable
 fun TotalCard(

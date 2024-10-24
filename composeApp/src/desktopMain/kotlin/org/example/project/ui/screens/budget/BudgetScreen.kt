@@ -3,6 +3,7 @@ package org.example.project.ui.screens.budget
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -39,6 +40,7 @@ import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.core.PickerMode
 import io.github.vinceglb.filekit.core.PickerType
 import io.github.vinceglb.filekit.core.PlatformFile
+import org.example.project.ui.components.VerticalScrollBar
 import org.example.project.ui.components.dialogs.AlertDialog
 import org.example.project.ui.components.dialogs.ImportDialog
 import org.example.project.ui.components.table.AddTransactionRow
@@ -161,43 +163,50 @@ data class BudgetScreen(
                 onSortOptionChanged = { vm.updateSortOption(it) },
                 onSortOrderChanged = { vm.toggleSortOrder() }
             )
-            LazyColumn(
-                state = listState,
-            ) {
-                item {
-                    AnimatedVisibility(showNewTransactionRow) {
-                        AddTransactionRow(
+            Row{
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    item {
+                        AnimatedVisibility(showNewTransactionRow) {
+                            AddTransactionRow(
+                                groups = uiState.groups,
+                                onCanceled = {
+                                    showNewTransactionRow = false
+                                },
+                                onAdded = { transaction ->
+                                    vm.addTransaction(transaction)
+                                    showNewTransactionRow = false
+                                },
+                                modifier = Modifier.animateItem()
+                            )
+                        }
+                    }
+                    items(uiState.transactions.size) { index ->
+                        val transaction = uiState.transactions[index]
+                        TransactionRow(
+                            transaction = transaction,
                             groups = uiState.groups,
-                            onCanceled = {
-                                showNewTransactionRow = false
+                            onCheckedChange = { id ->
+                                vm.toggleTransactionSelection(id)
                             },
-                            onAdded = { transaction ->
-                                vm.addTransaction(transaction)
-                                showNewTransactionRow = false
+                            onCategoryReset = { transactionId ->
+                                vm.resetCategoryForTransaction(transactionId)
                             },
-                            modifier = Modifier.animateItem()
+                            onCategorySelected = { transactionId, newCategoryId ->
+                                vm.updateCategoryForTransaction(transactionId, newCategoryId)
+                            },
+                            modifier = Modifier.animateItem().background(
+                                if (index % 2 == 0) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surfaceContainer
+                            )
                         )
                     }
                 }
-                items(uiState.transactions.size) { index ->
-                    val transaction = uiState.transactions[index]
-                    TransactionRow(
-                        transaction = transaction,
-                        groups = uiState.groups,
-                        onCheckedChange = { id ->
-                            vm.toggleTransactionSelection(id)
-                        },
-                        onCategoryReset = { transactionId ->
-                            vm.resetCategoryForTransaction(transactionId)
-                        },
-                        onCategorySelected = { transactionId, newCategoryId ->
-                            vm.updateCategoryForTransaction(transactionId, newCategoryId)
-                        },
-                        modifier = Modifier.animateItem().background(
-                            if (index % 2 == 0) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surfaceContainer
-                        )
-                    )
-                }
+                VerticalScrollBar(
+                    listState = listState,
+                    modifier = Modifier
+                )
             }
         }
     }
