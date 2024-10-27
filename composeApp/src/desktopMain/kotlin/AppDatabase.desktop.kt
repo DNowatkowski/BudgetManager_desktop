@@ -9,7 +9,7 @@ import java.util.Properties
 //
 //actual class DriverFactory {
 //    actual fun createDriver(): SqlDriver {
-//        val dbFile = File("/Users/dominiknowatkowski/Documents/sample.db")
+//        val dbFile = File("/Users/dominiknowatkowski/Documents/BudgetManager.db")
 //        val driver: SqlDriver = JdbcSqliteDriver(
 //            url = "jdbc:sqlite:${dbFile.absolutePath}",
 //            properties = Properties().apply { put("foreign_keys", "true") }

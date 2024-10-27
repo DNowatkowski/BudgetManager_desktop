@@ -99,7 +99,7 @@ data class CategoriesScreen(
                     modifier = Modifier.verticalScroll(scrollState).fillMaxWidth()
                 ) {
                     uiState.categoryGroupsWithKeywords.forEach { group ->
-                        var groupExpanded by remember { mutableStateOf(true) }
+                        var groupExpanded by remember { mutableStateOf(false) }
                         if (showAlertDialog)
                             AlertDialog(
                                 title = "Remove group",
