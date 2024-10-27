@@ -16,7 +16,7 @@ fun main() {
             onCloseRequest = ::exitApplication,
             title = "Budget Manager",
             state = rememberWindowState(
-                size = DpSize(width = 1400.dp, height = 800.dp),
+                size = DpSize(width = 1400.dp, height = 900.dp),
                 position = WindowPosition(Alignment.Center)
             ),
         ) {

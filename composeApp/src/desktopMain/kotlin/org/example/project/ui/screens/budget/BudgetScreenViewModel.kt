@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.example.project.constants.ImportOptions
-import org.example.project.data.repositories.TransactionDto
+import org.example.project.data.dto.TransactionDto
 import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.stringToDouble
 import org.example.project.domain.models.toDomainModel

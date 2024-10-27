@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
@@ -29,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import org.example.project.constants.CategoryColumn
 import org.example.project.domain.models.group.GroupWithCategoriesAndKeywordsData
@@ -42,9 +40,11 @@ fun GroupRow(
     group: GroupWithCategoriesAndKeywordsData,
     target: Double,
     spending: Double,
+    leadingContent: @Composable () -> Unit,
     onGroupUpdated: (String, String) -> Unit,
     onCategoryAdded: (String, String) -> Unit,
-    onGroupRemoved: (String) -> Unit
+    onGroupRemoved: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
 
     var dropdownExpanded by remember { mutableStateOf(false) }
@@ -72,16 +72,11 @@ fun GroupRow(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainer)
+        modifier = modifier.background(MaterialTheme.colorScheme.surfaceContainer)
     ) {
         TableCell(weight = CategoryColumn.CATEGORY.weight) {
             ListItem(
-                leadingContent = {
-                    Box(
-                        modifier = Modifier.size(20.dp).clip(CircleShape)
-                            .background(group.group.color),
-                    )
-                },
+                leadingContent = leadingContent,
                 headlineContent = {
                     Text(
                         group.group.name,

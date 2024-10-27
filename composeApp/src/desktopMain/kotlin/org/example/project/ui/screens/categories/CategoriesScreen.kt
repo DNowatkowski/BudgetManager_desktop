@@ -1,17 +1,24 @@
 package org.example.project.ui.screens.categories
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -68,94 +75,110 @@ data class CategoriesScreen(
             vm.getDataForMonth(activeMonth)
         }
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.background(MaterialTheme.colorScheme.background).fillMaxSize()
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.Bottom
             ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.Bottom
+                TextButton(
+                    onClick = { showDialog = true }
                 ) {
-                    TextButton(
-                        onClick = { showDialog = true }
-                    ) {
-                        Icon(Icons.Filled.AddCircle, null)
-                        Text(" Add group")
-                    }
-                    Spacer(modifier = Modifier.weight(1f))
-                    TotalCard(uiState)
+                    Icon(Icons.Filled.AddCircle, null)
+                    Text(" Add group")
                 }
-                CategoriesHeaderRow()
+                Spacer(modifier = Modifier.weight(1f))
+                TotalCard(uiState)
+            }
+            CategoriesHeaderRow()
 
-                Box{
-                    Column(
-                        modifier = Modifier.verticalScroll(scrollState)
-                    ) {
-                        uiState.categoryGroupsWithKeywords.forEach { group ->
-
-                            if (showAlertDialog)
-                                AlertDialog(
-                                    title = "Remove group",
-                                    text = "Are you sure you want to remove this group and all it's categories?",
-                                    onDismiss = { showAlertDialog = false },
-                                    onConfirmed = { vm.removeGroup(groupId = group.group.id) }
-                                )
-
-                            GroupRow(
-                                group = group,
-                                spending = uiState.groupSpending[group.group] ?: 0.0,
-                                target = uiState.groupTargets[group.group] ?: 0.0,
-                                onGroupUpdated = { id, name ->
-                                    vm.updateGroup(
-                                        groupId = id,
-                                        name = name
-                                    )
-                                },
-                                onCategoryAdded = { groupId, name ->
-                                    vm.addCategory(
-                                        groupId = groupId,
-                                        name = name
-                                    )
-                                },
-                                onGroupRemoved = { showAlertDialog = true }
+            Box {
+                Column(
+                    modifier = Modifier.verticalScroll(scrollState).fillMaxWidth()
+                ) {
+                    uiState.categoryGroupsWithKeywords.forEach { group ->
+                        var groupExpanded by remember { mutableStateOf(true) }
+                        if (showAlertDialog)
+                            AlertDialog(
+                                title = "Remove group",
+                                text = "Are you sure you want to remove this group and all it's categories?",
+                                onDismiss = { showAlertDialog = false },
+                                onConfirmed = { vm.removeGroup(groupId = group.group.id) }
                             )
-                            group.categories.forEach { category ->
-                                CategoryRow(
-                                    onCategoryRemoved = { vm.removeCategory(categoryId = category.category.id) },
-                                    onCategoryUpdated = { id, name ->
-                                        vm.updateCategory(
-                                            categoryId = id,
-                                            name = name
-                                        )
-                                    },
-                                    onKeywordRemoved = { keyword -> vm.removeKeyword(keyword) },
-                                    onKeywordAdded = { categoryId, text ->
-                                        vm.addKeyword(
-                                            categoryId = categoryId,
-                                            text = text
-                                        )
-                                    },
-                                    onKeywordUpdated = { vm.updateKeyword(it) },
-                                    onMonthlyTargetSet = { categoryId, target ->
-                                        vm.setMonthlyTarget(
-                                            categoryId = categoryId,
-                                            target = target
-                                        )
-                                    },
-                                    category = category,
-                                    groupColor = group.group.color,
-                                    activeMonth = activeMonth,
-                                    spending = uiState.categorySpending[category.category] ?: 0.0
+
+                        GroupRow(
+                            group = group,
+                            spending = uiState.groupSpending[group.group] ?: 0.0,
+                            target = uiState.groupTargets[group.group] ?: 0.0,
+                            onGroupUpdated = { id, name ->
+                                vm.updateGroup(
+                                    groupId = id,
+                                    name = name
                                 )
+                            },
+                            leadingContent = {
+                                Icon(
+                                    imageVector = if (groupExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                                    null,
+                                    modifier = Modifier.clip(CircleShape).background(group.group.color),
+                                    tint = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
+                                )
+                            },
+                            onCategoryAdded = { groupId, name ->
+                                vm.addCategory(
+                                    groupId = groupId,
+                                    name = name
+                                )
+                            },
+                            onGroupRemoved = { showAlertDialog = true },
+                            modifier = Modifier.clickable { groupExpanded = !groupExpanded },
+                        )
+                        HorizontalDivider()
+                        AnimatedVisibility(visible = groupExpanded) {
+                            Column {
+                                group.categories.forEach { category ->
+                                    CategoryRow(
+                                        onCategoryRemoved = { vm.removeCategory(categoryId = category.category.id) },
+                                        onCategoryUpdated = { id, name ->
+                                            vm.updateCategory(
+                                                categoryId = id,
+                                                name = name
+                                            )
+                                        },
+                                        onKeywordRemoved = { keyword -> vm.removeKeyword(keyword) },
+                                        onKeywordAdded = { categoryId, text ->
+                                            vm.addKeyword(
+                                                categoryId = categoryId,
+                                                text = text
+                                            )
+                                        },
+                                        onKeywordUpdated = { vm.updateKeyword(it) },
+                                        onMonthlyTargetSet = { categoryId, target ->
+                                            vm.setMonthlyTarget(
+                                                categoryId = categoryId,
+                                                target = target
+                                            )
+                                        },
+                                        category = category,
+                                        groupColor = group.group.color,
+                                        activeMonth = activeMonth,
+                                        spending = uiState.categorySpending[category.category]
+                                            ?: 0.0
+                                    )
+                                }
+                                HorizontalDivider()
                             }
                         }
                     }
-                    VerticalScrollBar(
-                        scrollState = scrollState,
-                        modifier = Modifier.align(Alignment.CenterEnd)
-                    )
                 }
+                VerticalScrollBar(
+                    scrollState = scrollState,
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                )
             }
+        }
 
     }
 }

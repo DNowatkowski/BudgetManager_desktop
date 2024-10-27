@@ -5,7 +5,7 @@ import database.CategoryEntity
 import database.GroupEntity
 import database.KeywordEntity
 import database.TransactionEntity
-import org.example.project.data.repositories.TransactionDto
+import org.example.project.data.dto.TransactionDto
 import org.example.project.domain.models.category.CategoryData
 import org.example.project.domain.models.group.GroupData
 import org.example.project.domain.models.keyword.KeywordData
@@ -118,7 +118,10 @@ fun Double.toReadableString(withCurrency: Boolean = false): String {
     return if (withCurrency) {
         String.format("%.2f zł", this)
     } else {
-        String.format("%.2f", this)
+        if (this == 0.0) {
+            ""
+        } else
+            String.format("%.2f", this)
     }
 }
 

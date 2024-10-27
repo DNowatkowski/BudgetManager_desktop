@@ -1,4 +1,4 @@
-package org.example.project.data.repositories
+package org.example.project.data.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
 

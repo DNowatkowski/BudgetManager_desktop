@@ -35,7 +35,7 @@ fun TransactionTextField(
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = {
         Text(
-            "0.00",
+            "0,00",
             style = MaterialTheme.typography.bodyMedium
         )
     },

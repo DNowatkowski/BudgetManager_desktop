@@ -35,7 +35,6 @@ fun VerticalScrollBar(
 
         mutableStateOf(p)
     }
-    println(padding.toString())
     Box(
         modifier = modifier.fillMaxHeight().background(color = MaterialTheme.colors.surface).width(8.dp)
             .onGloballyPositioned {

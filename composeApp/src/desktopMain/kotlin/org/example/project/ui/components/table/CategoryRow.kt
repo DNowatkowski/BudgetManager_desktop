@@ -106,7 +106,7 @@ fun CategoryRow(
                     headlineContent = {
                         Text(
                             category.category.name,
-                            style = MaterialTheme.typography.titleMedium
+                            style = MaterialTheme.typography.titleSmall
                         )
                     },
                     leadingContent = {
@@ -122,7 +122,7 @@ fun CategoryRow(
                             modifier = Modifier.padding(end = 20.dp)
                         )
                     },
-                    modifier = Modifier.height(60.dp)
+                    modifier = Modifier.height(50.dp)
                 )
             }
             TableCell(weight = CategoryColumn.ACTUAL_SPENDING.weight) {
