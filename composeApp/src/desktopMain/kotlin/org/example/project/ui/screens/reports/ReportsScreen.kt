@@ -6,8 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -40,6 +39,7 @@ import ir.ehsannarmani.compose_charts.models.LabelProperties
 import ir.ehsannarmani.compose_charts.models.Pie
 import ir.ehsannarmani.compose_charts.models.PopupProperties
 import org.example.project.domain.models.toReadableString
+import org.example.project.ui.components.VerticalScrollBar
 import org.example.project.utils.closestHigherMultipleOf1000
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -59,14 +59,18 @@ data class ReportsScreen(val activeMonth: LocalDate) : Screen {
         LaunchedEffect(activeMonth) {
             vm.getDataForMonth(activeMonth)
         }
-        Column(
-            horizontalAlignment = Alignment.Start,
-            modifier = Modifier.verticalScroll(scrollState).fillMaxWidth().padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            PieChart(pieChartState, modifier = Modifier.wrapContentHeight(Alignment.Top))
-            LineChart(lineChartState, modifier = Modifier.heightIn(min = 200.dp, max = 300.dp))
+        Row {
+            Column(
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier.verticalScroll(scrollState).weight(1f).padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                PieChart(pieChartState, modifier = Modifier.wrapContentHeight(Alignment.Top))
+                LineChart(lineChartState, modifier = Modifier.heightIn(min = 200.dp, max = 300.dp))
+            }
+            VerticalScrollBar(scrollState,Modifier.fillMaxHeight())
         }
+
     }
 }
 

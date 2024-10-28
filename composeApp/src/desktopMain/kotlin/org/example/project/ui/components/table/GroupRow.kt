@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.Button
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
@@ -29,9 +30,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import org.example.project.constants.CategoryColumn
 import org.example.project.domain.models.group.GroupWithCategoriesAndKeywordsData
 import org.example.project.domain.models.toReadableString
+import org.example.project.ui.components.IconPicker
 import org.example.project.ui.components.TransactionTextField
 import org.example.project.ui.components.dialogs.InputDialog
 
@@ -50,6 +53,7 @@ fun GroupRow(
     var dropdownExpanded by remember { mutableStateOf(false) }
     var showAddCategoryDialog by remember { mutableStateOf(false) }
     var showEditGroupDialog by remember { mutableStateOf(false) }
+    var showIconPicker by remember { mutableStateOf(false) }
 
     if (showAddCategoryDialog) {
         InputDialog(
@@ -70,6 +74,11 @@ fun GroupRow(
         )
     }
 
+    if (showIconPicker) {
+        Popup {
+            IconPicker()
+        }
+    }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.background(MaterialTheme.colorScheme.surfaceContainer)
@@ -77,6 +86,11 @@ fun GroupRow(
         TableCell(weight = CategoryColumn.CATEGORY.weight) {
             ListItem(
                 leadingContent = leadingContent,
+                trailingContent = {
+                    Button(onClick = { showIconPicker = true }) {
+                        Text("Icon")
+                    }
+                },
                 headlineContent = {
                     Text(
                         group.group.name,

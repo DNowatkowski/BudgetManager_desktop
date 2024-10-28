@@ -8,9 +8,11 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,16 +35,23 @@ fun TransactionRow(
     modifier: Modifier = Modifier
 ) {
     val selectedCategory by remember(transaction.categoryId, groups) {
+        val categories = groups.flatMap { it.categories }
         mutableStateOf(
-            groups.find { group -> group.categories.any { it.id == transaction.categoryId } }?.categories?.find { it.id == transaction.categoryId }
+            categories.find { it.id == transaction.categoryId }
         )
     }
-    var selectedGroup by remember(selectedCategory?.categoryGroupId) {
+
+    var selectedGroup by rememberSaveable {
         mutableStateOf(
-            selectedCategory?.let { category ->
-                groups.find { it.group.id == category.categoryGroupId }
+            selectedCategory?.categoryGroupId?.let { categoryGroupId ->
+                groups.find { it.group.id == categoryGroupId }
             }
         )
+    }
+
+    LaunchedEffect(selectedCategory?.categoryGroupId){
+        if(selectedCategory != null)
+            selectedGroup = groups.find { it.group.id == selectedCategory?.categoryGroupId }
     }
 
     Row(
@@ -89,8 +98,7 @@ fun TransactionRow(
                 style = MaterialTheme.typography.bodySmall,
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
-
-                )
+            )
         }
         TableCell(
             weight = TransactionColumn.GROUP.weight
