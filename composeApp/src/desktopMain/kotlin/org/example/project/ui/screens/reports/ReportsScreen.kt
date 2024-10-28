@@ -6,11 +6,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -47,20 +52,20 @@ data class ReportsScreen(val activeMonth: LocalDate) : Screen {
     @Composable
     override fun Content() {
         val vm = koinViewModel<ReportsScreenViewModel>()
-        val uiState by vm.lineChartState.collectAsStateWithLifecycle()
+        val lineChartState by vm.lineChartState.collectAsStateWithLifecycle()
 
         val pieChartState by vm.pieChartState.collectAsStateWithLifecycle()
-
+        val scrollState = rememberScrollState(0)
         LaunchedEffect(activeMonth) {
             vm.getDataForMonth(activeMonth)
         }
         Column(
             horizontalAlignment = Alignment.Start,
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.verticalScroll(scrollState).fillMaxWidth().padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            PieChart(pieChartState, modifier = Modifier.weight(6f))
-            LineChart(uiState, modifier = Modifier.weight(4f))
+            PieChart(pieChartState, modifier = Modifier.wrapContentHeight(Alignment.Top))
+            LineChart(lineChartState, modifier = Modifier.heightIn(min = 200.dp, max = 300.dp))
         }
     }
 }

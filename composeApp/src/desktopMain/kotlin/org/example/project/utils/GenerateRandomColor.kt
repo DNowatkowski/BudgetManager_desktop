@@ -4,9 +4,16 @@ import androidx.compose.ui.graphics.Color
 import kotlin.random.Random
 
 fun generateRandomColor(): Color {
-    val hue = Random.nextInt(0, 360) // Random hue between 0 and 360
-    val saturation = Random.nextInt(35, 65) // Low saturation for pastel colors
-    val lightness = Random.nextInt(65, 80) // High lightness for bright colors
+    val hueStep = 20
+    val randomInt = Random.nextInt(0, hueStep - 1)
+    val hue = Random.nextInt(0, (360 / hueStep) + (hueStep * randomInt))
+
+
+    val saturation = 65
+
+    val brightnessStep = 20
+    val randomBrightness = Random.nextInt(0, 2)
+    val lightness = Random.nextInt(35, 35 + brightnessStep * randomBrightness)
 
     val color = Color.hsl(
         hue = hue.toFloat(),

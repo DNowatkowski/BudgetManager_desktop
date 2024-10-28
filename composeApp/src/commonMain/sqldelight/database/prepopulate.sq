@@ -4,40 +4,34 @@ INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e
 
 -- Insert the CategoryEntities with random UUIDs
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440001', 'Wynagrodzenie', '550e8400-e29b-41d4-a716-446655440000');
-INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440002', 'Wynagrodzenie Partnera / Partnerki', '550e8400-e29b-41d4-a716-446655440000');
-INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440003', 'Premia', '550e8400-e29b-41d4-a716-446655440000');
-INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440004', 'Przychody z premii bankowych', '550e8400-e29b-41d4-a716-446655440000');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440002', 'PPK', '550e8400-e29b-41d4-a716-446655440000');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440005', 'Odsetki bankowe', '550e8400-e29b-41d4-a716-446655440000');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440006', 'Sprzedaż na Allegro itp.', '550e8400-e29b-41d4-a716-446655440000');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440007', 'Inne przychody', '550e8400-e29b-41d4-a716-446655440000');
 
 -- Insert the GroupEntity with random UUIDs and color codes
-INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440008', 'Jedzenie', -552661, 0);
+INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440008', 'Jedzenie', -3003091, 0);
 
 -- Insert the CategoryEntities with random UUIDs
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440009', 'Jedzenie dom', '550e8400-e29b-41d4-a716-446655440008');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440010', 'Jedzenie miasto', '550e8400-e29b-41d4-a716-446655440008');
-INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440011', 'Jedzenie praca', '550e8400-e29b-41d4-a716-446655440008');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440012', 'Alkohol', '550e8400-e29b-41d4-a716-446655440008');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440013', 'Inne', '550e8400-e29b-41d4-a716-446655440008');
 
 -- Insert the GroupEntity with random UUIDs and color codes
-INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440014', 'Dom', -3368705, 0);
+INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440014', 'Dom', -2989011.0 ,0);
 
 -- Insert the CategoryEntities with random UUIDs
-INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440015', 'Czynsz', '550e8400-e29b-41d4-a716-446655440014');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440016', 'Woda i kanalizacja', '550e8400-e29b-41d4-a716-446655440014');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440017', 'Prąd', '550e8400-e29b-41d4-a716-446655440014');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440018', 'Gaz', '550e8400-e29b-41d4-a716-446655440014');
-INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440019', 'Ogrzewanie', '550e8400-e29b-41d4-a716-446655440014');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440020', 'Wywóz śmieci', '550e8400-e29b-41d4-a716-446655440014');
-INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440021', 'Konserwacja i naprawy', '550e8400-e29b-41d4-a716-446655440014');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440022', 'Wyposażenie', '550e8400-e29b-41d4-a716-446655440014');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440023', 'Ubezpieczenie nieruchomości', '550e8400-e29b-41d4-a716-446655440014');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440024', 'Inne', '550e8400-e29b-41d4-a716-446655440014');
 
 -- Insert the GroupEntity with random UUIDs and color codes
-INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440025', 'Transport', -361940, 0);
+INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440025', 'Transport', -2974931.0, 0);
 
 -- Insert the CategoryEntities with random UUIDs
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440026', 'Paliwo do auta', '550e8400-e29b-41d4-a716-446655440025');
@@ -45,12 +39,12 @@ INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440028', 'Wyposażenie dodatkowe (opony)', '550e8400-e29b-41d4-a716-446655440025');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440029', 'Ubezpieczenie auta', '550e8400-e29b-41d4-a716-446655440025');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440030', 'Bilet komunikacji miejskiej', '550e8400-e29b-41d4-a716-446655440025');
-INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440031', 'Bilet PKP, PKS', '550e8400-e29b-41d4-a716-446655440025');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440031', 'Parking', '550e8400-e29b-41d4-a716-446655440025');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440032', 'Taxi', '550e8400-e29b-41d4-a716-446655440025');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440033', 'Inne', '550e8400-e29b-41d4-a716-446655440025');
 
 -- Insert the GroupEntity with a random UUID and color code
-INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440034', 'Telekomunikacja', -7641998, 0);
+INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440034', 'Telekomunikacja', -2960851.0, 0);
 
 -- Insert the CategoryEntities with random UUIDs
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440035', 'Telefon', '550e8400-e29b-41d4-a716-446655440034');
@@ -58,7 +52,7 @@ INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440037', 'Inne', '550e8400-e29b-41d4-a716-446655440034');
 
 -- Insert the GroupEntity with a random UUID and color code
-INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440038', 'Opieka zdrowotna', -30310, 0);
+INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440038', 'Opieka zdrowotna', -6565331.0, 0);
 
 -- Insert the CategoryEntities with random UUIDs
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440039', 'Lekarz', '550e8400-e29b-41d4-a716-446655440038');
@@ -67,7 +61,7 @@ INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440042', 'Inne', '550e8400-e29b-41d4-a716-446655440038');
 
 -- Insert the GroupEntity with a random UUID and color code
-INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440043', 'Ubranie', -3427743, 0);
+INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440043', 'Ubranie', -10169811, 0);
 
 -- Insert the CategoryEntities with random UUIDs
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440044', 'Ubranie zwykłe', '550e8400-e29b-41d4-a716-446655440043');
@@ -77,7 +71,7 @@ INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440048', 'Inne', '550e8400-e29b-41d4-a716-446655440043');
 
 -- Insert the GroupEntity with a random UUID and color code
-INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440049', 'Higiena', -13108, 0);
+INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440049', 'Higiena', -13774291, 0);
 
 -- Insert the CategoryEntities with random UUIDs
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440050', 'Kosmetyki', '550e8400-e29b-41d4-a716-446655440049');
@@ -86,21 +80,50 @@ INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440053', 'Inne', '550e8400-e29b-41d4-a716-446655440049');
 
 -- Insert the GroupEntity with a random UUID and color code
-INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440061', 'Rozrywka', -3158068, 0);
+INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440061', 'Rozrywka', -13774236, 0);
 
 -- Insert the CategoryEntities with random UUIDs
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440062', 'VOD', '550e8400-e29b-41d4-a716-446655440061');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440063', 'Kino / Teatr', '550e8400-e29b-41d4-a716-446655440061');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440064', 'Koncerty', '550e8400-e29b-41d4-a716-446655440061');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440065', 'Spotify', '550e8400-e29b-41d4-a716-446655440061');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655442315', 'YouTube', '550e8400-e29b-41d4-a716-446655440061');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440066', 'Książki', '550e8400-e29b-41d4-a716-446655440061');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440067', 'Hobby', '550e8400-e29b-41d4-a716-446655440061');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440068', 'Hotel / Turystyka', '550e8400-e29b-41d4-a716-446655440061');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440069', 'Inne', '550e8400-e29b-41d4-a716-446655440061');
 
+INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('af8fsajk9-e29b-41d4-a716-446655440070', 'Pies', -13774181, 0);
+
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-4676454000', 'Weterynarz', 'af8fsajk9-e29b-41d4-a716-446655440070');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-4676454001', 'Karma', 'af8fsajk9-e29b-41d4-a716-446655440070');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-4676454002', 'Lekarstwa', 'af8fsajk9-e29b-41d4-a716-446655440070');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-4676454003', 'Inne', 'af8fsajk9-e29b-41d4-a716-446655440070');
+
+INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('fh56jjh45-e29b-41d4-a716-445465477700', 'Dzieci', -13774126, 0);
+
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('6754h54d-e29b-41d4-a716-4676454000', 'Lekarz', 'fh56jjh45-e29b-41d4-a716-445465477700');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('6754h54d-e29b-41d4-a716-4676454001', 'Badania', 'fh56jjh45-e29b-41d4-a716-445465477700');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('6754h54d-e29b-41d4-a716-4676454002', 'Lekarstwa', 'fh56jjh45-e29b-41d4-a716-445465477700');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('6754h54d-e29b-41d4-a716-4676454003', 'Zabawki', 'fh56jjh45-e29b-41d4-a716-445465477700');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('6754h54d-e29b-41d4-a716-4676454004', 'Art. higieniczne', 'fh56jjh45-e29b-41d4-a716-445465477700');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('6754h54d-e29b-41d4-a716-4676454005', 'Inne', 'fh56jjh45-e29b-41d4-a716-445465477700');
+
+INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('sdfdhj6i578-df45-41d4-a716-4454600', 'Remont', -13788206, 0);
+
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('6754h54d-e29b-41d4-a716-453hgg34000', 'Materiały', 'sdfdhj6i578-df45-41d4-a716-4454600');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('6754h54d-e29b-41d4-a716-453hgg34001', 'Usługi', 'sdfdhj6i578-df45-41d4-a716-4454600');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('6754h54d-e29b-41d4-a716-453hgg34002', 'Narzędzia', 'sdfdhj6i578-df45-41d4-a716-4454600');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('6754h54d-e29b-41d4-a716-453hgg34003', 'Inne', 'sdfdhj6i578-df45-41d4-a716-4454600');
+
+INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('4456ff44-e29b-41d4-a716-4ty4344670', 'Spłata długów', -13802286, 0);
+
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8411-e29b-41d4-a716-446645653000', 'Kredyt konsumencki', '4456ff44-e29b-41d4-a716-4ty4344670');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8411-e29b-41d4-a716-446645653001', 'Pożyczka osobista', '4456ff44-e29b-41d4-a716-4ty4344670');
+INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8411-e29b-41d4-a716-446645653002', 'Inne', '4456ff44-e29b-41d4-a716-4ty4344670');
 
 -- Insert the GroupEntity with a random UUID and color code
-INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440070', 'Inne wydatki', -5046347, 0);
+INSERT INTO GroupEntity (id, name, colorCode, isIncomeGroup) VALUES ('550e8400-e29b-41d4-a716-446655440070', 'Inne wydatki', -13816366, 0);
 
 -- Insert the CategoryEntities with random UUIDs
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440071', 'Dobroczynność', '550e8400-e29b-41d4-a716-446655440070');
@@ -111,3 +134,4 @@ INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440076', 'Usługi inne', '550e8400-e29b-41d4-a716-446655440070');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440077', 'Podatki', '550e8400-e29b-41d4-a716-446655440070');
 INSERT INTO CategoryEntity (id, name, categoryGroupId) VALUES ('550e8400-e29b-41d4-a716-446655440078', 'Inne', '550e8400-e29b-41d4-a716-446655440070');
+
