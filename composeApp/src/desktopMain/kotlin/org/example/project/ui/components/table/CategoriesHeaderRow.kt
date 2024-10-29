@@ -14,7 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import budgetmanager.composeapp.generated.resources.Res
+import budgetmanager.composeapp.generated.resources.actual_values
+import budgetmanager.composeapp.generated.resources.category
+import budgetmanager.composeapp.generated.resources.monthly_target
 import org.example.project.constants.CategoryColumn
+import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
@@ -29,15 +34,15 @@ fun CategoriesHeaderRow() {
         ) {
 
             TableCell(weight = CategoryColumn.CATEGORY.weight) {
-                TableHeaderText("CATEGORY", modifier = Modifier.padding(start = 8.dp))
+                TableHeaderText(stringResource(Res.string.category), modifier = Modifier.padding(start = 8.dp))
             }
             VerticalDivider()
             TableCell(weight = CategoryColumn.ACTUAL_SPENDING.weight) {
-                TableHeaderText("ACTUAL VALUES")
+                TableHeaderText(stringResource(Res.string.actual_values))
             }
             VerticalDivider()
             TableCell(weight = CategoryColumn.MONTHLY_TARGET.weight) {
-                TableHeaderText("MONTHLY TARGET")
+                TableHeaderText(stringResource(Res.string.monthly_target))
             }
         }
         HorizontalDivider()

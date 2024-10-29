@@ -28,12 +28,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import budgetmanager.composeapp.generated.resources.Res
+import budgetmanager.composeapp.generated.resources.all_transactions
+import budgetmanager.composeapp.generated.resources.all_transactions_desc
+import budgetmanager.composeapp.generated.resources.cancel
+import budgetmanager.composeapp.generated.resources.import
+import budgetmanager.composeapp.generated.resources.import_settings
+import budgetmanager.composeapp.generated.resources.original_values
+import budgetmanager.composeapp.generated.resources.original_values_desc
+import budgetmanager.composeapp.generated.resources.skip_duplicates
+import budgetmanager.composeapp.generated.resources.skip_duplicates_desc
+import budgetmanager.composeapp.generated.resources.to
 import org.example.project.constants.DateOptions
 import org.example.project.constants.ImportOptions
 import org.example.project.constants.ValueOptions
 import org.example.project.domain.models.toReadableString
 import org.example.project.ui.components.CustomSelectableDates
 import org.example.project.ui.components.DatePickerPopup
+import org.jetbrains.compose.resources.stringResource
 import java.time.LocalDate
 
 @Composable
@@ -49,9 +61,9 @@ fun ImportDialog(
     var skipDuplicates by remember { mutableStateOf(true) }
 
     BudgetManagerDialog(
-        title = "Import Settings",
-        confirmButtonText = "Import",
-        dismissButtonText = "Cancel",
+        title = stringResource(Res.string.import_settings),
+        confirmButtonText = stringResource(Res.string.import),
+        dismissButtonText = stringResource(Res.string.cancel),
         onConfirmed = {
             onConfirmed(
                 ImportOptions(
@@ -75,9 +87,12 @@ fun ImportDialog(
                     modifier = Modifier.padding(16.dp).fillMaxWidth()
                 ) {
                     Column {
-                        Text("All transactions", style = MaterialTheme.typography.bodyLarge)
                         Text(
-                            "Includes all transactions in the selected file",
+                            stringResource(Res.string.all_transactions),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            stringResource(Res.string.all_transactions_desc),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         )
@@ -122,7 +137,7 @@ fun ImportDialog(
 
                                 )
                         }
-                        Text("to", textAlign = TextAlign.Center)
+                        Text(stringResource(Res.string.to), textAlign = TextAlign.Center)
                         Column {
                             var showDatePicker by remember { mutableStateOf(false) }
                             if (showDatePicker)
@@ -156,9 +171,12 @@ fun ImportDialog(
                     modifier = Modifier.padding(16.dp).fillMaxWidth()
                 ) {
                     Column {
-                        Text("Original values", style = MaterialTheme.typography.bodyLarge)
                         Text(
-                            "Keeps original values of imported transactions",
+                            stringResource(Res.string.original_values),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            stringResource(Res.string.original_values_desc),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         )
@@ -216,9 +234,12 @@ fun ImportDialog(
                 modifier = Modifier.padding(16.dp).fillMaxWidth()
             ) {
                 Column(modifier = Modifier.weight(0.7f)) {
-                    Text("Skip duplicates", style = MaterialTheme.typography.bodyLarge)
                     Text(
-                        "Skips transactions that have already been imported, based on description, date and value",
+                        stringResource(Res.string.skip_duplicates),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Text(
+                        stringResource(Res.string.skip_duplicates_desc),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )

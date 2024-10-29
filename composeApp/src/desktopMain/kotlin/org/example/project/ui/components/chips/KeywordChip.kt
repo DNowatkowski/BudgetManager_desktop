@@ -19,8 +19,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import budgetmanager.composeapp.generated.resources.Res
+import budgetmanager.composeapp.generated.resources.edit
+import budgetmanager.composeapp.generated.resources.edit_keyword
+import budgetmanager.composeapp.generated.resources.keyword
+import budgetmanager.composeapp.generated.resources.remove
 import org.example.project.domain.models.keyword.KeywordData
 import org.example.project.ui.components.dialogs.InputDialog
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun KeywordChip(
@@ -33,11 +39,11 @@ fun KeywordChip(
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog)
         InputDialog(
-            title = "Edit Keyword",
+            title = stringResource(Res.string.edit_keyword),
             initialText = keyword.keyword,
             onConfirmed = { onKeywordUpdated(keyword.copy(keyword = it)) },
             onDismiss = { showDialog = false },
-            label = "Keyword",
+            label = stringResource(Res.string.keyword),
         )
     Box {
         DropdownMenu(
@@ -47,7 +53,7 @@ fun KeywordChip(
             DropdownMenuItem(onClick = { onRemoveKeyword(keyword) }) {
                 Icon(Icons.Filled.Delete, null)
                 Spacer(Modifier.width(8.dp))
-                Text("Remove")
+                Text(stringResource(Res.string.remove))
             }
             DropdownMenuItem(
                 onClick = {
@@ -56,7 +62,7 @@ fun KeywordChip(
                 }) {
                 Icon(Icons.Filled.Edit, null)
                 Spacer(Modifier.width(8.dp))
-                Text("Edit")
+                Text(stringResource(Res.string.edit))
             }
         }
         InputChip(

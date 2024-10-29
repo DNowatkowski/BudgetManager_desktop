@@ -5,6 +5,11 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import budgetmanager.composeapp.generated.resources.Res
+import budgetmanager.composeapp.generated.resources.expense
+import budgetmanager.composeapp.generated.resources.expenses
+import budgetmanager.composeapp.generated.resources.income
+import budgetmanager.composeapp.generated.resources.uncategorized
 import ir.ehsannarmani.compose_charts.models.DotProperties
 import ir.ehsannarmani.compose_charts.models.Line
 import ir.ehsannarmani.compose_charts.models.Pie
@@ -20,6 +25,7 @@ import org.example.project.domain.models.group.GroupData
 import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.repositories.CategoryRepository
 import org.example.project.domain.repositories.TransactionRepository
+import org.jetbrains.compose.resources.getString
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.math.absoluteValue
@@ -74,7 +80,7 @@ class ReportsScreenViewModel(
                 incomeExpenseLines =
                 listOf(
                     Line(
-                        label = "Income",
+                        label = getString(Res.string.income),
                         values = transactions.values.map { list ->
                             val incomeCategories =
                                 groupsWithCategories.first { it.group.isIncomeGroup }.categories
@@ -92,7 +98,7 @@ class ReportsScreenViewModel(
                         )
                     ),
                     Line(
-                        label = "Expenses",
+                        label = getString(Res.string.expenses),
                         values = transactions.values.map { list ->
                             val expenseCategories =
                                 groupsWithCategories.first { !it.group.isIncomeGroup }.categories
@@ -159,7 +165,7 @@ class ReportsScreenViewModel(
                     data = expenses.filter { it.categoryId == null }
                         .sumOf { it.amount }.absoluteValue,
                     color = Color.LightGray,
-                    label = "Uncategorized"
+                    label = getString(Res.string.uncategorized)
                 )
             )
         }.collectLatest { currentState ->

@@ -12,6 +12,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import budgetmanager.composeapp.generated.resources.Res
+import budgetmanager.composeapp.generated.resources.add
+import budgetmanager.composeapp.generated.resources.cancel
+import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
@@ -36,8 +40,8 @@ fun InputDialog(
         onConfirmed = { onConfirmed(text) },
         title = title,
         confirmEnabled = text.isNotBlank() && !isError,
-        confirmButtonText = "Add",
-        dismissButtonText = "Cancel",
+        confirmButtonText = stringResource(Res.string.add),
+        dismissButtonText = stringResource(Res.string.cancel),
     ) {
         OutlinedTextField(
             value = text,

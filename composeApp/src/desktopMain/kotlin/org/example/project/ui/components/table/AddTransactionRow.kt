@@ -24,6 +24,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import budgetmanager.composeapp.generated.resources.Res
+import budgetmanager.composeapp.generated.resources.add
+import budgetmanager.composeapp.generated.resources.cancel
+import budgetmanager.composeapp.generated.resources.expense
+import budgetmanager.composeapp.generated.resources.income
 import org.example.project.constants.TransactionColumn
 import org.example.project.constants.TransactionType
 import org.example.project.domain.models.category.CategoryData
@@ -36,6 +41,7 @@ import org.example.project.ui.components.DatePickerPopup
 import org.example.project.ui.components.TransactionTextField
 import org.example.project.ui.components.chips.CategoryInputChip
 import org.example.project.ui.components.chips.GroupInputChip
+import org.jetbrains.compose.resources.stringResource
 import java.time.LocalDate
 import java.util.UUID
 
@@ -197,7 +203,7 @@ fun AddTransactionRow(
                         TransactionType.entries.size
                     )
                 ) {
-                    Text("Expense")
+                    Text(stringResource(Res.string.expense))
                 }
                 SegmentedButton(
                     selected = transactionType == TransactionType.INCOME,
@@ -209,7 +215,7 @@ fun AddTransactionRow(
                         TransactionType.entries.size
                     )
                 ) {
-                    Text("Income")
+                    Text(stringResource(Res.string.income))
                 }
             }
 
@@ -218,7 +224,7 @@ fun AddTransactionRow(
                     onCanceled()
                 }
             ) {
-                Text("Cancel")
+                Text(stringResource(Res.string.cancel))
             }
             Button(
                 enabled = amount.toDoubleOrNull() != null,
@@ -239,7 +245,7 @@ fun AddTransactionRow(
                 },
                 modifier = Modifier.padding(horizontal = 8.dp)
             ) {
-                Text("Add")
+                Text(stringResource(Res.string.add))
             }
         }
     }

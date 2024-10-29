@@ -31,12 +31,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
+import budgetmanager.composeapp.generated.resources.Res
+import budgetmanager.composeapp.generated.resources.add_category
+import budgetmanager.composeapp.generated.resources.category_name
+import budgetmanager.composeapp.generated.resources.edit
+import budgetmanager.composeapp.generated.resources.edit_group
+import budgetmanager.composeapp.generated.resources.group_name
+import budgetmanager.composeapp.generated.resources.remove
 import org.example.project.constants.CategoryColumn
 import org.example.project.domain.models.group.GroupWithCategoriesAndKeywordsData
 import org.example.project.domain.models.toReadableString
 import org.example.project.ui.components.IconPicker
 import org.example.project.ui.components.TransactionTextField
 import org.example.project.ui.components.dialogs.InputDialog
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun GroupRow(
@@ -53,31 +61,24 @@ fun GroupRow(
     var dropdownExpanded by remember { mutableStateOf(false) }
     var showAddCategoryDialog by remember { mutableStateOf(false) }
     var showEditGroupDialog by remember { mutableStateOf(false) }
-    var showIconPicker by remember { mutableStateOf(false) }
 
     if (showAddCategoryDialog) {
         InputDialog(
-            title = "Add Category",
+            title = stringResource(Res.string.add_category),
             onConfirmed = { onCategoryAdded(group.group.id, it) },
             onDismiss = { showAddCategoryDialog = false },
-            label = "Category name",
+            label = stringResource(Res.string.category_name),
         )
     }
 
     if (showEditGroupDialog) {
         InputDialog(
-            title = "Edit Group",
+            title = stringResource(Res.string.edit_group),
             initialText = group.group.name,
             onConfirmed = { onGroupUpdated(group.group.id, it) },
             onDismiss = { showEditGroupDialog = false },
-            label = "Group name",
+            label = stringResource(Res.string.group_name),
         )
-    }
-
-    if (showIconPicker) {
-        Popup {
-            IconPicker()
-        }
     }
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -86,11 +87,6 @@ fun GroupRow(
         TableCell(weight = CategoryColumn.CATEGORY.weight) {
             ListItem(
                 leadingContent = leadingContent,
-                trailingContent = {
-                    Button(onClick = { showIconPicker = true }) {
-                        Text("Icon")
-                    }
-                },
                 headlineContent = {
                     Text(
                         group.group.name,
@@ -129,7 +125,7 @@ fun GroupRow(
                     DropdownMenuItem(onClick = { onGroupRemoved(group.group.id) }) {
                         Icon(Icons.Filled.Delete, null)
                         Spacer(Modifier.width(8.dp))
-                        Text("Remove")
+                        Text(stringResource(Res.string.remove))
                     }
                     DropdownMenuItem(
                         onClick = {
@@ -138,7 +134,7 @@ fun GroupRow(
                         }) {
                         Icon(Icons.Filled.Edit, null)
                         Spacer(Modifier.width(8.dp))
-                        Text("Edit")
+                        Text(stringResource(Res.string.edit))
                     }
                     DropdownMenuItem(
                         onClick = {
@@ -147,7 +143,7 @@ fun GroupRow(
                         }) {
                         Icon(Icons.Filled.Add, null)
                         Spacer(Modifier.width(8.dp))
-                        Text("Add Category")
+                        Text(stringResource(Res.string.add_category))
                     }
                 }
                 IconButton(

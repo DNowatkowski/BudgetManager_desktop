@@ -41,6 +41,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import budgetmanager.composeapp.generated.resources.Res
+import budgetmanager.composeapp.generated.resources.category_name
+import budgetmanager.composeapp.generated.resources.edit_category
+import budgetmanager.composeapp.generated.resources.keywords
+import budgetmanager.composeapp.generated.resources.remove
+import budgetmanager.composeapp.generated.resources.remove_category
+import budgetmanager.composeapp.generated.resources.remove_category_confirmation
 import org.example.project.constants.CategoryColumn
 import org.example.project.domain.models.category.CategoryWithKeywords
 import org.example.project.domain.models.keyword.KeywordData
@@ -53,6 +60,7 @@ import org.example.project.ui.components.chips.AddKeywordChip
 import org.example.project.ui.components.chips.KeywordChip
 import org.example.project.ui.components.dialogs.AlertDialog
 import org.example.project.ui.components.dialogs.InputDialog
+import org.jetbrains.compose.resources.stringResource
 import java.time.LocalDate
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -86,13 +94,13 @@ fun CategoryRow(
 
     if (showEditCategoryDialog) {
         InputDialog(
-            title = "Edit Category",
+            title = stringResource(Res.string.edit_category),
             initialText = category.category.name,
             onConfirmed = { text ->
                 onCategoryUpdated(category.category.id, text)
             },
             onDismiss = { showEditCategoryDialog = false },
-            label = "Category name",
+            label = stringResource(Res.string.category_name),
         )
     }
 
@@ -183,8 +191,8 @@ fun CategoryRow(
                 Box(modifier = Modifier.padding(end = 8.dp)) {
                     if (showAlertDialog) {
                         AlertDialog(
-                            title = "Remove Category",
-                            text = "Are you sure you want to remove this category?",
+                            title = stringResource(Res.string.remove_category),
+                            text = stringResource(Res.string.remove_category_confirmation),
                             onConfirmed = {
                                 onCategoryRemoved(category.category.id)
                                 showAlertDialog = false
@@ -202,7 +210,7 @@ fun CategoryRow(
                         }) {
                             Icon(Icons.Filled.Delete, null)
                             Spacer(Modifier.width(8.dp))
-                            Text("Remove")
+                            Text(stringResource(Res.string.remove))
                         }
                         DropdownMenuItem(
                             onClick = {
@@ -211,7 +219,7 @@ fun CategoryRow(
                             }) {
                             Icon(Icons.Filled.Edit, null)
                             Spacer(Modifier.width(8.dp))
-                            Text("Edit Category")
+                            Text(stringResource(Res.string.edit_category))
                         }
                     }
                     IconButton(
@@ -227,8 +235,7 @@ fun CategoryRow(
                 modifier = Modifier.padding(start = 55.dp),
             ) {
                 Text(
-                    "Keywords:",
-
+                    stringResource(Res.string.keywords) + ":",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )

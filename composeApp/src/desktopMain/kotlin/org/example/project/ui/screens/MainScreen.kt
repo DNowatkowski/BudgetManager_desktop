@@ -23,11 +23,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import budgetmanager.composeapp.generated.resources.Res
+import budgetmanager.composeapp.generated.resources.categories
+import budgetmanager.composeapp.generated.resources.reports
+import budgetmanager.composeapp.generated.resources.transactions
 import cafe.adriel.voyager.navigator.Navigator
 import org.example.project.ui.components.DateSwitcher
 import org.example.project.ui.screens.budget.BudgetScreen
 import org.example.project.ui.screens.categories.CategoriesScreen
 import org.example.project.ui.screens.reports.ReportsScreen
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import java.time.LocalDate
@@ -50,7 +55,7 @@ fun MainScreen() {
                 drawerContainerColor = MaterialTheme.colorScheme.primaryContainer,
             ) {
                 NavigationItem(
-                    text = "Categories",
+                    text = stringResource(Res.string.categories),
                     selected = navigator.lastItem is CategoriesScreen,
                     icon = { Icon(Icons.Outlined.Category, contentDescription = "Categories") },
                     onClick = {
@@ -62,7 +67,7 @@ fun MainScreen() {
                     }
                 )
                 NavigationItem(
-                    text = "Transactions",
+                    text = stringResource(Res.string.transactions),
                     selected = navigator.lastItem is BudgetScreen,
                     icon = {
                         Icon(
@@ -79,7 +84,7 @@ fun MainScreen() {
                     }
                 )
                 NavigationItem(
-                    text = "Reports",
+                    text = stringResource(Res.string.reports),
                     selected = navigator.lastItem is ReportsScreen,
                     icon = { Icon(Icons.Outlined.BarChart, contentDescription = "Reports") },
                     onClick = {

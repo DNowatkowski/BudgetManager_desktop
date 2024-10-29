@@ -19,7 +19,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import budgetmanager.composeapp.generated.resources.Res
+import budgetmanager.composeapp.generated.resources.undefined
 import org.example.project.domain.models.category.CategoryData
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CategoryInputChip(
@@ -61,7 +64,7 @@ fun CategoryInputChip(
         onClick = { dropdownMenuExpanded = !dropdownMenuExpanded },
         label = {
             Text(
-                selectedCategory?.name ?: "Undefined",
+                selectedCategory?.name ?: stringResource(Res.string.undefined),
                 style = MaterialTheme.typography.labelMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

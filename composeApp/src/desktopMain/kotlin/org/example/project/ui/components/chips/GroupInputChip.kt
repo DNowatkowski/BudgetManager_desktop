@@ -23,7 +23,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import budgetmanager.composeapp.generated.resources.Res
+import budgetmanager.composeapp.generated.resources.undefined
 import org.example.project.domain.models.group.GroupWithCategoryData
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun GroupInputChip(
@@ -72,7 +75,7 @@ fun GroupInputChip(
         },
         label = {
             Text(
-                selectedGroup?.group?.name ?: "Undefined",
+                selectedGroup?.group?.name ?: stringResource(Res.string.undefined),
                 style = MaterialTheme.typography.labelMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

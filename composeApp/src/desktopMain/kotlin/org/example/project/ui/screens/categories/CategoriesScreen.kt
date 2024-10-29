@@ -35,6 +35,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import budgetmanager.composeapp.generated.resources.Res
+import budgetmanager.composeapp.generated.resources.add_group
+import budgetmanager.composeapp.generated.resources.group_name
+import budgetmanager.composeapp.generated.resources.income
+import budgetmanager.composeapp.generated.resources.remove_group
+import budgetmanager.composeapp.generated.resources.remove_group_confirmation
+import budgetmanager.composeapp.generated.resources.unassigned
 import cafe.adriel.voyager.core.screen.Screen
 import org.example.project.constants.moneyGreen
 import org.example.project.domain.models.toReadableString
@@ -44,6 +51,7 @@ import org.example.project.ui.components.dialogs.InputDialog
 import org.example.project.ui.components.table.CategoriesHeaderRow
 import org.example.project.ui.components.table.CategoryRow
 import org.example.project.ui.components.table.GroupRow
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import java.time.LocalDate
@@ -64,10 +72,10 @@ data class CategoriesScreen(
 
         if (showDialog) {
             InputDialog(
-                title = "Add group",
+                title = stringResource(Res.string.add_group),
                 onConfirmed = { text -> vm.addGroup(text) },
                 onDismiss = { showDialog = false },
-                label = "Group name"
+                label = stringResource(Res.string.group_name)
             )
         }
 
@@ -87,7 +95,7 @@ data class CategoriesScreen(
                     onClick = { showDialog = true }
                 ) {
                     Icon(Icons.Filled.AddCircle, null)
-                    Text(" Add group")
+                    Text(stringResource(Res.string.add_group))
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 TotalCard(uiState)
@@ -102,8 +110,8 @@ data class CategoriesScreen(
                         var groupExpanded by remember { mutableStateOf(false) }
                         if (showAlertDialog)
                             AlertDialog(
-                                title = "Remove group",
-                                text = "Are you sure you want to remove this group and all it's categories?",
+                                title = stringResource(Res.string.remove_group),
+                                text = stringResource(Res.string.remove_group_confirmation),
                                 onDismiss = { showAlertDialog = false },
                                 onConfirmed = { vm.removeGroup(groupId = group.group.id) }
                             )
@@ -122,7 +130,8 @@ data class CategoriesScreen(
                                 Icon(
                                     imageVector = if (groupExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
                                     null,
-                                    modifier = Modifier.clip(CircleShape).background(group.group.color),
+                                    modifier = Modifier.clip(CircleShape)
+                                        .background(group.group.color),
                                     tint = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
                                 )
                             },
@@ -198,7 +207,11 @@ fun TotalCard(
     ) {
         val incomeGroup by remember(uiState.groupTargets) { mutableStateOf(uiState.groupTargets.keys.find { it.isIncomeGroup }) }
         Text(
-            text = "Income: ${uiState.groupTargets[incomeGroup]?.toReadableString(true)}",
+            text = "${stringResource(Res.string.income)}: ${
+                uiState.groupTargets[incomeGroup]?.toReadableString(
+                    true
+                )
+            }",
             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight(30)),
             color = moneyGreen
         )
@@ -213,7 +226,7 @@ fun TotalCard(
             )
         }
         Text(
-            "Unassigned: $unassignedFunds",
+            "${stringResource(Res.string.unassigned)}: $unassignedFunds",
             style = MaterialTheme.typography.bodyMedium,
             color = moneyGreen.copy(alpha = 0.7f)
         )

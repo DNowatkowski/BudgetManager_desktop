@@ -12,7 +12,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import budgetmanager.composeapp.generated.resources.Res
+import budgetmanager.composeapp.generated.resources.add_keyword
+import budgetmanager.composeapp.generated.resources.keyword
 import org.example.project.ui.components.dialogs.InputDialog
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun AddKeywordChip(
@@ -21,10 +25,10 @@ fun AddKeywordChip(
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
         InputDialog(
-            title = "Add Keyword",
+            title = stringResource(Res.string.add_keyword),
             onConfirmed = onAddKeyword,
             onDismiss = { showDialog = false },
-            label = "Keyword",
+            label = stringResource(Res.string.keyword),
         )
     }
     InputChip(

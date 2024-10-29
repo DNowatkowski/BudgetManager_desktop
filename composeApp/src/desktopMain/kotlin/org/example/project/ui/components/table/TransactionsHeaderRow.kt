@@ -22,8 +22,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
+import budgetmanager.composeapp.generated.resources.Res
+import budgetmanager.composeapp.generated.resources.amount
+import budgetmanager.composeapp.generated.resources.category
+import budgetmanager.composeapp.generated.resources.date
+import budgetmanager.composeapp.generated.resources.description
+import budgetmanager.composeapp.generated.resources.group
+import budgetmanager.composeapp.generated.resources.payee
 import org.example.project.constants.TransactionColumn
 import org.example.project.ui.screens.budget.BudgetScreenViewModel
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun TransactionsHeaderRow(
@@ -56,7 +64,7 @@ fun TransactionsHeaderRow(
             TableCell(
                 weight = TransactionColumn.DATE.weight
             ) {
-                TableHeaderText("DATE")
+                TableHeaderText(stringResource(Res.string.date))
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     imageVector = if (sortOrder == BudgetScreenViewModel.SortOrder.DESCENDING)
@@ -79,34 +87,34 @@ fun TransactionsHeaderRow(
             TableCell(
                 weight = TransactionColumn.PAYEE.weight
             ) {
-                TableHeaderText("PAYEE")
+                TableHeaderText(stringResource(Res.string.payee))
             }
             VerticalDivider()
             TableCell(
                 weight = TransactionColumn.DESCRIPTION.weight
             ) {
-                TableHeaderText("DESCRIPTION")
+                TableHeaderText(stringResource(Res.string.description))
             }
             VerticalDivider()
             TableCell(
                 weight = TransactionColumn.GROUP.weight
             ) {
                 TableHeaderText(
-                    "GROUP"
+                    stringResource(Res.string.group),
                 )
             }
             VerticalDivider()
             TableCell(
                 weight = TransactionColumn.CATEGORY.weight
             ) {
-                TableHeaderText("CATEGORY")
+                TableHeaderText(stringResource(Res.string.category).uppercase())
             }
             VerticalDivider()
             TableCell(
                 weight = TransactionColumn.AMOUNT.weight,
                 modifier = Modifier.padding(end = 8.dp)
             ) {
-                TableHeaderText("AMOUNT")
+                TableHeaderText(stringResource(Res.string.amount))
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     imageVector = if (sortOrder == BudgetScreenViewModel.SortOrder.DESCENDING)

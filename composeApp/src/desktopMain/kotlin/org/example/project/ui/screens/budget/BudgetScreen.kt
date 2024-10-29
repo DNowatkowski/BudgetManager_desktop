@@ -34,6 +34,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import budgetmanager.composeapp.generated.resources.Res
+import budgetmanager.composeapp.generated.resources.add_transaction
+import budgetmanager.composeapp.generated.resources.delete_transaction
+import budgetmanager.composeapp.generated.resources.delete_transaction_confirmation
+import budgetmanager.composeapp.generated.resources.import
+import budgetmanager.composeapp.generated.resources.search
 import cafe.adriel.voyager.core.screen.Screen
 import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.core.PickerMode
@@ -45,6 +51,7 @@ import org.example.project.ui.components.dialogs.ImportDialog
 import org.example.project.ui.components.table.AddTransactionRow
 import org.example.project.ui.components.table.TransactionRow
 import org.example.project.ui.components.table.TransactionsHeaderRow
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import java.time.LocalDate
@@ -95,8 +102,8 @@ data class BudgetScreen(
 
         if (showAlertDialog)
             AlertDialog(
-                title = "Delete transaction",
-                text = "Are you sure you want to delete the selected transactions?",
+                title = stringResource(Res.string.delete_transaction),
+                text = stringResource(Res.string.delete_transaction_confirmation),
                 onDismiss = { showAlertDialog = false },
                 onConfirmed = {
                     vm.deleteSelectedTransactions()
@@ -116,19 +123,19 @@ data class BudgetScreen(
                     launcher.launch()
                 }) {
                     Icon(Icons.Filled.ImportExport, null)
-                    Text(" Import file")
+                    Text(stringResource(Res.string.import))
                 }
                 TextButton(onClick = {
                     showNewTransactionRow = true
                 }) {
                     Icon(Icons.Filled.AddCircle, null)
-                    Text(" Add transaction")
+                    Text(stringResource(Res.string.add_transaction))
                 }
                 TextButton(onClick = {
                     showAlertDialog = true
                 }, enabled = uiState.transactions.any { it.isSelected }) {
                     Icon(Icons.Filled.Delete, null)
-                    Text("Delete transaction")
+                    Text(stringResource(Res.string.delete_transaction))
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 OutlinedTextField(
@@ -147,7 +154,7 @@ data class BudgetScreen(
                     },
                     placeholder = {
                         Text(
-                            "Search",
+                            stringResource(Res.string.search),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     },

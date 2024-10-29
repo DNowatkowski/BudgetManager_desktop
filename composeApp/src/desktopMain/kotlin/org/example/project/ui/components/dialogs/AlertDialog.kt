@@ -9,6 +9,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import budgetmanager.composeapp.generated.resources.Res
+import budgetmanager.composeapp.generated.resources.cancel
+import budgetmanager.composeapp.generated.resources.remove
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun AlertDialog(
@@ -21,8 +25,8 @@ fun AlertDialog(
         title = title,
         onDismiss = { onDismiss() },
         onConfirmed = onConfirmed,
-        confirmButtonText = "Delete",
-        dismissButtonText = "Cancel",
+        confirmButtonText = stringResource(Res.string.remove),
+        dismissButtonText = stringResource(Res.string.cancel),
         content = {
             Icon(
                 Icons.Outlined.Warning,

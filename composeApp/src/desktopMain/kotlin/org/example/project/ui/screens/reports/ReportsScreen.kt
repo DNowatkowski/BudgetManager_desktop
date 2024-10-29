@@ -30,6 +30,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import budgetmanager.composeapp.generated.resources.Res
+import budgetmanager.composeapp.generated.resources.monthly_expenses
+import budgetmanager.composeapp.generated.resources.total_spending
+import budgetmanager.composeapp.generated.resources.uncategorized
 import cafe.adriel.voyager.core.screen.Screen
 import ir.ehsannarmani.compose_charts.LineChart
 import ir.ehsannarmani.compose_charts.PieChart
@@ -41,6 +45,7 @@ import ir.ehsannarmani.compose_charts.models.PopupProperties
 import org.example.project.domain.models.toReadableString
 import org.example.project.ui.components.VerticalScrollBar
 import org.example.project.utils.closestHigherMultipleOf1000
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import java.text.NumberFormat
@@ -91,7 +96,7 @@ private fun PieChart(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "Monthly expenses",
+                text = stringResource(Res.string.monthly_expenses),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(8.dp)
             )
@@ -144,7 +149,7 @@ private fun PieChart(
                                     .padding(top = 4.dp)
                             )
                             Text(
-                                text = "Uncategorized",
+                                text = stringResource(Res.string.uncategorized),
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }
@@ -174,7 +179,7 @@ private fun PieChart(
                         )
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                "Total spending:",
+                                stringResource(Res.string.total_spending) + ":",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
                             )
