@@ -10,6 +10,7 @@ import org.example.project.domain.models.category.CategoryData
 import org.example.project.domain.models.group.GroupData
 import org.example.project.domain.models.keyword.KeywordData
 import org.example.project.domain.models.transaction.TransactionData
+import org.example.project.utils.ImageUtil
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
@@ -20,6 +21,7 @@ fun GroupEntity.toDomainModel() = GroupData(
     name = name,
     color = Color(colorCode.toInt()),
     isIncomeGroup = isIncomeGroup ?: false,
+    icon = this.iconId?.let { ImageUtil.createImageVector(it) }
 )
 
 fun CategoryEntity.toDomainModel(

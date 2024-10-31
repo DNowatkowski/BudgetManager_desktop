@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Icecream
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,7 +39,9 @@ import budgetmanager.composeapp.generated.resources.edit
 import budgetmanager.composeapp.generated.resources.edit_group
 import budgetmanager.composeapp.generated.resources.group_name
 import budgetmanager.composeapp.generated.resources.remove
+import budgetmanager.composeapp.generated.resources.select_icon
 import org.example.project.constants.CategoryColumn
+import org.example.project.domain.models.IconData
 import org.example.project.domain.models.group.GroupWithCategoriesAndKeywordsData
 import org.example.project.domain.models.toReadableString
 import org.example.project.ui.components.IconPicker
@@ -51,6 +54,11 @@ fun GroupRow(
     group: GroupWithCategoriesAndKeywordsData,
     target: Double,
     spending: Double,
+    iconsSearchText: String,
+    iconsLoading: Boolean,
+    icons: List<IconData>,
+    onSearchTextUpdated: (String) -> Unit,
+    onIconClick: (String) -> Unit,
     leadingContent: @Composable () -> Unit,
     onGroupUpdated: (String, String) -> Unit,
     onCategoryAdded: (String, String) -> Unit,
@@ -61,6 +69,7 @@ fun GroupRow(
     var dropdownExpanded by remember { mutableStateOf(false) }
     var showAddCategoryDialog by remember { mutableStateOf(false) }
     var showEditGroupDialog by remember { mutableStateOf(false) }
+    var showIconPicker by remember { mutableStateOf(false) }
 
     if (showAddCategoryDialog) {
         InputDialog(
@@ -70,7 +79,19 @@ fun GroupRow(
             label = stringResource(Res.string.category_name),
         )
     }
-
+    if (showIconPicker) {
+        IconPicker(
+            searchText = iconsSearchText,
+            isLoading = iconsLoading,
+            onDismissRequest = { showIconPicker = false },
+            icons = icons,
+            onIconClick = {
+                onIconClick(it)
+                showIconPicker = false
+            },
+            onSearchTextUpdated = onSearchTextUpdated
+        )
+    }
     if (showEditGroupDialog) {
         InputDialog(
             title = stringResource(Res.string.edit_group),
@@ -144,6 +165,15 @@ fun GroupRow(
                         Icon(Icons.Filled.Add, null)
                         Spacer(Modifier.width(8.dp))
                         Text(stringResource(Res.string.add_category))
+                    }
+                    DropdownMenuItem(
+                        onClick = {
+                            dropdownExpanded = false
+                            showIconPicker = true
+                        }) {
+                        Icon(Icons.Filled.Icecream, null)
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(Res.string.select_icon))
                     }
                 }
                 IconButton(

@@ -2,6 +2,8 @@ package org.example.project.ui.screens.categories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import budgetmanager.composeapp.generated.resources.Res
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -9,6 +11,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.example.project.domain.models.IconData
 import org.example.project.domain.models.category.CategoryData
 import org.example.project.domain.models.group.GroupData
 import org.example.project.domain.models.group.GroupWithCategoriesAndKeywordsData
@@ -17,6 +21,10 @@ import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.domain.repositories.CategoryRepository
 import org.example.project.domain.repositories.KeywordRepository
 import org.example.project.domain.repositories.TransactionRepository
+import org.example.project.utils.ImageUtil
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.time.LocalDate
 import kotlin.math.absoluteValue
 
@@ -29,7 +37,17 @@ class CategoriesScreenViewModel(
     private val _uiState = MutableStateFlow(CategoriesState())
     val uiState = _uiState.asStateFlow()
 
-    private var _queryJob: Job? = null
+    private val _iconsState = MutableStateFlow(IconsState())
+    val iconsState = _iconsState.asStateFlow()
+
+    private var _searchJob: Job? = null
+    private var _icons = listOf<IconData>()
+
+    init {
+        viewModelScope.launch {
+            getIcons()
+        }
+    }
 
     private suspend fun getData(date: LocalDate) {
         combine(
@@ -66,9 +84,59 @@ class CategoriesScreenViewModel(
         }
     }
 
+    fun updateSearchText(text: String) {
+        _iconsState.update { currentState ->
+            currentState.copy(
+                searchText = text,
+                icons = _icons.filter { it.name.contains(text, ignoreCase = true) }
+            )
+        }
+    }
+
+    @OptIn(ExperimentalResourceApi::class)
+    private suspend fun getIcons() {
+        _iconsState.update {
+            it.copy(
+                isLoading = true
+            )
+        }
+        val uri = Res.readBytes("files/icon-names.txt").inputStream()
+        val reader = BufferedReader(InputStreamReader(uri))
+        val lines = reader.readLines()
+        withContext(Dispatchers.IO) {
+            reader.close()
+        }
+        _icons = lines
+            .map { parseIconItem(it) }
+            .filter { it.image != null }
+
+        _iconsState.update {
+            it.copy(
+                isLoading = false,
+                icons = _icons
+            )
+        }
+    }
+
+    fun setIconForGroup(groupId: String, iconId: String) {
+        viewModelScope.launch {
+            categoryRepository.updateGroupIcon(groupId = groupId, iconId = iconId)
+            _iconsState.update { it.copy(searchText = "") }
+        }
+    }
+
+    private fun parseIconItem(line: String): IconData {
+        val split = line.split(",")
+        val id = split[0]
+        val name = split[1]
+        val image = ImageUtil.createImageVector(id)
+
+        return IconData(id, name, image)
+    }
+
     fun getDataForMonth(date: LocalDate) {
-        _queryJob?.cancel()
-        _queryJob = viewModelScope.launch {
+        _searchJob?.cancel()
+        _searchJob = viewModelScope.launch {
             getData(date)
         }
     }
@@ -149,5 +217,12 @@ class CategoriesScreenViewModel(
         val groupTargets: Map<GroupData, Double> = emptyMap(),
         val groupSpending: Map<GroupData, Double> = emptyMap(),
         val categorySpending: Map<CategoryData, Double> = emptyMap()
+    )
+
+    data class IconsState(
+        val isLoading: Boolean = false,
+
+        val searchText: String = "",
+        val icons: List<IconData> = emptyList()
     )
 }

@@ -94,6 +94,7 @@ class CategoryRepositoryImpl(
                     id = UUID.randomUUID().toString(),
                     name = name,
                     colorCode = generateRandomColor().toArgb().toDouble(),
+                    iconId = null,
                     isIncomeGroup = false
                 )
             )
@@ -135,6 +136,15 @@ class CategoryRepositoryImpl(
             database.databaseQueries.updateMonthlyTarget(
                 monthlyTarget = target,
                 id = categoryId
+            )
+        }
+    }
+
+    override suspend fun updateGroupIcon(groupId: String, iconId: String) {
+        withContext(Dispatchers.IO) {
+            database.databaseQueries.updateGroupIcon(
+                iconId = iconId,
+                id = groupId
             )
         }
     }

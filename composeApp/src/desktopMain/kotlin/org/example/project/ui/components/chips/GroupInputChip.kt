@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
@@ -42,22 +43,37 @@ fun GroupInputChip(
             onDismissRequest = { dropdownMenuExpanded = false }
         ) {
             groups.forEach { group ->
-                TextButton(
+                DropdownMenuItem(
+                    leadingIcon = {
+                        if (group.group.icon != null) {
+                            Icon(
+                                group.group.icon,
+                                contentDescription = null,
+                                modifier = Modifier.size(30.dp)
+                            )
+                        }
+                    },
+                    text = {
+                        Text(
+                            group.group.name,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    },
+                    trailingIcon = {
+                        if (selectedGroup?.group?.id == group.group.id) {
+                            Icon(
+                                Icons.Default.Check,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                    },
                     onClick = {
                         onGroupSelected(group)
                         dropdownMenuExpanded = false
                     }
-                ) {
-                    Text(
-                        group.group.name,
-                        style = MaterialTheme.typography.labelMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Spacer(modifier = Modifier.weight(1f).widthIn(10.dp))
-                    if (selectedGroup == group)
-                        Icon(Icons.Filled.Check, null)
-                }
+                )
             }
         }
     }
@@ -65,13 +81,13 @@ fun GroupInputChip(
         selected = dropdownMenuExpanded,
         onClick = { dropdownMenuExpanded = !dropdownMenuExpanded },
         leadingIcon = {
-            if (selectedGroup != null)
-            Box(
-                modifier = Modifier
-                    .size(15.dp)
-                    .clip(CircleShape)
-                    .background(selectedGroup.group.color)
-            )
+            if (selectedGroup != null && selectedGroup.group.icon != null) {
+                Icon(
+                    selectedGroup.group.icon,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
         },
         label = {
             Text(

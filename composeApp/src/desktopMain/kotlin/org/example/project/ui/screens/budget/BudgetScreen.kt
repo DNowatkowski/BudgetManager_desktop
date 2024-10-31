@@ -123,18 +123,21 @@ data class BudgetScreen(
                     launcher.launch()
                 }) {
                     Icon(Icons.Filled.ImportExport, null)
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(stringResource(Res.string.import))
                 }
                 TextButton(onClick = {
                     showNewTransactionRow = true
                 }) {
                     Icon(Icons.Filled.AddCircle, null)
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(stringResource(Res.string.add_transaction))
                 }
                 TextButton(onClick = {
                     showAlertDialog = true
                 }, enabled = uiState.transactions.any { it.isSelected }) {
                     Icon(Icons.Filled.Delete, null)
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(stringResource(Res.string.delete_transaction))
                 }
                 Spacer(modifier = Modifier.weight(1f))

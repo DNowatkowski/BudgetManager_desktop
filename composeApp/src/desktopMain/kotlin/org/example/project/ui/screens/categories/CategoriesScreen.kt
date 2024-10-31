@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -45,6 +47,7 @@ import budgetmanager.composeapp.generated.resources.unassigned
 import cafe.adriel.voyager.core.screen.Screen
 import org.example.project.constants.moneyGreen
 import org.example.project.domain.models.toReadableString
+import org.example.project.ui.components.IconPicker
 import org.example.project.ui.components.VerticalScrollBar
 import org.example.project.ui.components.dialogs.AlertDialog
 import org.example.project.ui.components.dialogs.InputDialog
@@ -66,6 +69,8 @@ data class CategoriesScreen(
     override fun Content() {
         val vm = koinViewModel<CategoriesScreenViewModel>()
         val uiState by vm.uiState.collectAsStateWithLifecycle()
+        val iconsState by vm.iconsState.collectAsStateWithLifecycle()
+
         var showDialog by remember { mutableStateOf(false) }
         var showAlertDialog by remember { mutableStateOf(false) }
         val scrollState = rememberScrollState(0)
@@ -95,6 +100,7 @@ data class CategoriesScreen(
                     onClick = { showDialog = true }
                 ) {
                     Icon(Icons.Filled.AddCircle, null)
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(stringResource(Res.string.add_group))
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -120,6 +126,11 @@ data class CategoriesScreen(
                             group = group,
                             spending = uiState.groupSpending[group.group] ?: 0.0,
                             target = uiState.groupTargets[group.group] ?: 0.0,
+                            onIconClick = { vm.setIconForGroup(groupId = group.group.id, it) },
+                            onSearchTextUpdated = {vm.updateSearchText(it)},
+                            icons = iconsState.icons,
+                            iconsLoading = iconsState.isLoading,
+                            iconsSearchText = iconsState.searchText,
                             onGroupUpdated = { id, name ->
                                 vm.updateGroup(
                                     groupId = id,
@@ -127,13 +138,14 @@ data class CategoriesScreen(
                                 )
                             },
                             leadingContent = {
-                                Icon(
-                                    imageVector = if (groupExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-                                    null,
-                                    modifier = Modifier.clip(CircleShape)
-                                        .background(group.group.color),
-                                    tint = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
-                                )
+                                group.group.icon?.let {
+                                    Icon(
+                                        imageVector = it,
+                                        contentDescription = group.group.name,
+                                        tint = MaterialTheme.colorScheme.secondary,
+                                        modifier = Modifier.size(30.dp)
+                                    )
+                                }
                             },
                             onCategoryAdded = { groupId, name ->
                                 vm.addCategory(
