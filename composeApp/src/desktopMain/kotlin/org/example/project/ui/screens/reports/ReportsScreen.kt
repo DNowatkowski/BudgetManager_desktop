@@ -73,7 +73,7 @@ data class ReportsScreen(val activeMonth: LocalDate) : Screen {
                 PieChart(pieChartState, modifier = Modifier.wrapContentHeight(Alignment.Top))
                 LineChart(lineChartState, modifier = Modifier.heightIn(min = 200.dp, max = 300.dp))
             }
-            VerticalScrollBar(scrollState,Modifier.fillMaxHeight())
+            VerticalScrollBar(scrollState, Modifier.fillMaxHeight())
         }
 
     }

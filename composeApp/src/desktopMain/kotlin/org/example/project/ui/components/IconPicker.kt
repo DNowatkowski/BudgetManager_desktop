@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import budgetmanager.composeapp.generated.resources.Res
 import budgetmanager.composeapp.generated.resources.search
-import budgetmanager.composeapp.generated.resources.select_icon
 import budgetmanager.composeapp.generated.resources.select_icon_title
 import org.example.project.domain.models.IconData
 import org.jetbrains.compose.resources.stringResource
@@ -90,7 +89,7 @@ fun IconPicker(
 
 @Composable
 private fun IconItem(
-    name:String,
+    name: String,
     imageVector: ImageVector,
     onClick: () -> Unit
 ) {

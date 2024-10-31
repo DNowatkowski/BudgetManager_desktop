@@ -36,14 +36,15 @@ fun VerticalScrollBar(
         mutableStateOf(p)
     }
     Box(
-        modifier = modifier.fillMaxHeight().background(color = MaterialTheme.colors.surface).width(8.dp)
+        modifier = modifier.fillMaxHeight().background(color = MaterialTheme.colors.surface)
+            .width(8.dp)
             .onGloballyPositioned {
                 scrollBarHeight = it.size.height
             }.padding(top = padding.dp)
     ) {
         Box(
             modifier = Modifier.clip(MaterialTheme.shapes.small).background(color = Color.LightGray)
-                .height((scrollBarHeight/6).dp)
+                .height((scrollBarHeight / 6).dp)
                 .width(8.dp).zIndex(10f)
                 .onGloballyPositioned { innerBarHeight = it.size.height }
         )
@@ -58,7 +59,11 @@ fun VerticalScrollBar(
 ) {
     var scrollBarHeight by remember { mutableStateOf(0) }
     var innerBarHeight by remember { mutableStateOf(0) }
-    val padding: Int by remember(listState.firstVisibleItemIndex, listState.firstVisibleItemScrollOffset, scrollBarHeight) {
+    val padding: Int by remember(
+        listState.firstVisibleItemIndex,
+        listState.firstVisibleItemScrollOffset,
+        scrollBarHeight
+    ) {
         val totalItems = listState.layoutInfo.totalItemsCount
         val visibleItems = listState.layoutInfo.visibleItemsInfo.size
         val totalScrollRange = totalItems - visibleItems

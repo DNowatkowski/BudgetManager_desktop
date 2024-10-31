@@ -172,7 +172,7 @@ data class BudgetScreen(
                 onSortOptionChanged = { vm.updateSortOption(it) },
                 onSortOrderChanged = { vm.toggleSortOrder() }
             )
-            Row{
+            Row {
                 LazyColumn(
                     state = listState,
                     modifier = Modifier.weight(1f)

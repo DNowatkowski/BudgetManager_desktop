@@ -34,7 +34,10 @@ fun CategoriesHeaderRow() {
         ) {
 
             TableCell(weight = CategoryColumn.CATEGORY.weight) {
-                TableHeaderText(stringResource(Res.string.category), modifier = Modifier.padding(start = 8.dp))
+                TableHeaderText(
+                    stringResource(Res.string.category),
+                    modifier = Modifier.padding(start = 8.dp)
+                )
             }
             VerticalDivider()
             TableCell(weight = CategoryColumn.ACTUAL_SPENDING.weight) {

@@ -1,9 +1,6 @@
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import database.Database
-import java.io.File
-import java.sql.DriverManager
-import java.sql.SQLException
 import java.util.Properties
 
 

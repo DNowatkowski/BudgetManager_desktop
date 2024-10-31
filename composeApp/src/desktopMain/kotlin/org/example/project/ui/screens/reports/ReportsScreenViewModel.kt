@@ -6,7 +6,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import budgetmanager.composeapp.generated.resources.Res
-import budgetmanager.composeapp.generated.resources.expense
 import budgetmanager.composeapp.generated.resources.expenses
 import budgetmanager.composeapp.generated.resources.income
 import budgetmanager.composeapp.generated.resources.uncategorized

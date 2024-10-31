@@ -39,7 +39,14 @@ fun DateSwitcher(
     modifier: Modifier = Modifier
 ) {
     var visible by remember { mutableStateOf(true) }
-    var monthText by remember { mutableStateOf(activeMonth.month.getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault())) }
+    var monthText by remember {
+        mutableStateOf(
+            activeMonth.month.getDisplayName(
+                TextStyle.FULL_STANDALONE,
+                Locale.getDefault()
+            )
+        )
+    }
     var slideDirection by remember { mutableStateOf(1) } // 1 for next, -1 for previous
     var isFirstDisplay by remember { mutableStateOf(true) }
 
@@ -47,10 +54,12 @@ fun DateSwitcher(
         if (!isFirstDisplay) {
             visible = false
             delay(100)
-            monthText = activeMonth.month.getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault())
+            monthText =
+                activeMonth.month.getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault())
             visible = true
         } else {
-            monthText = activeMonth.month.getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault())
+            monthText =
+                activeMonth.month.getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault())
             isFirstDisplay = false
         }
     }

@@ -49,8 +49,8 @@ fun TransactionRow(
         )
     }
 
-    LaunchedEffect(selectedCategory?.categoryGroupId){
-        if(selectedCategory != null)
+    LaunchedEffect(selectedCategory?.categoryGroupId) {
+        if (selectedCategory != null)
             selectedGroup = groups.find { it.group.id == selectedCategory?.categoryGroupId }
     }
 

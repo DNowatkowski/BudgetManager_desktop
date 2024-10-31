@@ -9,9 +9,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import kotlinx.datetime.LocalDate
 import org.example.project.di.initKoin
-import org.example.project.utils.generateRandomColor
 import kotlin.random.Random
 
 fun main() {

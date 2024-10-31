@@ -14,12 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,7 +44,6 @@ import budgetmanager.composeapp.generated.resources.unassigned
 import cafe.adriel.voyager.core.screen.Screen
 import org.example.project.constants.moneyGreen
 import org.example.project.domain.models.toReadableString
-import org.example.project.ui.components.IconPicker
 import org.example.project.ui.components.VerticalScrollBar
 import org.example.project.ui.components.dialogs.AlertDialog
 import org.example.project.ui.components.dialogs.InputDialog
@@ -127,7 +123,7 @@ data class CategoriesScreen(
                             spending = uiState.groupSpending[group.group] ?: 0.0,
                             target = uiState.groupTargets[group.group] ?: 0.0,
                             onIconClick = { vm.setIconForGroup(groupId = group.group.id, it) },
-                            onSearchTextUpdated = {vm.updateSearchText(it)},
+                            onSearchTextUpdated = { vm.updateSearchText(it) },
                             icons = iconsState.icons,
                             iconsLoading = iconsState.isLoading,
                             iconsSearchText = iconsState.searchText,
