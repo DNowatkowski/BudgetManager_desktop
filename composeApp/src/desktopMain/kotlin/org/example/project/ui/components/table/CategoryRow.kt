@@ -13,10 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -24,6 +21,8 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -200,27 +199,25 @@ fun CategoryRow(
                             onDismiss = { showAlertDialog = false },
                         )
                     }
+
                     DropdownMenu(
                         expanded = dropDownExpanded,
                         onDismissRequest = { dropDownExpanded = false },
                     ) {
-                        DropdownMenuItem(onClick = {
-                            showAlertDialog = true
-                            dropDownExpanded = false
-                        }) {
-                            Icon(Icons.Filled.Delete, null)
-                            Spacer(Modifier.width(8.dp))
-                            Text(stringResource(Res.string.remove))
-                        }
                         DropdownMenuItem(
+                            text = { Text(stringResource(Res.string.remove)) },
+                            leadingIcon = { Icon(Icons.Filled.Delete, null) },
+                            onClick = {
+                                showAlertDialog = true
+                                dropDownExpanded = false
+                            })
+                        DropdownMenuItem(
+                            text = { Text(stringResource(Res.string.edit_category)) },
+                            leadingIcon = { Icon(Icons.Filled.Edit, null) },
                             onClick = {
                                 dropDownExpanded = false
                                 showEditCategoryDialog = true
-                            }) {
-                            Icon(Icons.Filled.Edit, null)
-                            Spacer(Modifier.width(8.dp))
-                            Text(stringResource(Res.string.edit_category))
-                        }
+                            })
                     }
                     IconButton(
                         onClick = { dropDownExpanded = true }

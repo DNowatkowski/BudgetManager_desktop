@@ -6,16 +6,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Icecream
 import androidx.compose.material.icons.outlined.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -141,38 +140,29 @@ fun GroupRow(
                     expanded = dropdownExpanded,
                     onDismissRequest = { dropdownExpanded = false },
                 ) {
-                    DropdownMenuItem(onClick = { onGroupRemoved(group.group.id) }) {
-                        Icon(Icons.Filled.Delete, null)
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(Res.string.remove))
-                    }
                     DropdownMenuItem(
-                        onClick = {
-                            dropdownExpanded = false
-                            showEditGroupDialog = true
-                        }) {
-                        Icon(Icons.Filled.Edit, null)
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(Res.string.edit))
-                    }
+                        leadingIcon = { Icon(Icons.Filled.Delete, null) },
+                        text = { Text(stringResource(Res.string.remove)) },
+                        onClick = { onGroupRemoved(group.group.id) }
+                    )
                     DropdownMenuItem(
-                        onClick = {
-                            dropdownExpanded = false
-                            showAddCategoryDialog = true
-                        }) {
-                        Icon(Icons.Filled.Add, null)
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(Res.string.add_category))
-                    }
+                        leadingIcon = { Icon(Icons.Filled.Edit, null) },
+                        text = { Text(stringResource(Res.string.edit)) },
+                        onClick = { showEditGroupDialog = true }
+                    )
                     DropdownMenuItem(
+                        leadingIcon = { Icon(Icons.Filled.Add, null) },
+                        text = { Text(stringResource(Res.string.add_category)) },
+                        onClick = { showAddCategoryDialog = true }
+                    )
+                    DropdownMenuItem(
+                        leadingIcon = { Icon(Icons.Filled.Icecream, null) },
+                        text = { Text(stringResource(Res.string.select_icon)) },
                         onClick = {
                             dropdownExpanded = false
                             showIconPicker = true
-                        }) {
-                        Icon(Icons.Filled.Icecream, null)
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(Res.string.select_icon))
-                    }
+                        }
+                    )
                 }
                 IconButton(
                     onClick = { dropdownExpanded = !dropdownExpanded }

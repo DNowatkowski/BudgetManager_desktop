@@ -104,7 +104,7 @@ private fun IconItem(
         Icon(
             imageVector = imageVector,
             contentDescription = name,
-            tint = MaterialTheme.colorScheme.primary,
+            tint = MaterialTheme.colorScheme.secondary,
             modifier = Modifier.size(40.dp)
         )
 
