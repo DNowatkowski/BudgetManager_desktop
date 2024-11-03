@@ -45,7 +45,6 @@ import budgetmanager.composeapp.generated.resources.delete_transaction
 import budgetmanager.composeapp.generated.resources.delete_transaction_confirmation
 import budgetmanager.composeapp.generated.resources.import
 import budgetmanager.composeapp.generated.resources.search
-import cafe.adriel.voyager.core.screen.Screen
 import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.core.PickerMode
 import io.github.vinceglb.filekit.core.PickerType
@@ -61,180 +60,179 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import java.time.LocalDate
 
-data class BudgetScreen(
-    val activeMonth: LocalDate
-) : Screen {
-    @OptIn(KoinExperimentalAPI::class)
-    @Composable
-    override fun Content() {
-        var showNewTransactionRow by remember { mutableStateOf(false) }
 
-        val vm = koinViewModel<BudgetScreenViewModel>()
-        val uiState by vm.uiState.collectAsStateWithLifecycle()
+@OptIn(KoinExperimentalAPI::class)
+@Composable
+fun BudgetScreen(
+    activeMonth: LocalDate
+) {
+    var showNewTransactionRow by remember { mutableStateOf(false) }
 
-        val listState = rememberLazyListState()
-        var showAlertDialog by remember { mutableStateOf(false) }
-        var showImportDialog by remember { mutableStateOf(false) }
-        var platformFile: PlatformFile? by remember { mutableStateOf(null) }
+    val vm = koinViewModel<BudgetScreenViewModel>()
+    val uiState by vm.uiState.collectAsStateWithLifecycle()
 
-        LaunchedEffect(activeMonth) {
-            vm.getTransactionsForMonth(activeMonth)
+    val listState = rememberLazyListState()
+    var showAlertDialog by remember { mutableStateOf(false) }
+    var showImportDialog by remember { mutableStateOf(false) }
+    var platformFile: PlatformFile? by remember { mutableStateOf(null) }
+
+    LaunchedEffect(activeMonth) {
+        vm.getTransactionsForMonth(activeMonth)
+    }
+
+    LaunchedEffect(showNewTransactionRow) {
+        if (showNewTransactionRow) {
+            listState.animateScrollToItem(0)
         }
+    }
 
-        LaunchedEffect(showNewTransactionRow) {
-            if (showNewTransactionRow) {
-                listState.animateScrollToItem(0)
+    val launcher = rememberFilePickerLauncher(
+        mode = PickerMode.Single,
+        type = PickerType.File(extensions = listOf("csv", "xlsx"))
+    ) { file ->
+        platformFile = file
+        if (file != null)
+            showImportDialog = true
+    }
+
+    if (showImportDialog) {
+        ImportDialog(
+            onDismiss = { showImportDialog = false },
+            onConfirmed = { options ->
+                vm.importFile(platformFile?.file?.inputStream(), options)
             }
-        }
+        )
+    }
 
-        val launcher = rememberFilePickerLauncher(
-            mode = PickerMode.Single,
-            type = PickerType.File(extensions = listOf("csv", "xlsx"))
-        ) { file ->
-            platformFile = file
-            if (file != null)
-                showImportDialog = true
-        }
+    if (showAlertDialog)
+        AlertDialog(
+            title = stringResource(Res.string.delete_transaction),
+            text = stringResource(Res.string.delete_transaction_confirmation),
+            onDismiss = { showAlertDialog = false },
+            onConfirmed = {
+                vm.deleteSelectedTransactions()
+                showAlertDialog = false
+            }
+        )
 
-        if (showImportDialog) {
-            ImportDialog(
-                onDismiss = { showImportDialog = false },
-                onConfirmed = { options ->
-                    vm.importFile(platformFile?.file?.inputStream(), options)
-                }
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp).fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            TextButton(onClick = {
+                launcher.launch()
+            }) {
+                Icon(Icons.Filled.ImportExport, null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(stringResource(Res.string.import))
+            }
+            TextButton(onClick = {
+                showNewTransactionRow = true
+            }) {
+                Icon(Icons.Filled.AddCircle, null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(stringResource(Res.string.add_transaction))
+            }
+            TextButton(onClick = {
+                showAlertDialog = true
+            }, enabled = uiState.transactions.any { it.isSelected }) {
+                Icon(Icons.Filled.Delete, null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(stringResource(Res.string.delete_transaction))
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            OutlinedTextField(
+                value = uiState.searchText,
+                shape = MaterialTheme.shapes.large,
+                onValueChange = { vm.updateSearchText(it) },
+                textStyle = MaterialTheme.typography.bodyMedium,
+                maxLines = 1,
+                leadingIcon = { Icon(Icons.Filled.Search, null) },
+                trailingIcon = {
+                    if (uiState.searchText.isNotEmpty()) {
+                        Icon(Icons.Filled.Clear, null,
+                            modifier = Modifier.clickable { vm.updateSearchText("") }
+                        )
+                    }
+                },
+                placeholder = {
+                    Text(
+                        stringResource(Res.string.search),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
+                colors = TextFieldDefaults.colors().copy(
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                ),
+                modifier = Modifier.width(250.dp).height(50.dp)
             )
         }
-
-        if (showAlertDialog)
-            AlertDialog(
-                title = stringResource(Res.string.delete_transaction),
-                text = stringResource(Res.string.delete_transaction_confirmation),
-                onDismiss = { showAlertDialog = false },
-                onConfirmed = {
-                    vm.deleteSelectedTransactions()
-                    showAlertDialog = false
-                }
-            )
 
         Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                .border(
+                    1.dp,
+                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                    MaterialTheme.shapes.small
+                )
+                .clip(MaterialTheme.shapes.small)
+                .background(MaterialTheme.colorScheme.surface)
         ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp).fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                TextButton(onClick = {
-                    launcher.launch()
-                }) {
-                    Icon(Icons.Filled.ImportExport, null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(stringResource(Res.string.import))
+            TransactionsHeaderRow(
+                allSelectedChecked = uiState.transactions.any { it.isSelected },
+                onAllSelectedChange = { vm.toggleAllTransactionsSelection(it) },
+                sortOption = uiState.sortOption,
+                sortOrder = uiState.sortOrder,
+                onSortOptionChanged = { vm.updateSortOption(it) },
+                onSortOrderChanged = { vm.toggleSortOrder() }
+            )
+            AnimatedVisibility(showNewTransactionRow) {
+                Column {
+                    AddTransactionRow(
+                        groups = uiState.groups,
+                        onCanceled = {
+                            showNewTransactionRow = false
+                        },
+                        onAdded = { transaction ->
+                            vm.addTransaction(transaction)
+                            showNewTransactionRow = false
+                        },
+                    )
+                    HorizontalDivider()
                 }
-                TextButton(onClick = {
-                    showNewTransactionRow = true
-                }) {
-                    Icon(Icons.Filled.AddCircle, null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(stringResource(Res.string.add_transaction))
-                }
-                TextButton(onClick = {
-                    showAlertDialog = true
-                }, enabled = uiState.transactions.any { it.isSelected }) {
-                    Icon(Icons.Filled.Delete, null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(stringResource(Res.string.delete_transaction))
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                OutlinedTextField(
-                    value = uiState.searchText,
-                    shape = MaterialTheme.shapes.large,
-                    onValueChange = { vm.updateSearchText(it) },
-                    textStyle = MaterialTheme.typography.bodyMedium,
-                    maxLines = 1,
-                    leadingIcon = { Icon(Icons.Filled.Search, null) },
-                    trailingIcon = {
-                        if (uiState.searchText.isNotEmpty()) {
-                            Icon(Icons.Filled.Clear, null,
-                                modifier = Modifier.clickable { vm.updateSearchText("") }
-                            )
-                        }
-                    },
-                    placeholder = {
-                        Text(
-                            stringResource(Res.string.search),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    },
-                    colors = TextFieldDefaults.colors().copy(
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                        focusedContainerColor = MaterialTheme.colorScheme.surface,
-                    ),
-                    modifier = Modifier.width(250.dp).height(50.dp)
-                )
             }
-
-            Column(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                    .border(
-                        1.dp,
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-                        MaterialTheme.shapes.small
-                    )
-                    .clip(MaterialTheme.shapes.small)
-                    .background(MaterialTheme.colorScheme.surface)
-            ) {
-                TransactionsHeaderRow(
-                    allSelectedChecked = uiState.transactions.any { it.isSelected },
-                    onAllSelectedChange = { vm.toggleAllTransactionsSelection(it) },
-                    sortOption = uiState.sortOption,
-                    sortOrder = uiState.sortOrder,
-                    onSortOptionChanged = { vm.updateSortOption(it) },
-                    onSortOrderChanged = { vm.toggleSortOrder() }
-                )
-                AnimatedVisibility(showNewTransactionRow) {
-                    Column {
-                        AddTransactionRow(
+            Box {
+                LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
+                    items(uiState.transactions.size) { index ->
+                        val transaction = uiState.transactions[index]
+                        TransactionRow(
+                            transaction = transaction,
                             groups = uiState.groups,
-                            onCanceled = {
-                                showNewTransactionRow = false
+                            onCheckedChange = { id ->
+                                vm.toggleTransactionSelection(id)
                             },
-                            onAdded = { transaction ->
-                                vm.addTransaction(transaction)
-                                showNewTransactionRow = false
+                            onCategoryReset = { transactionId ->
+                                vm.resetCategoryForTransaction(transactionId)
                             },
+                            onCategorySelected = { transactionId, newCategoryId ->
+                                vm.updateCategoryForTransaction(transactionId, newCategoryId)
+                            },
+                            modifier = Modifier.animateItem()
                         )
-                        HorizontalDivider()
-                    }
-                }
-                Box {
-                    LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
-                        items(uiState.transactions.size) { index ->
-                            val transaction = uiState.transactions[index]
-                            TransactionRow(
-                                transaction = transaction,
-                                groups = uiState.groups,
-                                onCheckedChange = { id ->
-                                    vm.toggleTransactionSelection(id)
-                                },
-                                onCategoryReset = { transactionId ->
-                                    vm.resetCategoryForTransaction(transactionId)
-                                },
-                                onCategorySelected = { transactionId, newCategoryId ->
-                                    vm.updateCategoryForTransaction(transactionId, newCategoryId)
-                                },
-                                modifier = Modifier.animateItem()
-                            )
-                            if (index < uiState.transactions.size - 1) {
-                                HorizontalDivider()
-                            }
+                        if (index < uiState.transactions.size - 1) {
+                            HorizontalDivider()
                         }
                     }
-                    VerticalScrollBar(
-                        listState = listState,
-                        modifier = Modifier.align(Alignment.CenterEnd)
-                    )
                 }
+                VerticalScrollBar(
+                    listState = listState,
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                )
             }
         }
     }

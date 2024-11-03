@@ -22,8 +22,6 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.kotlin.csv.jvm)
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.transitions)
 
             implementation(libs.file.kit.core)
             implementation(libs.file.kit.compose)

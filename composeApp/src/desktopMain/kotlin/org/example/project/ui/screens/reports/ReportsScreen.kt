@@ -34,7 +34,6 @@ import budgetmanager.composeapp.generated.resources.Res
 import budgetmanager.composeapp.generated.resources.monthly_expenses
 import budgetmanager.composeapp.generated.resources.total_spending
 import budgetmanager.composeapp.generated.resources.uncategorized
-import cafe.adriel.voyager.core.screen.Screen
 import ir.ehsannarmani.compose_charts.LineChart
 import ir.ehsannarmani.compose_charts.PieChart
 import ir.ehsannarmani.compose_charts.models.GridProperties
@@ -52,31 +51,30 @@ import java.text.NumberFormat
 import java.time.LocalDate
 import java.util.Locale
 
-data class ReportsScreen(val activeMonth: LocalDate) : Screen {
-    @OptIn(KoinExperimentalAPI::class)
-    @Composable
-    override fun Content() {
-        val vm = koinViewModel<ReportsScreenViewModel>()
-        val lineChartState by vm.lineChartState.collectAsStateWithLifecycle()
 
-        val pieChartState by vm.pieChartState.collectAsStateWithLifecycle()
-        val scrollState = rememberScrollState(0)
-        LaunchedEffect(activeMonth) {
-            vm.getDataForMonth(activeMonth)
-        }
-        Row {
-            Column(
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier.verticalScroll(scrollState).weight(1f).padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-            ) {
-                PieChart(pieChartState, modifier = Modifier.wrapContentHeight(Alignment.Top))
-                LineChart(lineChartState, modifier = Modifier.heightIn(min = 200.dp, max = 300.dp))
-            }
-            VerticalScrollBar(scrollState, Modifier.fillMaxHeight())
-        }
+@OptIn(KoinExperimentalAPI::class)
+@Composable
+fun ReportsScreen(activeMonth: LocalDate) {
+    val vm = koinViewModel<ReportsScreenViewModel>()
+    val lineChartState by vm.lineChartState.collectAsStateWithLifecycle()
 
+    val pieChartState by vm.pieChartState.collectAsStateWithLifecycle()
+    val scrollState = rememberScrollState(0)
+    LaunchedEffect(activeMonth) {
+        vm.getDataForMonth(activeMonth)
     }
+    Row {
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier.verticalScroll(scrollState).weight(1f).padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            PieChart(pieChartState, modifier = Modifier.wrapContentHeight(Alignment.Top))
+            LineChart(lineChartState, modifier = Modifier.heightIn(min = 200.dp, max = 300.dp))
+        }
+        VerticalScrollBar(scrollState, Modifier.fillMaxHeight())
+    }
+
 }
 
 @Composable
