@@ -25,6 +25,7 @@ fun InputDialog(
     label: String,
     numbersOnly: Boolean = false,
     onConfirmed: (String) -> Unit,
+    placeholder: @Composable () -> Unit = {},
     onDismiss: () -> Unit,
 ) {
     var text by remember { mutableStateOf(initialText) }
@@ -47,6 +48,7 @@ fun InputDialog(
             value = text,
             onValueChange = { text = it },
             shape = MaterialTheme.shapes.medium,
+            placeholder = placeholder,
             label = { Text(label) },
             maxLines = 1,
             isError = isError,

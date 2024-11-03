@@ -1,16 +1,14 @@
 package org.example.project.ui.components.chips
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import budgetmanager.composeapp.generated.resources.Res
 import budgetmanager.composeapp.generated.resources.undefined
 import org.example.project.domain.models.category.CategoryData
@@ -39,22 +36,23 @@ fun CategoryInputChip(
             onDismissRequest = { dropdownMenuExpanded = false }
         ) {
             categoriesForGroup.forEach { category ->
-                TextButton(
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            category.name,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    },
+                    trailingIcon = {
+                        if (selectedCategory == category)
+                            Icon(Icons.Filled.Check, null)
+                    },
                     onClick = {
                         onCategorySelected(category)
                         dropdownMenuExpanded = false
                     }
-                ) {
-                    Text(
-                        category.name,
-                        style = MaterialTheme.typography.labelMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Spacer(modifier = androidx.compose.ui.Modifier.weight(1f).widthIn(10.dp))
-                    if (selectedCategory == category)
-                        Icon(Icons.Filled.Check, null)
-                }
+                )
             }
         }
     }

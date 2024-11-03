@@ -121,7 +121,7 @@ class CategoriesScreenViewModel(
     fun setIconForGroup(groupId: String, iconId: String) {
         viewModelScope.launch {
             categoryRepository.updateGroupIcon(groupId = groupId, iconId = iconId)
-            _iconsState.update { it.copy(searchText = "") }
+            updateSearchText("")
         }
     }
 

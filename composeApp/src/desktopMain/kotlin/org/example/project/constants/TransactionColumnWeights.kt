@@ -7,5 +7,5 @@ enum class TransactionColumn(val weight: Float) {
     DESCRIPTION(3f),
     GROUP(1.5f),
     CATEGORY(1f),
-    AMOUNT(1f),
+    AMOUNT(1.2f),
 }

@@ -36,7 +36,7 @@ fun VerticalScrollBar(
         mutableStateOf(p)
     }
     Box(
-        modifier = modifier.fillMaxHeight().background(color = MaterialTheme.colors.surface)
+        modifier = modifier.fillMaxHeight().background(color = Color.Transparent)
             .width(8.dp)
             .onGloballyPositioned {
                 scrollBarHeight = it.size.height
@@ -80,7 +80,7 @@ fun VerticalScrollBar(
     Box(
         modifier = modifier
             .fillMaxHeight()
-            .background(color = MaterialTheme.colors.surface)
+            .background(color = Color.Transparent)
             .width(8.dp)
             .onGloballyPositioned {
                 scrollBarHeight = it.size.height

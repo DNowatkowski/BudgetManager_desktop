@@ -16,7 +16,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +42,6 @@ fun TransactionsHeaderRow(
     onSortOrderChanged: () -> Unit
 ) {
     Column {
-        HorizontalDivider()
         Row(
             modifier = Modifier.fillMaxWidth().height(40.dp)
                 .background(MaterialTheme.colorScheme.surfaceContainer),
@@ -60,7 +58,6 @@ fun TransactionsHeaderRow(
                     onCheckedChange = { onAllSelectedChange(it) },
                 )
             }
-            VerticalDivider()
             TableCell(
                 weight = TransactionColumn.DATE.weight
             ) {
@@ -83,19 +80,16 @@ fun TransactionsHeaderRow(
                         .alpha(if (sortOption == BudgetScreenViewModel.TransactionSortOption.DATE) 1f else 0.5f)
                 )
             }
-            VerticalDivider()
             TableCell(
                 weight = TransactionColumn.PAYEE.weight
             ) {
                 TableHeaderText(stringResource(Res.string.payee))
             }
-            VerticalDivider()
             TableCell(
                 weight = TransactionColumn.DESCRIPTION.weight
             ) {
                 TableHeaderText(stringResource(Res.string.description))
             }
-            VerticalDivider()
             TableCell(
                 weight = TransactionColumn.GROUP.weight
             ) {
@@ -103,13 +97,11 @@ fun TransactionsHeaderRow(
                     stringResource(Res.string.group),
                 )
             }
-            VerticalDivider()
             TableCell(
                 weight = TransactionColumn.CATEGORY.weight
             ) {
-                TableHeaderText(stringResource(Res.string.category).uppercase())
+                TableHeaderText(stringResource(Res.string.category))
             }
-            VerticalDivider()
             TableCell(
                 weight = TransactionColumn.AMOUNT.weight,
                 modifier = Modifier.padding(end = 8.dp)
