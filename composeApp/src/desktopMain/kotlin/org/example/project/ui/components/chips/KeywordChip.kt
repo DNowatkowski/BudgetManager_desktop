@@ -3,8 +3,8 @@ package org.example.project.ui.components.chips
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -50,20 +50,19 @@ fun KeywordChip(
             expanded = expanded,
             onDismissRequest = { expanded = false },
         ) {
-            DropdownMenuItem(onClick = { onRemoveKeyword(keyword) }) {
-                Icon(Icons.Filled.Delete, null)
-                Spacer(Modifier.width(8.dp))
-                Text(stringResource(Res.string.remove))
-            }
+
             DropdownMenuItem(
+                text = { Text(stringResource(Res.string.remove)) },
+                leadingIcon = { Icon(Icons.Filled.Delete, null) },
+                onClick = { onRemoveKeyword(keyword) })
+
+            DropdownMenuItem(
+                text = { Text(stringResource(Res.string.edit)) },
+                leadingIcon = { Icon(Icons.Filled.Edit, null) },
                 onClick = {
                     expanded = false
                     showDialog = true
-                }) {
-                Icon(Icons.Filled.Edit, null)
-                Spacer(Modifier.width(8.dp))
-                Text(stringResource(Res.string.edit))
-            }
+                })
         }
         InputChip(
             selected = false,

@@ -2,7 +2,9 @@ package org.example.project.ui.screens.budget
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,11 +21,13 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ImportExport
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import budgetmanager.composeapp.generated.resources.Res
@@ -161,61 +166,75 @@ data class BudgetScreen(
                             style = MaterialTheme.typography.bodyMedium
                         )
                     },
+                    colors = TextFieldDefaults.colors().copy(
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    ),
                     modifier = Modifier.width(250.dp).height(50.dp)
                 )
             }
-            TransactionsHeaderRow(
-                allSelectedChecked = uiState.transactions.any { it.isSelected },
-                onAllSelectedChange = { vm.toggleAllTransactionsSelection(it) },
-                sortOption = uiState.sortOption,
-                sortOrder = uiState.sortOrder,
-                onSortOptionChanged = { vm.updateSortOption(it) },
-                onSortOrderChanged = { vm.toggleSortOrder() }
-            )
-            Row {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    item {
-                        AnimatedVisibility(showNewTransactionRow) {
-                            AddTransactionRow(
+
+            Column(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .border(
+                        1.dp,
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                        MaterialTheme.shapes.small
+                    )
+                    .clip(MaterialTheme.shapes.small)
+                    .background(MaterialTheme.colorScheme.surface)
+            ) {
+                TransactionsHeaderRow(
+                    allSelectedChecked = uiState.transactions.any { it.isSelected },
+                    onAllSelectedChange = { vm.toggleAllTransactionsSelection(it) },
+                    sortOption = uiState.sortOption,
+                    sortOrder = uiState.sortOrder,
+                    onSortOptionChanged = { vm.updateSortOption(it) },
+                    onSortOrderChanged = { vm.toggleSortOrder() }
+                )
+                AnimatedVisibility(showNewTransactionRow) {
+                    Column {
+                        AddTransactionRow(
+                            groups = uiState.groups,
+                            onCanceled = {
+                                showNewTransactionRow = false
+                            },
+                            onAdded = { transaction ->
+                                vm.addTransaction(transaction)
+                                showNewTransactionRow = false
+                            },
+                        )
+                        HorizontalDivider()
+                    }
+                }
+                Box {
+                    LazyColumn(state = listState, modifier = Modifier.fillMaxSize()) {
+                        items(uiState.transactions.size) { index ->
+                            val transaction = uiState.transactions[index]
+                            TransactionRow(
+                                transaction = transaction,
                                 groups = uiState.groups,
-                                onCanceled = {
-                                    showNewTransactionRow = false
+                                onCheckedChange = { id ->
+                                    vm.toggleTransactionSelection(id)
                                 },
-                                onAdded = { transaction ->
-                                    vm.addTransaction(transaction)
-                                    showNewTransactionRow = false
+                                onCategoryReset = { transactionId ->
+                                    vm.resetCategoryForTransaction(transactionId)
+                                },
+                                onCategorySelected = { transactionId, newCategoryId ->
+                                    vm.updateCategoryForTransaction(transactionId, newCategoryId)
                                 },
                                 modifier = Modifier.animateItem()
                             )
+                            if (index < uiState.transactions.size - 1) {
+                                HorizontalDivider()
+                            }
                         }
                     }
-                    items(uiState.transactions.size) { index ->
-                        val transaction = uiState.transactions[index]
-                        TransactionRow(
-                            transaction = transaction,
-                            groups = uiState.groups,
-                            onCheckedChange = { id ->
-                                vm.toggleTransactionSelection(id)
-                            },
-                            onCategoryReset = { transactionId ->
-                                vm.resetCategoryForTransaction(transactionId)
-                            },
-                            onCategorySelected = { transactionId, newCategoryId ->
-                                vm.updateCategoryForTransaction(transactionId, newCategoryId)
-                            },
-                            modifier = Modifier.animateItem().background(
-                                if (index % 2 == 0) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.surfaceContainer
-                            )
-                        )
-                    }
+                    VerticalScrollBar(
+                        listState = listState,
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                    )
                 }
-                VerticalScrollBar(
-                    listState = listState,
-                    modifier = Modifier
-                )
             }
         }
     }

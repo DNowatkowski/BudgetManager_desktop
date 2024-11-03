@@ -3,6 +3,7 @@ package org.example.project.ui.components.table
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
@@ -55,9 +56,8 @@ fun TransactionRow(
     }
 
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().height(50.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         TableCell(
             weight = TransactionColumn.CHECKBOX.weight,
@@ -74,8 +74,8 @@ fun TransactionRow(
         ) {
             Text(
                 transaction.date.toString(),
-                style = MaterialTheme.typography.bodySmall,
-                maxLines = 3,
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
         }
@@ -123,7 +123,8 @@ fun TransactionRow(
             )
         }
         TableCell(
-            weight = TransactionColumn.AMOUNT.weight
+            weight = TransactionColumn.AMOUNT.weight,
+            horizontalArrangement = Arrangement.End
         ) {
             val formattedAmount = String.format("%.2f zł", transaction.amount)
             Text(

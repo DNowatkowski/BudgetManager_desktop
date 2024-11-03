@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -33,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import budgetmanager.composeapp.generated.resources.Res
 import budgetmanager.composeapp.generated.resources.category_name
@@ -119,7 +122,7 @@ fun CategoryRow(
         Row(verticalAlignment = Alignment.CenterVertically) {
             TableCell(
                 weight = CategoryColumn.EXPAND_ALL.weight,
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.End,
             ) {
                 Icon(
                     imageVector = if (expanded)
@@ -127,26 +130,49 @@ fun CategoryRow(
                     else
                         Icons.Filled.KeyboardArrowDown,
                     null,
-                    tint = MaterialTheme.colorScheme.secondary
+                    tint = MaterialTheme.colorScheme.secondary,
+                    modifier = Modifier.size(20.dp)
                 )
             }
             TableCell(weight = CategoryColumn.CATEGORY.weight) {
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            category.category.name,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    },
-                    supportingContent = {
-                        CustomLinearProgressIndicator(
-                            progress = progress ?: 0.0f,
-                            barColor = groupColor,
-                            modifier = Modifier.padding(end = 20.dp)
-                        )
-                    },
-                    modifier = Modifier.height(50.dp)
-                )
+                Column(
+                    modifier = Modifier.padding(vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        category.category.name,
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Light)
+                    )
+                    CustomLinearProgressIndicator(
+                        progress = progress ?: 0.0f,
+                        barColor = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(end = 20.dp)
+                    )
+
+                    AnimatedVisibility(expanded) {
+                        Column(modifier = Modifier.padding(top = 8.dp)) {
+                            Text(
+                                stringResource(Res.string.keywords) + ":",
+                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Light),
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                            )
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                category.keywords.forEach { keyword ->
+                                    KeywordChip(
+                                        keyword = keyword,
+                                        onRemoveKeyword = { onKeywordRemoved(keyword) },
+                                        onKeywordUpdated = { onKeywordUpdated(it) },
+                                    )
+                                }
+                                AddKeywordChip(
+                                    onAddKeyword = { onKeywordAdded(category.category.id, it) },
+                                )
+                            }
+                        }
+                    }
+                }
             }
             TableCell(
                 weight = CategoryColumn.ACTUAL_SPENDING.weight,
@@ -154,7 +180,7 @@ fun CategoryRow(
             ) {
                 Text(
                     text = spending?.toReadableString(true).toString(),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Light),
                 )
             }
             TableCell(
@@ -163,7 +189,7 @@ fun CategoryRow(
             ) {
                 Text(
                     text = category.category.monthlyTarget.toReadableString(true),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Light),
                 )
 
             }
@@ -215,35 +241,10 @@ fun CategoryRow(
                         Icon(
                             Icons.Filled.MoreVert,
                             null,
-                            modifier = Modifier.size(20.dp),
+                            modifier = Modifier.size(18.dp),
                             tint = MaterialTheme.colorScheme.secondary
                         )
                     }
-                }
-            }
-        }
-        AnimatedVisibility(expanded) {
-            Column(
-                modifier = Modifier.padding(start = 55.dp),
-            ) {
-                Text(
-                    stringResource(Res.string.keywords) + ":",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                )
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    category.keywords.forEach { keyword ->
-                        KeywordChip(
-                            keyword = keyword,
-                            onRemoveKeyword = { onKeywordRemoved(keyword) },
-                            onKeywordUpdated = { onKeywordUpdated(it) },
-                        )
-                    }
-                    AddKeywordChip(
-                        onAddKeyword = { onKeywordAdded(category.category.id, it) },
-                    )
                 }
             }
         }

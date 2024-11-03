@@ -175,29 +175,29 @@ data class CategoriesScreen(
                                 categorySpending = uiState.categorySpending,
                                 onKeywordRemoved = { vm.removeKeyword(it) },
                                 onCategoryRemoved = { vm.removeCategory(it) },
-                                onKeywordAdded = { keyword, categoryId ->
+                                onKeywordAdded = { categoryId, keyword ->
                                     vm.addKeyword(
-                                        keyword,
-                                        categoryId
+                                        text = keyword,
+                                        categoryId = categoryId
                                     )
                                 },
                                 onKeywordUpdated = { vm.updateKeyword(it) },
                                 onCategoryUpdated = { categoryId, name ->
                                     vm.updateCategory(
-                                        categoryId,
-                                        name
+                                        categoryId = categoryId,
+                                        name = name
                                     )
                                 },
                                 onMonthlyTargetSet = { categoryId, target ->
                                     vm.setMonthlyTarget(
-                                        categoryId,
-                                        target
+                                        categoryId = categoryId,
+                                        target = target
                                     )
                                 }
                             )
                         }
                     }
-                    TODO("Add vertical scrollbar")
+                  //  TODO("Add vertical scrollbar")
                 }
             }
         }

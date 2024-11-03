@@ -7,15 +7,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,7 +29,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import budgetmanager.composeapp.generated.resources.Res
 import budgetmanager.composeapp.generated.resources.add
 import budgetmanager.composeapp.generated.resources.cancel
@@ -74,178 +82,178 @@ fun AddTransactionRow(
     var amount: String by remember {
         mutableStateOf("")
     }
-
-
-    Column(
-        modifier = Modifier.background(MaterialTheme.colorScheme.secondaryContainer)
-            .padding(vertical = 8.dp)
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceContainer,
     ) {
-        Row(
-            modifier = modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        Column(
+            modifier = modifier.padding(vertical = 8.dp)
         ) {
-            TableCell(
-                weight = TransactionColumn.CHECKBOX.weight,
-                horizontalArrangement = Arrangement.Center
+            Row(
+                modifier = modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Checkbox(
-                    checked = true,
-                    onCheckedChange = null,
-                )
-            }
-
-            TableCell(
-                weight = TransactionColumn.DATE.weight
-            ) {
-                if (showDatePicker)
-                    DatePickerPopup(
-                        onDismissRequest = { showDatePicker = false },
-                        onDateSelected = {
-                            if (it != null) {
-                                date = it
-                            }
-                            showDatePicker = false
-                        },
-                        initialDate = date,
-                        selectableDates = CustomSelectableDates()
-                    )
-                InputChip(
-                    selected = showDatePicker,
-                    label = {
-                        Text(
-                            date.toReadableString(),
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                    },
-                    onClick = { showDatePicker = true },
-                )
-            }
-            TableCell(
-                weight = TransactionColumn.PAYEE.weight
-            ) {
-                TransactionTextField(
-                    value = payee,
-                    onValueChange = { payee = it },
-                    placeholder = null,
-                    suffix = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-            }
-
-            TableCell(
-                weight = TransactionColumn.DESCRIPTION.weight
-            ) {
-                TransactionTextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    placeholder = null,
-                    suffix = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-            }
-
-            TableCell(
-                weight = TransactionColumn.GROUP.weight
-            ) {
-                GroupInputChip(
-                    groups = groups,
-                    selectedGroup = selectedGroup,
-                    onGroupSelected = { group ->
-                        selectedCategory = null
-                        selectedGroup = group
-                    }
-                )
-            }
-
-            TableCell(
-                weight = TransactionColumn.CATEGORY.weight
-            ) {
-                CategoryInputChip(
-                    enabled = selectedGroup != null,
-                    categoriesForGroup = selectedGroup?.categories.orEmpty(),
-                    selectedCategory = selectedCategory,
-                    onCategorySelected = { category -> selectedCategory = category }
-                )
-            }
-            TableCell(
-                weight = TransactionColumn.AMOUNT.weight,
-                modifier = Modifier.padding(end = 8.dp)
-            ) {
-                TransactionTextField(
-                    value = amount,
-                    onValueChange = { amount = it },
-                    isError = amount.toDoubleOrNull() == null,
-                )
-            }
-        }
-
-        Row(
-            modifier = Modifier.fillMaxSize().padding(top = 8.dp),
-            horizontalArrangement = Arrangement.End,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            var transactionType by remember {
-                mutableStateOf(TransactionType.EXPENSE)
-            }
-            SingleChoiceSegmentedButtonRow(
-                modifier = Modifier.padding(horizontal = 8.dp)
-            ) {
-                SegmentedButton(
-                    selected = transactionType == TransactionType.EXPENSE,
-                    onClick = {
-                        transactionType = TransactionType.EXPENSE
-                    },
-                    shape = SegmentedButtonDefaults.itemShape(
-                        TransactionType.EXPENSE.ordinal,
-                        TransactionType.entries.size
-                    )
+                TableCell(
+                    weight = TransactionColumn.CHECKBOX.weight,
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(stringResource(Res.string.expense))
-                }
-                SegmentedButton(
-                    selected = transactionType == TransactionType.INCOME,
-                    onClick = {
-                        transactionType = TransactionType.INCOME
-                    },
-                    shape = SegmentedButtonDefaults.itemShape(
-                        TransactionType.INCOME.ordinal,
-                        TransactionType.entries.size
-                    )
-                ) {
-                    Text(stringResource(Res.string.income))
-                }
-            }
 
-            OutlinedButton(
-                onClick = {
-                    onCanceled()
                 }
-            ) {
-                Text(stringResource(Res.string.cancel))
-            }
-            Button(
-                enabled = amount.toDoubleOrNull() != null,
-                onClick = {
-                    onAdded(
-                        TransactionData(
-                            id = UUID.randomUUID().toString(),
-                            date = date,
-                            payee = payee,
-                            description = description,
-                            amount = when (transactionType) {
-                                TransactionType.EXPENSE -> -amount.stringToDouble()
-                                TransactionType.INCOME -> amount.stringToDouble()
+
+                TableCell(
+                    weight = TransactionColumn.DATE.weight
+                ) {
+                    if (showDatePicker)
+                        DatePickerPopup(
+                            onDismissRequest = { showDatePicker = false },
+                            onDateSelected = {
+                                if (it != null) {
+                                    date = it
+                                }
+                                showDatePicker = false
                             },
-                            categoryId = selectedCategory?.id,
+                            initialDate = date,
+                            selectableDates = CustomSelectableDates()
                         )
+                    InputChip(
+                        selected = showDatePicker,
+                        label = {
+                            Text(
+                                date.toReadableString(),
+                                style = MaterialTheme.typography.labelMedium,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        },
+                        onClick = { showDatePicker = true },
                     )
-                },
-                modifier = Modifier.padding(horizontal = 8.dp)
+                }
+                TableCell(
+                    weight = TransactionColumn.PAYEE.weight
+                ) {
+                    TransactionTextField(
+                        value = payee,
+                        onValueChange = { payee = it },
+                        placeholder = null,
+                        suffix = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
+                }
+
+                TableCell(
+                    weight = TransactionColumn.DESCRIPTION.weight
+                ) {
+                    TransactionTextField(
+                        value = description,
+                        onValueChange = { description = it },
+                        placeholder = null,
+                        suffix = null,
+                        maxLines = 3,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    )
+                }
+
+                TableCell(
+                    weight = TransactionColumn.GROUP.weight
+                ) {
+                    GroupInputChip(
+                        groups = groups,
+                        selectedGroup = selectedGroup,
+                        onGroupSelected = { group ->
+                            selectedCategory = null
+                            selectedGroup = group
+                        }
+                    )
+                }
+
+                TableCell(
+                    weight = TransactionColumn.CATEGORY.weight
+                ) {
+                    CategoryInputChip(
+                        enabled = selectedGroup != null,
+                        categoriesForGroup = selectedGroup?.categories.orEmpty(),
+                        selectedCategory = selectedCategory,
+                        onCategorySelected = { category -> selectedCategory = category }
+                    )
+                }
+                TableCell(
+                    weight = TransactionColumn.AMOUNT.weight,
+                ) {
+                    TransactionTextField(
+                        value = amount,
+                        onValueChange = { amount = it },
+                        maxLines = 3,
+                        isError = amount.toDoubleOrNull() == null,
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(stringResource(Res.string.add))
+                var transactionType by remember {
+                    mutableStateOf(TransactionType.EXPENSE)
+                }
+                SingleChoiceSegmentedButtonRow(
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                ) {
+                    SegmentedButton(
+                        selected = transactionType == TransactionType.EXPENSE,
+                        onClick = {
+                            transactionType = TransactionType.EXPENSE
+                        },
+                        shape = SegmentedButtonDefaults.itemShape(
+                            TransactionType.EXPENSE.ordinal,
+                            TransactionType.entries.size
+                        )
+                    ) {
+                        Text(stringResource(Res.string.expense))
+                    }
+                    SegmentedButton(
+                        selected = transactionType == TransactionType.INCOME,
+                        onClick = {
+                            transactionType = TransactionType.INCOME
+                        },
+                        shape = SegmentedButtonDefaults.itemShape(
+                            TransactionType.INCOME.ordinal,
+                            TransactionType.entries.size
+                        )
+                    ) {
+                        Text(stringResource(Res.string.income))
+                    }
+                }
+
+                OutlinedButton(
+                    onClick = {
+                        onCanceled()
+                    }
+                ) {
+                    Text(stringResource(Res.string.cancel))
+                }
+                Button(
+                    enabled = amount.toDoubleOrNull() != null,
+                    onClick = {
+                        onAdded(
+                            TransactionData(
+                                id = UUID.randomUUID().toString(),
+                                date = date,
+                                payee = payee,
+                                description = description,
+                                amount = when (transactionType) {
+                                    TransactionType.EXPENSE -> -amount.stringToDouble()
+                                    TransactionType.INCOME -> amount.stringToDouble()
+                                },
+                                categoryId = selectedCategory?.id,
+                            )
+                        )
+                    },
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                ) {
+                    Text(stringResource(Res.string.add))
+                }
             }
         }
     }
