@@ -197,7 +197,7 @@ data class CategoriesScreen(
                             )
                         }
                     }
-                  //  TODO("Add vertical scrollbar")
+                    //  TODO("Add vertical scrollbar")
                 }
             }
         }
