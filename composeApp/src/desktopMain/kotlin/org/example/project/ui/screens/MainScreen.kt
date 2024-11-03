@@ -3,7 +3,9 @@ package org.example.project.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -52,8 +54,9 @@ fun MainScreen() {
         Row(modifier = Modifier.fillMaxSize()) {
             ModalDrawerSheet(
                 modifier = Modifier.width(250.dp),
-                drawerContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                drawerContainerColor = MaterialTheme.colorScheme.surfaceTint.copy(alpha = 0.9f),
             ) {
+                Spacer(Modifier.height(4.dp))
                 NavigationItem(
                     text = stringResource(Res.string.categories),
                     selected = navigator.lastItem is CategoriesScreen,
@@ -146,9 +149,11 @@ private fun NavigationItem(
         shape = MaterialTheme.shapes.medium,
         icon = icon,
         colors = NavigationDrawerItemDefaults.colors(
-            selectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
-            selectedTextColor = MaterialTheme.colorScheme.primary,
-            selectedIconColor = MaterialTheme.colorScheme.primary
+            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.25f),
+            selectedTextColor = MaterialTheme.colorScheme.onPrimary,
+            selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+            unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
+            unselectedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f),
         ),
         onClick = onClick,
         modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
