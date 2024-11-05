@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.example.project.constants.ImportOptions
+import org.example.project.data.dto.MillenniumTransactionDto
+import org.example.project.data.dto.SantanderTransactionDto
 import org.example.project.data.dto.TransactionDto
 import org.example.project.domain.models.group.GroupWithCategoryData
 import org.example.project.domain.models.stringToDouble
@@ -23,12 +25,15 @@ import org.example.project.domain.models.toLocalDate
 import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.domain.repositories.CategoryRepository
 import org.example.project.domain.repositories.TransactionRepository
+import org.example.project.utils.BankTransactionParserFactory
+import org.example.project.utils.BankType
 import java.io.InputStream
 import java.time.LocalDate
 
 class BudgetScreenViewModel(
     private val transactionRepository: TransactionRepository,
     private val categoryRepository: CategoryRepository,
+    private val parserFactory: BankTransactionParserFactory,
     private val csvMapper: CsvMapper,
     private val schema: CsvSchema,
 ) : ViewModel() {
@@ -110,16 +115,16 @@ class BudgetScreenViewModel(
     }
 
     fun importFile(stream: InputStream?, importOptions: ImportOptions) {
-        viewModelScope.launch {
-            val list = csvMapper.readerFor(TransactionDto::class.java)
-                .with(schema.withSkipFirstDataRow(true))
-                .readValues<TransactionDto>(stream)
-                .readAll()
-                .applyFilters(importOptions)
-                .removeDuplicates(importOptions)
-                .applyValueDivision(importOptions)
+        val parser = parserFactory.getParser(importOptions.bankType) ?: return
 
-            transactionRepository.insertTransactions(list.map { it.toDomainModel() })
+        viewModelScope.launch {
+            val list = parser.parseTransactions(stream)
+                .applyFilters(importOptions)
+                .applyValueDivision(importOptions)
+                .removeDuplicates(importOptions)
+                .map { it.toDomainModel() }
+
+            transactionRepository.insertTransactions(list)
         }
     }
 
@@ -138,8 +143,28 @@ class BudgetScreenViewModel(
     private fun List<TransactionDto>.applyValueDivision(importOptions: ImportOptions): List<TransactionDto> {
         return if (importOptions.valuesDividedBy != 1) {
             this.map {
-                val dividedAmount = it.amount.stringToDouble() / importOptions.valuesDividedBy
-                it.copy(amount = String.format("%.2f", dividedAmount))
+                when (it) {
+                    is MillenniumTransactionDto -> {
+                        val dividedExpense =
+                            it.expense.stringToDouble() / importOptions.valuesDividedBy
+                        val dividedIncome =
+                            it.income.stringToDouble() / importOptions.valuesDividedBy
+                        it.copy(
+                            expense = String.format("%.2f", dividedExpense),
+                            income = String.format("%.2f", dividedIncome)
+                        )
+                    }
+
+                    is SantanderTransactionDto -> {
+                        val dividedAmount =
+                            it.amount.stringToDouble() / importOptions.valuesDividedBy
+                        it.copy(amount = String.format("%.2f", dividedAmount))
+                    }
+
+                    else -> {
+                        it
+                    }
+                }
             }
         } else {
             this
@@ -157,7 +182,22 @@ class BudgetScreenViewModel(
                         val duplicate =
                             transactionRepository.getTransactionsForDay(transaction.date.toLocalDate())
                                 .firstOrNull()?.find {
-                                    transaction.description == it.description && transaction.amount.stringToDouble() == it.amount
+
+                                    when (transaction) {
+                                        is MillenniumTransactionDto -> {
+                                            transaction.description == it.description &&
+                                                    (transaction.income.stringToDouble() == it.amount || transaction.expense.stringToDouble() == it.amount)
+                                        }
+
+                                        is SantanderTransactionDto -> {
+                                            transaction.description == it.description && transaction.amount.stringToDouble() == it.amount
+                                        }
+
+                                        else -> {
+                                            false
+                                        }
+                                    }
+
                                 }
                         if (duplicate != null) {
                             list.remove(transaction)

@@ -1,12 +1,13 @@
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import database.Database
+import java.io.File
 import java.util.Properties
 
 
 //actual class DriverFactory {
 //    actual fun createDriver(): SqlDriver {
-//        val dbFile = File("/Users/dominiknowatkowski/Documents/BudgetManager.db")
+//        val dbFile = File("/Users/dominiknowatkowski/Documents/BudgetManager/BudgetManager.db")
 //        val driver: SqlDriver = JdbcSqliteDriver(
 //            url = "jdbc:sqlite:${dbFile.absolutePath}",
 //            properties = Properties().apply { put("foreign_keys", "true") }

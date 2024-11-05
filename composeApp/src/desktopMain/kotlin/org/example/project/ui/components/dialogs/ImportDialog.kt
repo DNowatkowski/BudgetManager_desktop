@@ -1,7 +1,9 @@
 package org.example.project.ui.components.dialogs
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,14 +11,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -31,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import budgetmanager.composeapp.generated.resources.Res
 import budgetmanager.composeapp.generated.resources.all_transactions
 import budgetmanager.composeapp.generated.resources.all_transactions_desc
+import budgetmanager.composeapp.generated.resources.bank_type
 import budgetmanager.composeapp.generated.resources.cancel
 import budgetmanager.composeapp.generated.resources.import
 import budgetmanager.composeapp.generated.resources.import_settings
@@ -45,6 +55,7 @@ import org.example.project.constants.ValueOptions
 import org.example.project.domain.models.toReadableString
 import org.example.project.ui.components.CustomSelectableDates
 import org.example.project.ui.components.DatePickerPopup
+import org.example.project.utils.BankType
 import org.jetbrains.compose.resources.stringResource
 import java.time.LocalDate
 
@@ -59,6 +70,7 @@ fun ImportDialog(
     var selectedDateOption: DateOptions by remember { mutableStateOf(DateOptions.ALL_TRANSACTIONS) }
     var selectedValueOption: ValueOptions by remember { mutableStateOf(ValueOptions.TOTAL_VALUES) }
     var skipDuplicates by remember { mutableStateOf(true) }
+    var selectedBank by remember { mutableStateOf(BankType.entries.first()) }
 
     BudgetManagerDialog(
         title = stringResource(Res.string.import_settings),
@@ -70,12 +82,53 @@ fun ImportDialog(
                     dateFrom = if (selectedDateOption == DateOptions.DATE_RANGE) fromDate else null,
                     dateTo = if (selectedDateOption == DateOptions.DATE_RANGE) toDate else null,
                     valuesDividedBy = if (selectedValueOption == ValueOptions.VALUES_DIVIDED_BY) dividedBy.toInt() else 1,
-                    skipDuplicates = skipDuplicates
+                    skipDuplicates = skipDuplicates,
+                    bankType = selectedBank
                 )
             )
         },
         onDismiss = onDismiss,
     ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.padding(16.dp).fillMaxWidth()
+        ) {
+            Text(
+                text = stringResource(Res.string.bank_type) + ":",
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Box {
+                var expanded by remember { mutableStateOf(true) }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                ) {
+                    BankType.entries.forEach {
+                        DropdownMenuItem(
+                            text = { Text(it.bankName) },
+                            onClick = {
+                                expanded = false
+                                selectedBank = it
+                            })
+                    }
+                }
+                TextField(
+                    value = selectedBank.bankName,
+                    onValueChange = {},
+                    readOnly = true,
+                    maxLines = 1,
+                    trailingIcon = {
+                        if (expanded)
+                            Icon(Icons.Filled.ArrowDropUp, contentDescription = "Close")
+                        else
+                            Icon(Icons.Filled.ArrowDropDown, contentDescription = "Open")
+                    },
+                    modifier = Modifier.clickable { expanded = !expanded }
+                )
+            }
+        }
         Card(
             modifier = Modifier.widthIn(min = 400.dp),
             elevation = CardDefaults.cardElevation(8.dp)
@@ -108,7 +161,9 @@ fun ImportDialog(
                     )
                 }
                 AnimatedVisibility(selectedDateOption == DateOptions.DATE_RANGE) {
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp).fillMaxWidth())
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 4.dp).fillMaxWidth()
+                    )
                     Row(
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically,
@@ -192,7 +247,9 @@ fun ImportDialog(
                     )
                 }
                 AnimatedVisibility(selectedValueOption == ValueOptions.VALUES_DIVIDED_BY) {
-                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp).fillMaxWidth())
+                    HorizontalDivider(
+                        modifier = Modifier.padding(vertical = 4.dp).fillMaxWidth()
+                    )
                     Column(
                         modifier = Modifier.padding(12.dp)
                     ) {
@@ -201,7 +258,8 @@ fun ImportDialog(
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth().padding(start = 4.dp, bottom = 8.dp)
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(start = 4.dp, bottom = 8.dp)
                         ) {
 
                             (1..4).forEach { value ->

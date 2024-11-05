@@ -68,8 +68,7 @@ fun VerticalScrollBar(
         val visibleItems = listState.layoutInfo.visibleItemsInfo.size
         val totalScrollRange = totalItems - visibleItems
         val scrollFraction = if (totalScrollRange > 0) {
-            ((listState.firstVisibleItemIndex + listState.firstVisibleItemScrollOffset / listState.layoutInfo.visibleItemsInfo.firstOrNull()?.size?.toFloat()!!)
-                ?: 1f) / totalScrollRange
+            ((listState.firstVisibleItemIndex + listState.firstVisibleItemScrollOffset / listState.layoutInfo.visibleItemsInfo.firstOrNull()?.size?.toFloat()!!)) / totalScrollRange
         } else {
             0f
         }

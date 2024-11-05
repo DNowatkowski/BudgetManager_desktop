@@ -1,8 +1,10 @@
 package org.example.project.constants
 
+import org.example.project.utils.BankType
 import java.time.LocalDate
 
 data class ImportOptions(
+    val bankType: BankType,
     val dateFrom: LocalDate?,
     val dateTo: LocalDate?,
     val valuesDividedBy: Int = 1,

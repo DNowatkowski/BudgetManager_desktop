@@ -5,6 +5,8 @@ import database.CategoryEntity
 import database.GroupEntity
 import database.KeywordEntity
 import database.TransactionEntity
+import org.example.project.data.dto.MillenniumTransactionDto
+import org.example.project.data.dto.SantanderTransactionDto
 import org.example.project.data.dto.TransactionDto
 import org.example.project.domain.models.category.CategoryData
 import org.example.project.domain.models.group.GroupData
@@ -55,7 +57,6 @@ fun TransactionEntity.toDomainModel(
 }
 
 fun String.toLocalDate(): LocalDate {
-    // Define the date format pattern
     return try {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         LocalDate.parse(this, formatter)
@@ -83,12 +84,29 @@ fun TransactionData.toEntity(categoryId: String?) = TransactionEntity(
     categoryId = categoryId,
 )
 
-fun TransactionDto.toDomainModel() = TransactionData(
+fun TransactionDto.toDomainModel(): TransactionData {
+    return when (this) {
+        is SantanderTransactionDto -> toDomainModel()
+        is MillenniumTransactionDto -> toDomainModel()
+        else -> throw IllegalArgumentException("Unknown transaction type")
+    }
+}
+
+private fun SantanderTransactionDto.toDomainModel() = TransactionData(
     id = UUID.randomUUID().toString(),
     date = date.toLocalDate(),
     description = description,
     payee = payee,
     amount = amount.stringToDouble(),
+    categoryId = null
+)
+
+private fun MillenniumTransactionDto.toDomainModel() = TransactionData(
+    id = UUID.randomUUID().toString(),
+    date = date.toLocalDate(),
+    description = description,
+    payee = payee,
+    amount = if (expense.isNotEmpty()) expense.stringToDouble() else income.stringToDouble(),
     categoryId = null
 )
 
