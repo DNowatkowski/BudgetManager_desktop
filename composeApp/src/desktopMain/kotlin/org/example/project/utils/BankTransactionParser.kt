@@ -1,5 +1,6 @@
 package org.example.project.utils
 
+import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.dataformat.csv.CsvMapper
 import com.fasterxml.jackson.dataformat.csv.CsvSchema
 import org.example.project.data.dto.MillenniumTransactionDto
@@ -10,6 +11,7 @@ import java.io.InputStream
 interface BankTransactionParser<T : TransactionDto> {
     fun getSchema(): CsvSchema
     fun parseTransactions(stream: InputStream?): List<T>
+
 }
 
 class MillenniumBankParser(private val csvMapper: CsvMapper) :
@@ -29,10 +31,20 @@ class MillenniumBankParser(private val csvMapper: CsvMapper) :
             .build()
 
     override fun parseTransactions(stream: InputStream?): List<MillenniumTransactionDto> {
-        return csvMapper.readerFor(MillenniumTransactionDto::class.java)
+        val list = mutableListOf<MillenniumTransactionDto>()
+        csvMapper.readerFor(MillenniumTransactionDto::class.java)
             .with(getSchema().withSkipFirstDataRow(true))
             .readValues<MillenniumTransactionDto>(stream)
-            .readAll()
+            .let {
+                while (it.hasNext()) {
+                    try {
+                        list.add(it.nextValue())
+                    } catch (e: JsonParseException) {
+                        continue
+                    }
+                }
+            }
+        return list
     }
 }
 
@@ -51,9 +63,19 @@ class SantanderBankParser(private val csvMapper: CsvMapper) :
             .build()
 
     override fun parseTransactions(stream: InputStream?): List<SantanderTransactionDto> {
-        return csvMapper.readerFor(SantanderTransactionDto::class.java)
+        val list = mutableListOf<SantanderTransactionDto>()
+        csvMapper.readerFor(SantanderTransactionDto::class.java)
             .with(getSchema().withSkipFirstDataRow(true))
             .readValues<SantanderTransactionDto>(stream)
-            .readAll()
+            .let {
+                while (it.hasNext()) {
+                    try {
+                        list.add(it.nextValue())
+                    } catch (e: JsonParseException) {
+                        return@let
+                    }
+                }
+            }
+        return list
     }
 }
