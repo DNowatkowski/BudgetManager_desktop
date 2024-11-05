@@ -50,7 +50,7 @@ val appModule = module {
     single<CategoryRepository> { CategoryRepositoryImpl(get()) }
     single<BankTransactionParserFactory> { BankTransactionParserFactory(get()) }
     viewModel { CategoriesScreenViewModel(get(), get(), get()) }
-    viewModel { BudgetScreenViewModel(get(), get(), get(), get(), get()) }
+    viewModel { BudgetScreenViewModel(get(), get(), get(), get()) }
     viewModel { MainScreenViewModel() }
     viewModel { ReportsScreenViewModel(get(), get()) }
 }

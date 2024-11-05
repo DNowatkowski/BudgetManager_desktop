@@ -156,3 +156,23 @@ DELETE FROM CategoryEntity;
 insertCategories:
 INSERT INTO CategoryEntity (id, name, categoryGroupId)
 VALUES (:id, :name, :categoryGroupId);
+
+-------------------------------------------------------------------------------------
+
+CREATE TABLE IgnoredKeywordEntity (
+    id TEXT PRIMARY KEY,
+    keyword TEXT NOT NULL
+);
+
+insertIgnoredKeyword:
+INSERT INTO IgnoredKeywordEntity
+VALUES ?;
+
+getAllIgnoredKeywords:
+SELECT * FROM IgnoredKeywordEntity;
+
+deleteIgnoredKeywordById:
+DELETE FROM IgnoredKeywordEntity WHERE id = :id;
+
+updateIgnoredKeywordText:
+UPDATE IgnoredKeywordEntity SET keyword = :keyword WHERE id = :id;

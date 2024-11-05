@@ -58,5 +58,7 @@
     <string name="select_icon_title">Wybierz ikonę dla grupy</string>
     <string name="select_icon">Wybierz ikonę</string>
     <string name="bank_type">Wybierz bank</string>
+    <string name="ignored_keywords">Ignorowane słowa kluczowe</string>
+    <string name="ignored_keywords_desc">Transakcje zawierające te słowa kluczowe nie zostaną zaimportowane</string>
 </resources>
 

@@ -3,6 +3,7 @@ package org.example.project.domain.models
 import androidx.compose.ui.graphics.Color
 import database.CategoryEntity
 import database.GroupEntity
+import database.IgnoredKeywordEntity
 import database.KeywordEntity
 import database.TransactionEntity
 import org.example.project.data.dto.MillenniumTransactionDto
@@ -10,6 +11,7 @@ import org.example.project.data.dto.SantanderTransactionDto
 import org.example.project.data.dto.TransactionDto
 import org.example.project.domain.models.category.CategoryData
 import org.example.project.domain.models.group.GroupData
+import org.example.project.domain.models.keyword.IgnoredKeywordData
 import org.example.project.domain.models.keyword.KeywordData
 import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.utils.ImageUtil
@@ -41,6 +43,13 @@ fun KeywordEntity.toDomainModel(): KeywordData {
         id = id,
         keyword = keyword,
         categoryId = categoryId,
+    )
+}
+
+fun IgnoredKeywordEntity.toDomainModel(): IgnoredKeywordData {
+    return IgnoredKeywordData(
+        id = id,
+        keyword = keyword,
     )
 }
 

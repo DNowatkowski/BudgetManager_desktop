@@ -2,8 +2,6 @@ package org.example.project.ui.screens.budget
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.fasterxml.jackson.dataformat.csv.CsvMapper
-import com.fasterxml.jackson.dataformat.csv.CsvSchema
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -19,14 +17,15 @@ import org.example.project.data.dto.MillenniumTransactionDto
 import org.example.project.data.dto.SantanderTransactionDto
 import org.example.project.data.dto.TransactionDto
 import org.example.project.domain.models.group.GroupWithCategoryData
+import org.example.project.domain.models.keyword.IgnoredKeywordData
 import org.example.project.domain.models.stringToDouble
 import org.example.project.domain.models.toDomainModel
 import org.example.project.domain.models.toLocalDate
 import org.example.project.domain.models.transaction.TransactionData
 import org.example.project.domain.repositories.CategoryRepository
+import org.example.project.domain.repositories.KeywordRepository
 import org.example.project.domain.repositories.TransactionRepository
 import org.example.project.utils.BankTransactionParserFactory
-import org.example.project.utils.BankType
 import java.io.InputStream
 import java.time.LocalDate
 
@@ -34,8 +33,7 @@ class BudgetScreenViewModel(
     private val transactionRepository: TransactionRepository,
     private val categoryRepository: CategoryRepository,
     private val parserFactory: BankTransactionParserFactory,
-    private val csvMapper: CsvMapper,
-    private val schema: CsvSchema,
+    private val keywordRepository: KeywordRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BudgetState())
@@ -50,6 +48,9 @@ class BudgetScreenViewModel(
         }
         viewModelScope.launch {
             getGroupsWithCategories()
+        }
+        viewModelScope.launch {
+            getIgnoredKeywords()
         }
     }
 
@@ -80,6 +81,14 @@ class BudgetScreenViewModel(
         categoryRepository.getGroupsWithCategories().collectLatest {
             _uiState.update { currentState ->
                 currentState.copy(groups = it)
+            }
+        }
+    }
+
+    private suspend fun getIgnoredKeywords() {
+        keywordRepository.getIgnoredKeywords().collectLatest {
+            _uiState.update { currentState ->
+                currentState.copy(ignoredKeywords = it)
             }
         }
     }
@@ -119,12 +128,25 @@ class BudgetScreenViewModel(
 
         viewModelScope.launch {
             val list = parser.parseTransactions(stream)
+                .filterIgnored()
                 .applyFilters(importOptions)
                 .applyValueDivision(importOptions)
                 .removeDuplicates(importOptions)
                 .map { it.toDomainModel() }
 
             transactionRepository.insertTransactions(list)
+        }
+    }
+
+    private fun List<TransactionDto>.filterIgnored(): List<TransactionDto> {
+        return this.filter { transaction ->
+            val ignoredKeywords = _uiState.value.ignoredKeywords.map { it.keyword }
+            !ignoredKeywords.any {
+                transaction.description.contains(
+                    it,
+                    ignoreCase = true
+                ) || transaction.payee.contains(it, ignoreCase = true)
+            }
         }
     }
 
@@ -243,6 +265,24 @@ class BudgetScreenViewModel(
         }
     }
 
+    fun addIgnoredKeyword(keyword: String) {
+        viewModelScope.launch {
+            keywordRepository.insertIgnoredKeyword(keyword)
+        }
+    }
+
+    fun removeIgnoredKeyword(keywordId: String) {
+        viewModelScope.launch {
+            keywordRepository.deleteIgnoredKeyword(keywordId)
+        }
+    }
+
+    fun updateIgnoredKeyword(keyword: IgnoredKeywordData) {
+        viewModelScope.launch {
+            keywordRepository.updateIgnoredKeyword(keyword)
+        }
+    }
+
     private fun List<TransactionData>.filterTransactions(searchText: String): List<TransactionData> {
         return if (searchText.isEmpty()) {
             this.sortedByDescending { it.date }
@@ -320,6 +360,7 @@ class BudgetScreenViewModel(
         val transactions: List<TransactionData> = emptyList(),
         val sortOption: TransactionSortOption = TransactionSortOption.DATE,
         val sortOrder: SortOrder = SortOrder.DESCENDING,
+        val ignoredKeywords: List<IgnoredKeywordData> = emptyList(),
     )
 
     enum class SortOrder {

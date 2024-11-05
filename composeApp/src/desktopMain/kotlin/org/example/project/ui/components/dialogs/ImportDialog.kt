@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,13 +15,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
@@ -47,6 +49,8 @@ import budgetmanager.composeapp.generated.resources.all_transactions
 import budgetmanager.composeapp.generated.resources.all_transactions_desc
 import budgetmanager.composeapp.generated.resources.bank_type
 import budgetmanager.composeapp.generated.resources.cancel
+import budgetmanager.composeapp.generated.resources.ignored_keywords
+import budgetmanager.composeapp.generated.resources.ignored_keywords_desc
 import budgetmanager.composeapp.generated.resources.import
 import budgetmanager.composeapp.generated.resources.import_settings
 import budgetmanager.composeapp.generated.resources.original_values
@@ -57,15 +61,23 @@ import budgetmanager.composeapp.generated.resources.to
 import org.example.project.constants.DateOptions
 import org.example.project.constants.ImportOptions
 import org.example.project.constants.ValueOptions
+import org.example.project.domain.models.keyword.IgnoredKeywordData
 import org.example.project.domain.models.toReadableString
 import org.example.project.ui.components.CustomSelectableDates
 import org.example.project.ui.components.DatePickerPopup
+import org.example.project.ui.components.chips.AddKeywordChip
+import org.example.project.ui.components.chips.KeywordChip
 import org.example.project.utils.BankType
 import org.jetbrains.compose.resources.stringResource
 import java.time.LocalDate
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ImportDialog(
+    ignoredKeywords: List<IgnoredKeywordData>,
+    onIgnoredKeywordAdded: (String) -> Unit,
+    onIgnoredKeywordRemoved: (String) -> Unit,
+    onIgnoredKeywordUpdated: (IgnoredKeywordData) -> Unit,
     onDismiss: () -> Unit,
     onConfirmed: (ImportOptions) -> Unit,
 ) {
@@ -140,19 +152,6 @@ fun ImportDialog(
                             shape = MaterialTheme.shapes.medium
                         )
                 )
-//                TextField(
-//                    value = selectedBank.bankName,
-//                    onValueChange = {},
-//                    readOnly = true,
-//                    maxLines = 1,
-//                    trailingIcon = {
-//                        if (expanded)
-//                            Icon(Icons.Filled.ArrowDropUp, contentDescription = "Close")
-//                        else
-//                            Icon(Icons.Filled.ArrowDropDown, contentDescription = "Open")
-//                    },
-//                    modifier = Modifier.clickable { expanded = !expanded }
-//                )
             }
         }
         Card(
@@ -336,6 +335,33 @@ fun ImportDialog(
                     },
                     modifier = Modifier.padding(end = 8.dp)
                 )
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Card(elevation = CardDefaults.cardElevation(8.dp)) {
+            Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                Text(
+                    stringResource(Res.string.ignored_keywords),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    stringResource(Res.string.ignored_keywords_desc),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                )
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    ignoredKeywords.forEach { keyword ->
+                        KeywordChip(
+                            keyword = keyword,
+                            onRemoveKeyword = { onIgnoredKeywordRemoved(it.id) },
+                            onKeywordUpdated = { onIgnoredKeywordUpdated(it) },
+                        )
+
+                    }
+                    AddKeywordChip(
+                        onAddKeyword = { onIgnoredKeywordAdded(it) },
+                    )
+                }
             }
         }
     }

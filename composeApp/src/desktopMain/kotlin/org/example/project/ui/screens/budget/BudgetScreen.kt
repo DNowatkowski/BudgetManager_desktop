@@ -97,6 +97,10 @@ fun BudgetScreen(
 
     if (showImportDialog) {
         ImportDialog(
+            ignoredKeywords = uiState.ignoredKeywords,
+            onIgnoredKeywordAdded = { vm.addIgnoredKeyword(it) },
+            onIgnoredKeywordRemoved = { vm.removeIgnoredKeyword(it) },
+            onIgnoredKeywordUpdated = { vm.updateIgnoredKeyword(it) },
             onDismiss = { showImportDialog = false },
             onConfirmed = { options ->
                 vm.importFile(platformFile?.file?.inputStream(), options)

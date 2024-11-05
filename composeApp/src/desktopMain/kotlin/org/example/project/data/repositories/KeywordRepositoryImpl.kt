@@ -1,11 +1,18 @@
 package org.example.project.data.repositories
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import database.Database
+import database.IgnoredKeywordEntity
 import database.KeywordEntity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.example.project.domain.models.keyword.IgnoredKeywordData
 import org.example.project.domain.models.keyword.KeywordData
+import org.example.project.domain.models.toDomainModel
 import org.example.project.domain.repositories.KeywordRepository
 import java.util.UUID
 
@@ -59,5 +66,39 @@ class KeywordRepositoryImpl(
                     )
             }
         }
+    }
+
+    override suspend fun insertIgnoredKeyword(keywordText: String) {
+        withContext(Dispatchers.IO) {
+            database.databaseQueries.insertIgnoredKeyword(
+                IgnoredKeywordEntity(
+                    id = UUID.randomUUID().toString(),
+                    keyword = keywordText,
+                )
+            )
+        }
+    }
+
+    override suspend fun deleteIgnoredKeyword(keywordId: String) {
+        withContext(Dispatchers.IO) {
+            database.databaseQueries.deleteIgnoredKeywordById(keywordId)
+        }
+    }
+
+    override suspend fun updateIgnoredKeyword(keyword: IgnoredKeywordData) {
+        withContext(Dispatchers.IO) {
+            database.databaseQueries.updateIgnoredKeywordText(
+                id = keyword.id,
+                keyword = keyword.keyword,
+            )
+        }
+    }
+
+    override fun getIgnoredKeywords(): Flow<List<IgnoredKeywordData>> {
+        return database.databaseQueries.getAllIgnoredKeywords().asFlow()
+            .mapToList(Dispatchers.IO)
+            .map { ignoredKeywords ->
+                ignoredKeywords.map { it.toDomainModel() }
+            }
     }
 }
