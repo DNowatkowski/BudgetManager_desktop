@@ -36,7 +36,6 @@ import budgetmanager.composeapp.generated.resources.total_spending
 import budgetmanager.composeapp.generated.resources.uncategorized
 import ir.ehsannarmani.compose_charts.LineChart
 import ir.ehsannarmani.compose_charts.PieChart
-import ir.ehsannarmani.compose_charts.extensions.format
 import ir.ehsannarmani.compose_charts.models.GridProperties
 import ir.ehsannarmani.compose_charts.models.IndicatorProperties
 import ir.ehsannarmani.compose_charts.models.LabelProperties

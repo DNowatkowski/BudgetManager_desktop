@@ -1,6 +1,5 @@
 package org.example.project.ui.screens.budget
 
-import androidx.collection.emptyLongSet
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

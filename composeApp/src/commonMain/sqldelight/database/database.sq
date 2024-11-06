@@ -26,29 +26,12 @@ WHERE strftime('%Y-%m', date) = :yearMonth;
 updateTransactionCategoryId:
 UPDATE TransactionEntity SET categoryId = :categoryId WHERE id = :id;
 
-getTransactionById:
-SELECT * FROM TransactionEntity WHERE id = :id;
-
 deleteTransactionById:
 DELETE FROM TransactionEntity WHERE id = :id;
 
 getTransactionsForDay:
 SELECT * FROM TransactionEntity
 WHERE date = :date;
-
-getTransactionsForMonthRange:
-SELECT * FROM TransactionEntity
-WHERE date >= :startDate AND date <= :endDate;
-
-deleteAllTransactions:
-DELETE FROM TransactionEntity;
-
-insertTransactions:
-INSERT INTO TransactionEntity (id, amount, description, date, categoryId)
-VALUES (:id, :amount, :description, :date, :categoryId);
-
-getTransactionsByCategoryId:
-SELECT * FROM TransactionEntity WHERE categoryId = :categoryId;
 
 -------------------------------------------------------------------------------------
 CREATE TABLE KeywordEntity (
@@ -80,16 +63,6 @@ DELETE FROM KeywordEntity WHERE id = :id;
 deleteKeywordsForCategory:
 DELETE FROM KeywordEntity WHERE categoryId = :categoryId;
 
-deleteAllKeywords:
-DELETE FROM KeywordEntity;
-
-insertKeywords:
-INSERT INTO KeywordEntity (id, keyword, categoryId)
-VALUES (:id, :keyword, :categoryId);
-
-getKeywordsByCategoryId:
-SELECT * FROM KeywordEntity WHERE categoryId = :categoryId OR :categoryId IS NULL;
-
 -------------------------------------------------------------------------------------
 CREATE TABLE GroupEntity (
     id TEXT PRIMARY KEY,
@@ -102,9 +75,6 @@ CREATE TABLE GroupEntity (
 insertCategoryGroup:
 INSERT INTO GroupEntity
 VALUES ?;
-
-getCategoryGroupById:
-SELECT * FROM GroupEntity WHERE id = :id OR :id IS NULL;
 
 getAllCategoryGroups:
 SELECT * FROM GroupEntity;
@@ -141,21 +111,11 @@ UPDATE CategoryEntity SET name = :name WHERE id = :id;
 getAllCategories:
 SELECT * FROM CategoryEntity;
 
-getCategoryById:
-SELECT * FROM CategoryEntity WHERE id = :id OR :id IS NULL;
-
 deleteCategoryById:
 DELETE FROM CategoryEntity WHERE id = :id;
 
 getCategoriesForGroup:
 SELECT * FROM CategoryEntity WHERE categoryGroupId = :categoryGroupId;
-
-deleteAllCategories:
-DELETE FROM CategoryEntity;
-
-insertCategories:
-INSERT INTO CategoryEntity (id, name, categoryGroupId)
-VALUES (:id, :name, :categoryGroupId);
 
 -------------------------------------------------------------------------------------
 
