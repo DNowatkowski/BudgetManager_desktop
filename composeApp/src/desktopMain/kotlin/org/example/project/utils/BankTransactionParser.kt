@@ -9,6 +9,7 @@ import org.example.project.data.dto.TransactionDto
 import java.io.InputStream
 
 interface BankTransactionParser<T : TransactionDto> {
+    var exceptionCount: Int
     fun getSchema(): CsvSchema
     fun parseTransactions(stream: InputStream?): List<T>
 
@@ -16,6 +17,7 @@ interface BankTransactionParser<T : TransactionDto> {
 
 class MillenniumBankParser(private val csvMapper: CsvMapper) :
     BankTransactionParser<MillenniumTransactionDto> {
+    override var exceptionCount: Int = 0
     override fun getSchema(): CsvSchema =
         CsvSchema.builder()
             .addColumn("OwnAccountNumber")
@@ -40,6 +42,7 @@ class MillenniumBankParser(private val csvMapper: CsvMapper) :
                     try {
                         list.add(it.nextValue())
                     } catch (e: JsonParseException) {
+                        exceptionCount++
                         continue
                     }
                 }
@@ -50,6 +53,7 @@ class MillenniumBankParser(private val csvMapper: CsvMapper) :
 
 class SantanderBankParser(private val csvMapper: CsvMapper) :
     BankTransactionParser<SantanderTransactionDto> {
+    override var exceptionCount: Int = 0
     override fun getSchema(): CsvSchema =
         CsvSchema.builder()
             .addColumn("PostingDate")
@@ -72,7 +76,8 @@ class SantanderBankParser(private val csvMapper: CsvMapper) :
                     try {
                         list.add(it.nextValue())
                     } catch (e: JsonParseException) {
-                        return@let
+                        exceptionCount++
+                        continue
                     }
                 }
             }

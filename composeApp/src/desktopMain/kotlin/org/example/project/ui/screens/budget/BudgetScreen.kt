@@ -1,5 +1,6 @@
 package org.example.project.ui.screens.budget
 
+import androidx.collection.emptyLongSet
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -44,6 +45,8 @@ import budgetmanager.composeapp.generated.resources.add_transaction
 import budgetmanager.composeapp.generated.resources.delete_transaction
 import budgetmanager.composeapp.generated.resources.delete_transaction_confirmation
 import budgetmanager.composeapp.generated.resources.import
+import budgetmanager.composeapp.generated.resources.import_exception
+import budgetmanager.composeapp.generated.resources.import_exception_desc
 import budgetmanager.composeapp.generated.resources.search
 import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.core.PickerMode
@@ -52,6 +55,7 @@ import io.github.vinceglb.filekit.core.PlatformFile
 import org.example.project.ui.components.VerticalScrollBar
 import org.example.project.ui.components.dialogs.AlertDialog
 import org.example.project.ui.components.dialogs.ImportDialog
+import org.example.project.ui.components.dialogs.WarningDialog
 import org.example.project.ui.components.table.AddTransactionRow
 import org.example.project.ui.components.table.TransactionRow
 import org.example.project.ui.components.table.TransactionsHeaderRow
@@ -75,6 +79,11 @@ fun BudgetScreen(
     var showAlertDialog by remember { mutableStateOf(false) }
     var showImportDialog by remember { mutableStateOf(false) }
     var platformFile: PlatformFile? by remember { mutableStateOf(null) }
+    var showImportExceptionDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(uiState.importExceptionCount) {
+        showImportExceptionDialog = uiState.importExceptionCount > 0
+    }
 
     LaunchedEffect(activeMonth) {
         vm.getTransactionsForMonth(activeMonth)
@@ -94,6 +103,12 @@ fun BudgetScreen(
         if (file != null)
             showImportDialog = true
     }
+    if (showImportExceptionDialog)
+        WarningDialog(
+            title = stringResource(Res.string.import_exception),
+            text = stringResource(Res.string.import_exception_desc) + " ${uiState.importExceptionCount}",
+            onDismiss = { vm.resetImportExceptions() },
+        )
 
     if (showImportDialog) {
         ImportDialog(

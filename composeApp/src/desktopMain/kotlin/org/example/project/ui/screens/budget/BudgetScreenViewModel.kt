@@ -125,7 +125,6 @@ class BudgetScreenViewModel(
 
     fun importFile(stream: InputStream?, importOptions: ImportOptions) {
         val parser = parserFactory.getParser(importOptions.bankType) ?: return
-
         viewModelScope.launch {
             val list = parser.parseTransactions(stream)
                 .filterIgnored()
@@ -133,8 +132,20 @@ class BudgetScreenViewModel(
                 .applyValueDivision(importOptions)
                 .removeDuplicates(importOptions)
                 .map { it.toDomainModel() }
-
             transactionRepository.insertTransactions(list)
+            _uiState.update { currentState ->
+                currentState.copy(
+                    importExceptionCount = parser.exceptionCount
+                )
+            }
+        }
+    }
+
+    fun resetImportExceptions() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                importExceptionCount = 0
+            )
         }
     }
 
@@ -381,6 +392,7 @@ class BudgetScreenViewModel(
         val sortOption: TransactionSortOption = TransactionSortOption.DATE,
         val sortOrder: SortOrder = SortOrder.DESCENDING,
         val ignoredKeywords: List<IgnoredKeywordData> = emptyList(),
+        val importExceptionCount: Int = 0,
     )
 
     enum class SortOrder {
