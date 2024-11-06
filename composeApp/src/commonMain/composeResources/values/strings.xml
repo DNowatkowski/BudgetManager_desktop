@@ -61,6 +61,6 @@
     <string name="ignored_keywords">Ignorowane słowa kluczowe</string>
     <string name="ignored_keywords_desc">Transakcje zawierające te słowa kluczowe nie zostaną zaimportowane</string>
     <string name="import_exception">Wystąpił problem podczas importu</string>
-    <string name="import_exception_desc">Liczba pominiętych transakcji:</string>
+    <string name="import_exception_desc">Następujące wiersze spowodowały problem i zostały pominięte:</string>
 </resources>
 

@@ -81,8 +81,8 @@ fun BudgetScreen(
     var platformFile: PlatformFile? by remember { mutableStateOf(null) }
     var showImportExceptionDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect(uiState.importExceptionCount) {
-        showImportExceptionDialog = uiState.importExceptionCount > 0
+    LaunchedEffect(uiState.exceptionLineList) {
+        showImportExceptionDialog = uiState.exceptionLineList.isNotEmpty()
     }
 
     LaunchedEffect(activeMonth) {
@@ -103,12 +103,15 @@ fun BudgetScreen(
         if (file != null)
             showImportDialog = true
     }
-    if (showImportExceptionDialog)
+    if (showImportExceptionDialog) {
         WarningDialog(
             title = stringResource(Res.string.import_exception),
-            text = stringResource(Res.string.import_exception_desc) + " ${uiState.importExceptionCount}",
+            text = stringResource(Res.string.import_exception_desc) + " ${
+                uiState.exceptionLineList.joinToString()
+            }",
             onDismiss = { vm.resetImportExceptions() },
         )
+    }
 
     if (showImportDialog) {
         ImportDialog(

@@ -47,8 +47,9 @@ fun WarningDialog(
                 modifier = Modifier.align(Alignment.TopCenter)
             )
             Column(
-                modifier = Modifier.align(Alignment.Center).padding(top = 48.dp, bottom = 58.dp),
+                modifier = Modifier.align(Alignment.Center).padding(top = 58.dp, bottom = 68.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Icon(
                     Icons.Outlined.Warning,

@@ -135,7 +135,7 @@ class BudgetScreenViewModel(
             transactionRepository.insertTransactions(list)
             _uiState.update { currentState ->
                 currentState.copy(
-                    importExceptionCount = parser.exceptionCount
+                    exceptionLineList = parser.exceptionLineList
                 )
             }
         }
@@ -144,7 +144,7 @@ class BudgetScreenViewModel(
     fun resetImportExceptions() {
         _uiState.update { currentState ->
             currentState.copy(
-                importExceptionCount = 0
+                exceptionLineList = emptyList()
             )
         }
     }
@@ -392,7 +392,7 @@ class BudgetScreenViewModel(
         val sortOption: TransactionSortOption = TransactionSortOption.DATE,
         val sortOrder: SortOrder = SortOrder.DESCENDING,
         val ignoredKeywords: List<IgnoredKeywordData> = emptyList(),
-        val importExceptionCount: Int = 0,
+        val exceptionLineList: List<Int> = emptyList(),
     )
 
     enum class SortOrder {
