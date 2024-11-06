@@ -154,7 +154,9 @@ class BudgetScreenViewModel(
         return if (importOptions.dateTo != null && importOptions.dateFrom != null) {
             this.filter {
                 val localDate = it.date.toLocalDate()
-                localDate.isAfter(importOptions.dateFrom) && localDate.isBefore(importOptions.dateTo)
+                localDate.isAfter(importOptions.dateFrom.minusDays(1)) && localDate.isBefore(
+                    importOptions.dateTo.plusDays(1)
+                )
             }
 
         } else {
@@ -318,6 +320,24 @@ class BudgetScreenViewModel(
                     this.sortedByDescending { it.amount }
                 }
             }
+
+            TransactionSortOption.GROUP -> {
+                if (sortOrder == SortOrder.ASCENDING) {
+                    this.sortedBy {
+                        val group = _uiState.value.groups.find { group ->
+                            group.categories.any { category -> category.id == it.categoryId }
+                        }
+                        group?.group?.name
+                    }
+                } else {
+                    this.sortedByDescending {
+                        val group = _uiState.value.groups.find { group ->
+                            group.categories.any { category -> category.id == it.categoryId }
+                        }
+                        group?.group?.name
+                    }
+                }
+            }
         }
     }
 
@@ -370,6 +390,7 @@ class BudgetScreenViewModel(
 
     enum class TransactionSortOption {
         DATE,
+        GROUP,
         AMOUNT,
     }
 }

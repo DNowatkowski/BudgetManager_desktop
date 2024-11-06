@@ -16,10 +16,10 @@ actual class DriverFactory {
         if (!dbFile.exists()) {
             Database.Schema.create(driver)
         } else {
-            if (Database.Schema.version < 2) {
-                driver.execute(null, "CREATE TABLE IgnoredKeywordEntity (id TEXT PRIMARY KEY, keyword TEXT NOT NULL);", 0)
-                driver.execute(null, "PRAGMA user_version = 2;", 0)
-            }
+//            if (Database.Schema.version < 2) {
+//                driver.execute(null, "CREATE TABLE IgnoredKeywordEntity (id TEXT PRIMARY KEY, keyword TEXT NOT NULL);", 0)
+//                driver.execute(null, "PRAGMA user_version = 2;", 0)
+//            }
         }
 
         return driver

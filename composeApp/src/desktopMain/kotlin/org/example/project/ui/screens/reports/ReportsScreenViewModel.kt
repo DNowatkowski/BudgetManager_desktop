@@ -147,7 +147,11 @@ class ReportsScreenViewModel(
                         .sumOf { it.amount }
                         .absoluteValue
                     val totalTransactions = expenses.sumOf { it.amount }.absoluteValue
-                    group.group to ((groupTransactions / totalTransactions) * 100).toInt()
+                    group.group to if (totalTransactions != 0.0) {
+                        ((groupTransactions / totalTransactions) * 100)
+                    } else {
+                        0.0
+                    }
                 },
                 groupPies = groupsWithCategories.map { group ->
                     Pie(
@@ -187,7 +191,7 @@ class ReportsScreenViewModel(
         val groupPies: List<Pie> = emptyList(),
         val groupsWithCategories: List<GroupWithCategoryData> = emptyList(),
         val groupSpending: Map<GroupData, Double> = emptyMap(),
-        val groupSpendingPercentage: Map<GroupData, Int> = emptyMap(),
+        val groupSpendingPercentage: Map<GroupData, Double> = emptyMap(),
         val totalSpending: Double = 0.0,
     )
 }

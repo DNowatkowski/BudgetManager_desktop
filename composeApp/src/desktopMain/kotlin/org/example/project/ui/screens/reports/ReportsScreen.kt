@@ -36,6 +36,7 @@ import budgetmanager.composeapp.generated.resources.total_spending
 import budgetmanager.composeapp.generated.resources.uncategorized
 import ir.ehsannarmani.compose_charts.LineChart
 import ir.ehsannarmani.compose_charts.PieChart
+import ir.ehsannarmani.compose_charts.extensions.format
 import ir.ehsannarmani.compose_charts.models.GridProperties
 import ir.ehsannarmani.compose_charts.models.IndicatorProperties
 import ir.ehsannarmani.compose_charts.models.LabelProperties
@@ -50,6 +51,7 @@ import org.koin.core.annotation.KoinExperimentalAPI
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.util.Locale
+import kotlin.math.absoluteValue
 
 
 @OptIn(KoinExperimentalAPI::class)
@@ -105,7 +107,7 @@ private fun PieChart(
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween,
-                                modifier = Modifier.widthIn(min = 200.dp)
+                                modifier = Modifier.widthIn(min = 230.dp)
                             ) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
@@ -124,7 +126,7 @@ private fun PieChart(
                                     )
                                 }
                                 Text(
-                                    state.groupSpendingPercentage[group.group].toString() + "%",
+                                    state.groupSpendingPercentage[group.group].toPercentageString(),
                                     style = MaterialTheme.typography.labelLarge,
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                                 )
@@ -133,7 +135,7 @@ private fun PieChart(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.widthIn(min = 200.dp)
+                        modifier = Modifier.widthIn(min = 230.dp)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -151,8 +153,9 @@ private fun PieChart(
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }
+                        val uncategorized = 100 - state.groupSpendingPercentage.values.sum()
                         Text(
-                            (100 - state.groupSpendingPercentage.values.sum()).toString() + "%",
+                            uncategorized.toPercentageString(),
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                         )
@@ -253,4 +256,11 @@ private fun LineChart(
             }
         }
     }
+}
+
+fun Double?.toPercentageString(): String {
+    return this?.let {
+        String.format("%.1f", this.absoluteValue) + " %"
+    } ?: "0,0 %"
+
 }

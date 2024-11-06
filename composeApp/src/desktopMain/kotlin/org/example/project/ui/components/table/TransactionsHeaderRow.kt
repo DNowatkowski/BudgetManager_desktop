@@ -87,10 +87,27 @@ fun TransactionsHeaderRow(
                 TableHeaderText(stringResource(Res.string.description))
             }
             TableCell(
-                weight = TransactionColumn.GROUP.weight
+                weight = TransactionColumn.GROUP.weight,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxHeight(0.8f).clip(MaterialTheme.shapes.small).clickable {
+                    if (sortOption != BudgetScreenViewModel.TransactionSortOption.GROUP) {
+                        onSortOptionChanged(BudgetScreenViewModel.TransactionSortOption.GROUP)
+                    } else {
+                        onSortOrderChanged()
+                    }
+                }
             ) {
                 TableHeaderText(
                     stringResource(Res.string.group),
+                )
+                Icon(
+                    imageVector = if (sortOrder == BudgetScreenViewModel.SortOrder.DESCENDING)
+                        Icons.Filled.KeyboardArrowUp
+                    else
+                        Icons.Filled.KeyboardArrowDown,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .alpha(if (sortOption == BudgetScreenViewModel.TransactionSortOption.GROUP) 1f else 0.5f)
                 )
             }
             TableCell(
