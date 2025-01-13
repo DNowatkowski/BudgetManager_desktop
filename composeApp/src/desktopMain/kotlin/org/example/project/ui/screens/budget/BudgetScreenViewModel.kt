@@ -217,7 +217,6 @@ class BudgetScreenViewModel(
                         val duplicate =
                             transactionRepository.getTransactionsForDay(transaction.date.toLocalDate())
                                 .firstOrNull()?.find {
-
                                     when (transaction) {
                                         is MillenniumTransactionDto -> {
                                             transaction.description == it.description &&

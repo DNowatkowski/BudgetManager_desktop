@@ -126,7 +126,7 @@ fun String.stringToDouble(): Double {
         try {
             this.replace(",", ".").toDouble()
         } catch (e: NumberFormatException) {
-            throw e
+            0.0
         }
     }
 }
