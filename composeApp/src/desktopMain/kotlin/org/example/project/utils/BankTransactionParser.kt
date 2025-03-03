@@ -34,21 +34,27 @@ class MillenniumBankParser(private val csvMapper: CsvMapper) :
 
     override fun parseTransactions(stream: InputStream?): List<MillenniumTransactionDto> {
         val list = mutableListOf<MillenniumTransactionDto>()
-        csvMapper.readerFor(MillenniumTransactionDto::class.java)
-            .with(getSchema().withSkipFirstDataRow(true))
-            .readValues<MillenniumTransactionDto>(stream)
-            .let {
-                var line = 1
-                while (it.hasNext()) {
+        stream?.bufferedReader()?.useLines { lines ->
+            val iterator = lines.iterator()
+            var line = 1
+            if (iterator.hasNext()) iterator.next() // Skip header
+            while (iterator.hasNext()) {
+                val csvLine = iterator.next()
+                try {
+                    val transaction = csvMapper.readerFor(MillenniumTransactionDto::class.java)
+                        .with(getSchema())
+                        .readValue<MillenniumTransactionDto>(csvLine)
+                    list.add(transaction)
+                } catch (e: JsonParseException) {
+                    exceptionLineList.add(line)
+                    println("JsonParseException at line $line: ${e.message}")
+                } catch (e: Exception) {
+                    println("Exception at line $line: ${e.message}")
+                } finally {
                     line++
-                    try {
-                        list.add(it.nextValue())
-                    } catch (e: JsonParseException) {
-                        exceptionLineList.add(line)
-                        continue
-                    }
                 }
             }
+        }
         return list
     }
 }
@@ -70,21 +76,27 @@ class SantanderBankParser(private val csvMapper: CsvMapper) :
 
     override fun parseTransactions(stream: InputStream?): List<SantanderTransactionDto> {
         val list = mutableListOf<SantanderTransactionDto>()
-        csvMapper.readerFor(SantanderTransactionDto::class.java)
-            .with(getSchema().withSkipFirstDataRow(true))
-            .readValues<SantanderTransactionDto>(stream)
-            .let {
-                var line = 1
-                while (it.hasNext()) {
+        stream?.bufferedReader()?.useLines { lines ->
+            val iterator = lines.iterator()
+            var line = 1
+            if (iterator.hasNext()) iterator.next() // Skip header
+            while (iterator.hasNext()) {
+                val csvLine = iterator.next()
+                try {
+                    val transaction = csvMapper.readerFor(SantanderTransactionDto::class.java)
+                        .with(getSchema())
+                        .readValue<SantanderTransactionDto>(csvLine)
+                    list.add(transaction)
+                } catch (e: JsonParseException) {
+                    exceptionLineList.add(line)
+                    println("JsonParseException at line $line: ${e.message}")
+                } catch (e: Exception) {
+                    println("Exception at line $line: ${e.message}")
+                } finally {
                     line++
-                    try {
-                        list.add(it.nextValue())
-                    } catch (e: JsonParseException) {
-                        exceptionLineList.add(line)
-                        continue
-                    }
                 }
             }
+        }
         return list
     }
 }
